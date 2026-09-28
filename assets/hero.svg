@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400"
+     font-family="Georgia, 'Times New Roman', 'Songti SC', serif" role="img"
+     aria-label="TariffLens — 关税测算参考台 / U.S. HTS duty reference desk">
+  <title>TariffLens · 关税测算参考台</title>
+
+  <!-- 纸底 -->
+  <rect width="1280" height="400" fill="#f7f6f2"/>
+
+  <!-- ===================== 报头 ===================== -->
+  <text x="48" y="72" font-size="42" font-weight="700" letter-spacing="7" fill="#101418">TARIFFLENS</text>
+
+  <text x="1232" y="46" text-anchor="end" font-size="12.5"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        letter-spacing="2" fill="#a8321f">READ-ONLY · 仅参考测算</text>
+  <text x="1232" y="68" text-anchor="end" font-size="12"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        letter-spacing="1.5" fill="#656b70">HTS 2026 REV.9 · FEDERAL REGISTER LIVE</text>
+
+  <!-- 双 rule line -->
+  <line x1="48" y1="86"  x2="1232" y2="86"  stroke="#101418" stroke-width="1.6"/>
+  <line x1="48" y1="90"  x2="1232" y2="90"  stroke="#101418" stroke-width="0.7"/>
+
+  <text x="48" y="118" font-size="16" font-style="italic" fill="#656b70">
+    关税测算参考台 · U.S. HTS duty reference desk
+  </text>
+
+  <!-- ===================== 左：查询结果（Gazette 卡片） ===================== -->
+  <rect x="48" y="140" width="740" height="196" fill="#fffdf7" stroke="#101418" stroke-width="1"/>
+
+  <text x="68" y="172" font-size="19" letter-spacing="1"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#101418">HTS 3818.00.00</text>
+
+  <!-- 置信度 chip -->
+  <rect x="694" y="154" width="74" height="21" fill="#eae7dd" stroke="#101418" stroke-width="0.8"/>
+  <text x="731" y="169" text-anchor="middle" font-size="11"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#101418">T1 · 快照</text>
+
+  <line x1="68" y1="184" x2="748" y2="184" stroke="#101418" stroke-width="0.7"/>
+
+  <text x="68" y="206" font-size="14" fill="#101418">Doped chemical elements and compounds — Other</text>
+
+  <text x="68" y="254" font-size="34" font-weight="700" fill="#101418">Free</text>
+  <text x="68" y="274" font-size="11" letter-spacing="0.6"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#656b70">GENERAL RATE · 基础税率（从价）</text>
+
+  <!-- 竖细线分栏 -->
+  <line x1="480" y1="196" x2="480" y2="316" stroke="#101418" stroke-width="0.6" opacity="0.45"/>
+  <text x="500" y="212" font-size="12"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#101418">MPF 0.3464%</text>
+  <text x="500" y="232" font-size="12"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#101418">HMF 0.125%</text>
+  <text x="500" y="252" font-size="12"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#656b70">ADD/CVD 仅存在性提示</text>
+
+  <!-- 朱红勘校旁注 -->
+  <rect x="68" y="292" width="4" height="34" fill="#a8321f"/>
+  <text x="84" y="304" font-size="13" fill="#101418">红线 01 · 本工具不做自动 HS 归类，以上为参考测算</text>
+  <text x="84" y="322" font-size="12" font-style="italic" fill="#656b70">
+    No HS classification is performed — figures are reference estimates only.
+  </text>
+
+  <!-- ===================== 右：三条红线 ===================== -->
+  <rect x="820" y="140" width="412" height="196" fill="#fffdf7" stroke="#101418" stroke-width="1"/>
+
+  <text x="840" y="166" font-size="11" letter-spacing="2"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#a8321f">三条红线 · THREE RED LINES</text>
+  <line x1="840" y1="176" x2="1212" y2="176" stroke="#101418" stroke-width="0.7"/>
+
+  <rect x="840" y="192" width="3" height="36" fill="#a8321f"/>
+  <text x="854" y="204" font-size="13.5" font-weight="700" fill="#101418">01 · 不做自动归类</text>
+  <text x="854" y="222" font-size="11.5" font-style="italic" fill="#656b70">No auto-classification, reference figures only</text>
+
+  <rect x="840" y="238" width="3" height="36" fill="#a8321f"/>
+  <text x="854" y="250" font-size="13.5" font-weight="700" fill="#101418">02 · 文本引用形态不出数字</text>
+  <text x="854" y="268" font-size="11.5" font-style="italic" fill="#656b70">Cross-reference rates are never rendered as numbers</text>
+
+  <rect x="840" y="284" width="3" height="36" fill="#a8321f"/>
+  <text x="854" y="296" font-size="13.5" font-weight="700" fill="#101418">03 · 未覆盖项三类分治</text>
+  <text x="854" y="314" font-size="11.5" font-style="italic" fill="#656b70">Fees computed · ADD/CVD existence · FTA read-only</text>
+
+  <!-- ===================== 页脚条 ===================== -->
+  <line x1="48" y1="356" x2="1232" y2="356" stroke="#101418" stroke-width="0.6" opacity="0.35"/>
+  <text x="48" y="376" font-size="12" letter-spacing="1.2"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#656b70">
+    NO BACKEND · NO BUILD STEP · NO API KEY · 纯静态
+  </text>
+  <text x="1232" y="376" text-anchor="end" font-size="12"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#656b70">
+    SOURCES · USITC HTS (public domain) · FEDERAL REGISTER API (public domain)
+  </text>
+</svg>

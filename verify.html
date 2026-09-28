@@ -191,9 +191,9 @@ table.src td.f{color:var(--ink)}
 </header>
 
 <div class="legend">
-  <div class="lg"><span class="dot" style="background:var(--l1)"></span>L1 实时 · 联邦公报（浏览器直连，免密钥）</div>
-  <div class="lg"><span class="dot" style="background:var(--snap)"></span>L2 快照 · USITC HTS 2026 rev.9（构建期预取）</div>
-  <div class="lg"><span class="dot" style="background:var(--warn)"></span>L1′ · ADD/CVD 存在性提示（不出金额）</div>
+  <div class="lg"><span class="dot" style="background:var(--l1)"></span>L1 快照 · USITC HTS 2026 rev.9（构建期预取）</div>
+  <div class="lg"><span class="dot" style="background:var(--snap)"></span>L2 实时 · 联邦公报（浏览器直连，免密钥）</div>
+  <div class="lg"><span class="dot" style="background:var(--warn)"></span>L2′ · ADD/CVD 存在性提示（不出金额）</div>
   <div class="lg"><span class="dot" style="background:var(--ink-faint)"></span>L3 演示 · 本验证页未启用</div>
 </div>
 
@@ -207,10 +207,14 @@ table.src td.f{color:var(--ink)}
     <button class="ghost" id="rand">随机抽一条</button>
   </div>
   <div class="samples">
-    <button data-hs="8507.60.00">锂离子电池 <b>8507.60.00</b></button>
-    <button data-hs="2804.61.00.00">多晶硅 <b>2804.61.00.00</b></button>
-    <button data-hs="7210.11.00">镀锡钢板 <b>7210.11.00</b></button>
-    <button data-hs="0201.10.50">牛肉（冷藏带骨）<b>0201.10.50</b></button>
+    <button data-hs="8507.60.00"    title="3.4% 从价税 + 3 条 Chapter 99 附加措施">电子 <b>8507.60.00</b></button>
+    <button data-hs="2804.61.00.00" title="快照为 Free，但实时层有措施 —— 红线 01 实证">化工 <b>2804.61.00.00</b></button>
+    <button data-hs="7210.11.00"    title="8 位前缀回退 + ADD/CVD 存在性提示">钢铁 <b>7210.11.00</b></button>
+    <button data-hs="0201.10.50"    title="26.4% 高税 + 32 条 Chapter 99，品名靠祖先链还原">畜牧 <b>0201.10.50</b></button>
+    <button data-hs="1005.90.20"    title="0.05¢/kg 从量税 —— 红线 02，不出数字">粮食 <b>1005.90.20</b></button>
+    <button data-hs="6403.99.90"    title="10% 从价税 + 8 条 Chapter 99 附加措施">鞋类 <b>6403.99.90</b></button>
+    <button data-hs="6109.10.00"    title="16.5% —— 服装类典型高从价税">服装 <b>6109.10.00</b></button>
+    <button data-hs="8481.80.90"    title="2% 从价税 + 5 条 Chapter 99 叠加">机械 <b>8481.80.90</b></button>
   </div>
   <div class="hint">
     8 位或 10 位均可；找不到精确编码时自动前缀回退（库里有些条目只有 10 位叶子，没有 8 位行）。
@@ -226,8 +230,8 @@ table.src td.f{color:var(--ink)}
     <tbody id="src"></tbody>
   </table>
   <div class="src-note">
-    全部产物由 <code>scripts/fetch_tariff_data.py</code> 生成，落地在
-    <code>.workbuddy/tmp/tarifflens/data/</code>（不在 <code>docs/</code> 下，未被 Pages 托管）。<br>
+    全部产物由 <code>scripts/fetch_tariff_data.py</code> 生成，落地在仓库根
+    <code>data/</code>（随仓库提交，由 Pages 一并托管）。<br>
     本页面通过 <code>DecompressionStream(&apos;gzip&apos;)</code> 在浏览器端解压分片 —— 服务器刻意不设
     <code>Content-Encoding</code>，因此本页本身即为「按章分片 + 浏览器解压」方案的可行性验证。
   </div>
@@ -453,7 +457,7 @@ function render(res){
   const l1Rules = fr.hits.filter(x => x.doc.ty === "Rule" || x.doc.ty === "Presidential Document");
   if (snapClean && fr.hits.length){
     alerts.push({cls:"", tag:"红线 01", t:"快照给出「零关税」，但实时层存在相关措施 —— 不得据此下结论",
-      d:"L2 基础税率 <code>Free</code>、Chapter 99 零命中；但 L1 联邦公报命中 <b>" + fr.hits.length +
+      d:"L1 基础税率 <code>Free</code>、Chapter 99 零命中；但 L2 联邦公报命中 <b>" + fr.hits.length +
         "</b> 条相关文档" +
         (l1Rules.length ? "，其中 <b>" + l1Rules.length + "</b> 条为 <code>Rule</code> 类（已生效或将生效）" : "") +
         "。以公告形式实施的行政措施不写进 HTS 税率字段，快照层根本捕获不到 —— " +
@@ -463,7 +467,7 @@ function render(res){
     alerts.push({cls:"", tag:"红线 02", t:"税率为文本交叉引用形态 —— 拒绝换算为数字",
       d:"该档位写作 <code>" + esc(row.g.slice(0,90)) + "</code>，不是可解析的数值，只能展示原文。"});
   if (ch99.length)
-    alerts.push({cls:"warn", tag:"L2 附加", t:"命中 " + ch99.length + " 条 Chapter 99 附加措施，基础税率不足以反映实际税负",
+    alerts.push({cls:"warn", tag:"L1 附加", t:"命中 " + ch99.length + " 条 Chapter 99 附加措施，基础税率不足以反映实际税负",
       d:"附加措施（232 / 301 / 配额等）叠加在基础税率之上，本页仅列出原文，不做叠加计算。"});
   if (adcvd.strong.length || adcvd.weak.length){
     const a = [], b = [];
@@ -490,7 +494,7 @@ function render(res){
   let h = "";
 
   // L2 基础税率
-  h += '<div class="blk"><h2><span class="ly l2">L2 快照</span>HTS 基础税率 · USITC 2026 rev.9' +
+  h += '<div class="blk"><h2><span class="ly l2">L1 快照</span>HTS 基础税率 · USITC 2026 rev.9' +
        '<span class="cnt">' + esc(row.h) + " · 本章 " + base.shardSize + " 条</span></h2><div class=\"bd\">" +
        renderPath(row) +
        '<div class="rate">' +
@@ -505,7 +509,7 @@ function render(res){
        "</div></div>";
 
   // L2 Chapter 99
-  h += '<div class="blk"><h2><span class="ly l2">L2 快照</span>Chapter 99 附加措施' +
+  h += '<div class="blk"><h2><span class="ly l2">L1 快照</span>Chapter 99 附加措施' +
        '<span class="cnt">' + ch99.length + " 条</span></h2><div class=\"bd\">";
   if (!ch99.length){
     h += '<div class="empty">未命中。<b>这不等于该商品没有附加措施</b> —— Chapter 99 只收录以税则号列明的措施，' +
@@ -526,7 +530,7 @@ function render(res){
   h += "</div></div>";
 
   // L1 联邦公报
-  h += '<div class="blk"><h2><span class="ly l1">L1 实时</span>联邦公报 · 关税类文档（近 90 天，' +
+  h += '<div class="blk"><h2><span class="ly l1">L2 实时</span>联邦公报 · 关税类文档（近 90 天，' +
        fr.total + " 条）<span class=\"cnt\">命中 " + fr.hits.length + "</span></h2><div class=\"bd\">";
   h += '<div class="dhit" style="margin-bottom:8px">检索词（自品名抽取，按长度排序）：' +
        (kw.length ? kw.map(esc).join(" · ") : "（无可抽词）") + "</div>";
@@ -549,7 +553,7 @@ function render(res){
       "<span>" + esc((g.sample.ag||[]).join(" / ")) + "</span></div>" +
       '<div class="dtitle"><a href="' + esc(frUrl(g.sample)) + '" target="_blank" rel="noopener">' + esc(g.name) + "</a></div></div>";
 
-  h += '<div class="blk"><h2><span class="ly l3">L1′ 提示</span>反倾销 / 反补贴 · 存在性提示（不出金额）' +
+  h += '<div class="blk"><h2><span class="ly l3">L2′ 提示</span>反倾销 / 反补贴 · 存在性提示（不出金额）' +
        '<span class="cnt">' + adcvd.strong.length + " 条 / " + (gStrong.length + gWeak.length) +
        " 个产品</span></h2><div class=\"bd\">";
   if (!adcvd.strong.length && !adcvd.weak.length){

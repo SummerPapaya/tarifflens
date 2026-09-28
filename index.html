@@ -13,6 +13,7 @@
   --ink:#101418; --ink-soft:#3d4348; --ink-mute:#656b70;
   --line:#d8d3c7; --line-hair:#e6e2d8; --rule:#101418;
   --vermilion:#a8321f; --indigo:#1a4fd6; --amber:#8a6a1f;
+  --ok:#137a3b; --warn:#a8641f;
   --serif:"Songti SC","Noto Serif CJK SC","Source Han Serif SC",Georgia,"Times New Roman",serif;
   --sans:system-ui,-apple-system,"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,"SF Mono",Consolas,monospace;
@@ -25,6 +26,7 @@ html[data-theme="dark"]{
   --ink:#ece6d8; --ink-soft:#c4bda9; --ink-mute:#8b8474;
   --line:#3a3529; --line-hair:#2c2820; --rule:#8a8270;
   --vermilion:#e0664a; --indigo:#7fa2ff; --amber:#d8b45c;
+  --ok:#54b871; --warn:#d99a4e;
   --grid:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);
 }
 *{box-sizing:border-box}
@@ -44,9 +46,15 @@ body{
   font-family:var(--serif); font-size:31px; letter-spacing:.16em;
   text-align:center; margin:16px 0 4px; font-weight:600;
 }
+/* 适用范围副标题：紧贴主标题之下，口径写在报头，避免读者以为是通用关税工具 */
+.mh-scope{
+  font-family:var(--serif); font-size:18.5px; letter-spacing:.15em; font-weight:600;
+  text-align:center; color:var(--ink); margin:7px 0 3px; line-height:1.55;
+}
+.mh-scope b{ color:var(--ink-soft); font-weight:600 }
 .mh-sub{
   font-family:var(--sans); font-size:12px; letter-spacing:.1em;
-  text-align:center; color:var(--ink-mute); margin-bottom:12px;
+  text-align:center; color:var(--ink-mute); margin:6px 0 12px;
 }
 .mh-meta{
   display:flex; flex-wrap:wrap; gap:0 14px; justify-content:center;
@@ -83,6 +91,94 @@ body{
 }
 .sample:hover{ border-color:var(--rule); color:var(--ink) }
 .sample code{ font-family:var(--mono); font-size:11px; color:var(--indigo) }
+.sample .cat{ color:var(--ink) }
+.sample .sep{ color:var(--ink-mute); padding:0 3px }
+.srch-hint{ font-family:var(--sans); font-size:11.5px; color:var(--ink-mute); margin-top:8px; line-height:1.6 }
+
+/* 按类别浏览：章 → 4 位 heading → 6 位子目 → 8/10 位税则行 */
+.bbtn{
+  font-family:var(--sans); font-size:13px; color:var(--ink-soft);
+  border:1px solid var(--line); background:none; padding:0 13px; cursor:pointer;
+  white-space:nowrap;
+}
+.bbtn:hover{ border-color:var(--rule); color:var(--ink) }
+.bbtn[aria-expanded="true"]{ background:var(--ink); color:var(--paper); border-color:var(--ink) }
+.browse{ display:none; margin-top:12px; border:1px solid var(--rule); background:var(--paper-2) }
+.browse.on{ display:block }
+.browse .bh{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  border-bottom:1px solid var(--line-hair); padding:9px 12px;
+}
+.browse .bh .bt{ font-family:var(--serif); font-size:14px; font-weight:600 }
+.browse .crumb{ font-family:var(--mono); font-size:10.5px; color:var(--ink-mute) }
+.browse .crumb b{ color:var(--ink); font-weight:400 }
+.browse .crumb span{ cursor:pointer; border-bottom:1px dotted var(--line) }
+.browse .crumb span:hover{ color:var(--indigo); border-color:var(--indigo) }
+.browse .bx{ margin-left:auto; border:none; background:none; cursor:pointer;
+  font-family:var(--mono); font-size:11px; color:var(--ink-mute) }
+.bfilt{
+  width:100%; border:none; border-bottom:1px solid var(--line-hair); background:transparent;
+  font-family:var(--sans); font-size:12.5px; color:var(--ink); padding:8px 12px;
+}
+.bfilt:focus{ outline:none; border-bottom-color:var(--indigo) }
+.blist{ max-height:320px; overflow:auto; padding:4px 0 }
+.brow{
+  display:flex; gap:10px; align-items:baseline; width:100%; text-align:left;
+  border:none; background:none; cursor:pointer; padding:6px 12px;
+  font-family:var(--sans); font-size:12.5px; color:var(--ink-soft); line-height:1.5;
+}
+.brow:hover{ background:var(--paper-3); color:var(--ink) }
+.brow .bc{ font-family:var(--mono); font-size:11px; color:var(--indigo); flex:0 0 auto }
+.brow .bn{ flex:1 1 auto; min-width:0 }
+.brow .bg{ flex:0 0 auto; font-family:var(--mono); font-size:10.5px; color:var(--ink-mute) }
+.brow.lv0 .bc{ flex:0 0 26px }
+.bnote{
+  border-top:1px solid var(--line-hair); padding:8px 12px;
+  font-family:var(--sans); font-size:11px; color:var(--ink-mute); line-height:1.6;
+}
+@media (max-width:640px){
+  .blist{ max-height:260px }
+  .brow{ flex-wrap:wrap }
+}
+
+/* ---------- 用法引导（三步 + 读法图例） ---------- */
+.howto{ display:flex; flex-wrap:wrap; gap:0 16px; margin:18px 0 0 }
+.howto .step{ flex:1 1 170px; border-top:1px solid var(--rule); padding:9px 0 0; margin-bottom:10px }
+.howto .step .n{ font-family:var(--mono); font-size:10px; letter-spacing:.12em; color:var(--vermilion) }
+.howto .step .hh{ font-family:var(--serif); font-size:14px; margin:4px 0 3px }
+.howto .step .dd{ font-family:var(--sans); font-size:11.5px; color:var(--ink-soft); line-height:1.55 }
+.guide{ margin:6px 0 0; border:1px solid var(--line); background:var(--paper-2) }
+.guide>summary{
+  font-family:var(--serif); font-size:13.5px; padding:10px 14px; cursor:pointer;
+  list-style:none; display:flex; gap:8px; align-items:baseline;
+}
+.guide>summary::-webkit-details-marker{ display:none }
+.guide>summary .mk{ font-family:var(--mono); color:var(--indigo); font-size:12px }
+.guide .gbody{
+  padding:0 14px 14px; font-family:var(--sans); font-size:12px;
+  color:var(--ink-soft); line-height:1.7;
+}
+.guide .gsec{ margin:0 0 11px }
+.guide .gsec b{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  color:var(--ink); display:block; margin-bottom:3px;
+}
+.guide ul{ margin:0; padding-left:17px }
+.guide li{ margin:2px 0 }
+
+/* ---------- 结果顶部结论句 ---------- */
+.sumline{
+  border-left:3px solid var(--rule); padding:9px 0 9px 13px; margin:16px 0 2px;
+  font-family:var(--serif); font-size:15.5px; line-height:1.62;
+}
+.sumline em{ font-style:normal; font-family:var(--mono); font-size:13.5px; color:var(--vermilion) }
+.sumline .tail{ font-family:var(--sans); font-size:11.5px; color:var(--ink-mute); display:block; margin-top:5px; line-height:1.6 }
+.sumline .jump{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  background:none; border:1px solid var(--line); color:var(--ink-soft);
+  padding:3px 9px; cursor:pointer; display:inline-block; margin-top:9px;
+}
+.sumline .jump:hover{ border-color:var(--rule); color:var(--ink) }
 
 /* ---------- 栏目 ---------- */
 .doc{ margin-top:30px }
@@ -106,6 +202,59 @@ body{
 }
 .col-name{ font-family:var(--serif); font-size:15px; font-weight:600; letter-spacing:.04em }
 .col-src{ font-family:var(--mono); font-size:10px; color:var(--ink-mute); margin-left:auto }
+
+/* ---------- 层分组：把 L1（快照）与 L2（实时）做成两块可折叠的独立区域 ----------
+   粗色条只在折叠态出现（用于一眼区分 L1/L2），展开后去掉、只留 1px 细边框；
+   展开态的区分靠层标数字与导语。 */
+.lgroup{ margin:22px 0 0; border:1px solid var(--line); background:var(--paper-2); padding-bottom:14px }
+.lgroup.l1g:not([open]){ border-left:4px solid var(--rule) }
+.lgroup.l2g:not([open]){ border-left:4px solid var(--indigo) }
+.lgroup>summary{
+  list-style:none; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+  padding:11px 13px; cursor:pointer;
+}
+.lgroup>summary::-webkit-details-marker{ display:none }
+.lgroup>summary:hover{ background:var(--paper-3) }
+.lg-tag{
+  font-family:var(--mono); font-size:10px; letter-spacing:.12em;
+  border:1px solid var(--rule); padding:2px 7px; color:var(--ink); flex:0 0 auto;
+}
+.l2g .lg-tag{ border-color:var(--indigo); color:var(--indigo) }
+.lg-name{ font-family:var(--serif); font-size:15px; font-weight:600; letter-spacing:.03em }
+.lg-fig{ font-family:var(--mono); font-size:10.5px; color:var(--ink-mute); margin-left:auto }
+.lg-mk{ font-family:var(--mono); font-size:12px; color:var(--indigo); flex:0 0 auto }
+.lg-lead{
+  font-family:var(--sans); font-size:11.5px; color:var(--ink-mute); line-height:1.65;
+  padding:2px 13px 11px; border-bottom:1px solid var(--line-hair);
+}
+/* L2 实时/快照状态：折叠态的层标旁也点一枚小徽标（哪怕分组收起也能看到数据新鲜度） */
+.lg-src{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; flex:0 0 auto;
+  padding:2px 7px; border-radius:10px; border:1px solid var(--line); color:var(--ink-mute);
+}
+.lg-src.live{ color:var(--ok); border-color:var(--ok); background:color-mix(in srgb, var(--ok) 9%, transparent) }
+.lg-src.snap{ color:var(--warn); border-color:var(--warn); background:color-mix(in srgb, var(--warn) 11%, transparent) }
+/* 展开后的数据来源条：方案 B「数据龄提示」主入口 */
+.fr-prov{
+  font-family:var(--sans); font-size:11px; line-height:1.6; padding:9px 13px;
+  border-bottom:1px solid var(--line-hair);
+}
+.fr-prov.live{ color:var(--ink-soft) }
+.fr-prov.snap{ color:var(--warn) }
+.fr-prov.stale{ color:var(--vermilion); font-weight:600 }
+.lgroup .col{ margin:0; padding-top:14px; padding-left:13px; padding-right:13px; border-top:none }
+.lgroup .col + .col{ border-top:1px solid var(--line-hair); margin-top:16px; padding-top:16px }
+.lgroup .annot{ margin-left:13px; margin-right:13px }
+/* 参考测算：默认展开，放在结论之后 —— 并明确写出每个输入值来自哪里 */
+.calc-src{
+  font-family:var(--sans); font-size:11.5px; color:var(--ink-mute); line-height:1.7;
+  border-left:2px solid var(--line); padding:2px 0 2px 11px; margin:0 0 12px;
+}
+.calc-src b{ color:var(--ink-soft); font-weight:600 }
+.calcexcl{
+  font-family:var(--sans); font-size:11px; color:var(--vermilion);
+  line-height:1.65; margin-top:10px; border-top:1px solid var(--line-hair); padding-top:9px;
+}
 
 /* 竖细线分隔的字段栏 */
 .fields{ display:flex; flex-wrap:wrap; gap:0; border-top:1px solid var(--line-hair) }
@@ -191,6 +340,26 @@ th+th, td+td{ padding-left:12px; border-left:1px solid var(--line-hair) }
 }
 .empty b{ color:var(--ink-soft) }
 
+/* 空态：首屏不预跑查询，先告诉读者「这里会发生什么」 */
+.idle{ border-top:3px double var(--rule); border-bottom:1px solid var(--line); padding:18px 0 16px; margin-top:4px }
+.idle .kicker{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--vermilion); margin-bottom:8px;
+}
+.idle .lede{
+  font-family:var(--serif); font-size:17px; line-height:1.62; color:var(--ink);
+  max-width:34em; margin:0 0 4px;
+}
+.idle .lede em{ font-style:normal; border-bottom:1px solid var(--indigo); color:var(--indigo) }
+.idle .sub{ font-family:var(--sans); font-size:12.5px; color:var(--ink-mute); line-height:1.7; margin:0 0 14px }
+.idle .will{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:0 22px }
+.idle .will li{
+  flex:1 1 190px; border-top:1px solid var(--line-hair); padding:9px 0 0; margin-bottom:10px;
+  font-family:var(--sans); font-size:12px; line-height:1.6; color:var(--ink-soft);
+}
+.idle .will b{ display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink); margin-bottom:3px }
+
 /* 参考测算 —— 默认折叠（#10） */
 .calc{ margin:26px 0 0; border:1px solid var(--line); background:var(--paper-2) }
 .calc summary{
@@ -247,7 +416,8 @@ th+th, td+td{ padding-left:12px; border-left:1px solid var(--line-hair) }
   <header class="masthead">
     <div class="rule-top"></div><div class="rule-thin"></div>
     <div class="mh-title">TARIFFLENS</div>
-    <div class="mh-sub" data-i18n="mastheadSub">关税与贸易合规参考 · 非应缴税额计算工具</div>
+    <div class="mh-scope" data-i18n="scopeLine">美国 HTS 关税参考工具（仅美国进口）</div>
+    <div class="mh-sub" data-i18n="mastheadSub">输入一个 HTS 子目，看它被哪些措施覆盖、每个数字出自哪里</div>
     <div class="mh-meta" id="meta"></div>
     <div class="mh-tools">
       <button class="tbtn" id="langBtn" aria-pressed="false">EN</button>
@@ -257,11 +427,47 @@ th+th, td+td{ padding-left:12px; border-left:1px solid var(--line-hair) }
 
   <section class="search">
     <form class="srow" id="form">
-      <input id="q" inputmode="numeric" autocomplete="off" spellcheck="false" value="2804.61.00.00" aria-label="HS code">
+      <input id="q" inputmode="numeric" autocomplete="off" spellcheck="false" aria-label="HS code">
       <button type="submit" data-i18n="queryBtn">查阅</button>
+      <button type="button" class="bbtn" id="browseBtn" aria-expanded="false" aria-controls="browse" data-i18n="browseBtn">按类别浏览</button>
     </form>
+    <div class="srch-hint" data-i18n="srchHint">8 位或 10 位均可；查不到精确编码时自动前缀回退到同前缀的第一个子目</div>
     <div class="samples" id="samples"></div>
+
+    <div class="browse" id="browse">
+      <div class="bh">
+        <span class="bt" data-i18n="browseTitle">不知道编码时，从这里逐级找</span>
+        <span class="crumb" id="bcrumb"></span>
+        <button class="bx" id="bclose" data-i18n="browseClose">收起</button>
+      </div>
+      <input class="bfilt" id="bfilt" autocomplete="off" spellcheck="false" data-i18n-ph="browsePh">
+      <div class="blist" id="blist"></div>
+      <div class="bnote" data-i18n="browseNote"></div>
+    </div>
   </section>
+
+  <section class="howto" id="howto">
+    <div class="step">
+      <div class="n">STEP 01</div>
+      <div class="hh" data-i18n="how1">输入 HTS 子目</div>
+      <div class="dd" data-i18n="how1d">不确定编码时，先点下方任一品类示例试一次</div>
+    </div>
+    <div class="step">
+      <div class="n">STEP 02</div>
+      <div class="hh" data-i18n="how2">对照三层证据</div>
+      <div class="dd" data-i18n="how2d">基础税率（快照）→ 附加措施（Ch.99）→ 实时公告与 ADD/CVD 提示</div>
+    </div>
+    <div class="step">
+      <div class="n">STEP 03</div>
+      <div class="hh" data-i18n="how3">先读红线，再看数字</div>
+      <div class="dd" data-i18n="how3d">朱红旁注说明「哪些不替你算」，参考测算默认折叠就是这个原因</div>
+    </div>
+  </section>
+
+  <details class="guide" id="guide">
+    <summary><span class="mk">＋</span><span data-i18n="guideTitle">怎么读这份表 · 图例</span></summary>
+    <div class="gbody" id="gbody"></div>
+  </details>
 
   <main id="out"></main>
 
@@ -386,8 +592,8 @@ function matchFR(row, d, docs){
 
 /* ADD/CVD：强 = 编码索引；弱 = 品名关键词。
    3,808 条里只有 133 条（3.5%）能抽出 HS 码，只走强路径会漏掉绝大多数。 */
-async function findADCVD(d, row){
-  const ad = await gunzipFile("fr-adcvd-" + FRSTAMP + ".json.gz");
+async function findADCVD(d, row, adData){
+  const ad = adData;
   const byNo = new Map(ad.docs.map(x => [x.no, x]));
   const seen = new Set();
   const strong = [];
@@ -425,6 +631,119 @@ function groupByProduct(docs){
   })).sort((a,b) => b.n - a.n);
 }
 
+/* ---- L2 实时层：浏览器直连 Federal Register API，失败时回退本地快照 ----
+   红线 03：只取「公告 / 案件存在性」，不计算金额。
+   - 首次查询尝试浏览器直连（免密钥、HTTPS）；
+   - 任何失败（CORS 拦截、网络不可达、429 限速、13s 超时）即回退构建期快照 gz；
+   - 直连成功一次后整会话复用（免重复抓取）；失败一次后整会话不再重试 live。 */
+const FR_API = "https://www.federalregister.gov/api/v1/documents.json";
+const FR_FIELDS = ["document_number","title","type","publication_date",
+  "effective_on","comments_close_on","agencies","abstract","html_url",
+  "citation","action"];
+const FR_HS_RE = /\b(\d{4}\.\d{2}(?:\.\d{2}){0,2})\b/g;
+
+function frSlim(r){
+  return { no:r.document_number, t:(r.title||"").trim(), ty:r.type, pub:r.publication_date,
+    eff:r.effective_on, close:r.comments_close_on,
+    ag:(r.agencies||[]).map(a=>a.name), ab:(r.abstract||"").trim(),
+    url:r.html_url, cite:r.citation, act:r.action };
+}
+function frExtractHS(text){
+  const out = new Set(), s = text || ""; FR_HS_RE.lastIndex = 0; let m;
+  while ((m = FR_HS_RE.exec(s))) out.add(m[1].replace(/\D/g, ""));
+  return [...out];
+}
+function frProductName(title){
+  const head = (title||"").split(/\s+From\s+/i)[0];
+  return head.split(/[;:]/)[0].trim();
+}
+async function frQueryLive(term, sinceISO, maxPages, signal){
+  const docs = []; let page = 1;
+  while (page <= maxPages){
+    const p = new URLSearchParams();
+    p.set("per_page","1000"); p.set("page", String(page)); p.set("order","newest");
+    p.set("conditions[term]", term);
+    p.set("conditions[publication_date][gte]", sinceISO);
+    FR_FIELDS.forEach(f => p.append("fields[]", f));
+    const res = await fetch(FR_API + "?" + p.toString(), { signal, headers:{ "Accept":"application/json" } });
+    if (!res.ok) throw new Error("FR HTTP " + res.status);
+    const data = await res.json();
+    const results = data.results || [];
+    for (const r of results) docs.push(frSlim(r));
+    if (!results.length) break;
+    if (docs.length >= (data.count||0)) break;
+    page++;
+    if (page <= maxPages) await new Promise(r => setTimeout(r, 300));
+  }
+  return docs;
+}
+async function fetchLiveFR(signal){
+  const since90 = new Date(Date.now() - 90*864e5).toISOString().slice(0,10);
+  const sinceAD = new Date(Date.now() - 1095*864e5).toISOString().slice(0,10);
+  const tariff = await frQueryLive("Harmonized Tariff Schedule", since90, 8, signal);
+  const seen = new Set(), adDocs = [];
+  for (const term of ["antidumping","countervailing duty"]){
+    const rs = await frQueryLive(term, sinceAD, 16, signal);
+    for (const r of rs){
+      if (seen.has(r.no)) continue; seen.add(r.no);
+      r.hs = frExtractHS(r.t + " " + (r.ab||""));
+      r.pn = frProductName(r.t);
+      adDocs.push(r);
+    }
+  }
+  const hsIndex = {};
+  for (const x of adDocs) for (const c of x.hs) (hsIndex[c] = hsIndex[c] || []).push(x.no);
+  return { tariff, adDocs, hsIndex };
+}
+
+/* 缓存：live 成功一次整会话复用；snapshot 失败一次整会话不再重试 live */
+let _frCache = null;
+async function loadFR(d, row){
+  if (_frCache && _frCache.status === "live")    return _buildFR(d, row, _frCache, "live");
+  if (_frCache && _frCache.status === "snapshot") return _buildFR(d, row, _frCache, "snapshot");
+  let ctrl = null, timer = null, signal = undefined;
+  if (typeof AbortController !== "undefined"){
+    ctrl = new AbortController(); timer = setTimeout(() => ctrl.abort(), 13000); signal = ctrl.signal;
+  }
+  try {
+    const live = await fetchLiveFR(signal);
+    _frCache = Object.assign({ status:"live", fetchedAt: new Date().toISOString() }, live);
+    return _buildFR(d, row, _frCache, "live");
+  } catch (e){
+    try {
+      const [tax, ad] = await Promise.all([
+        gunzipFile("fr-tariff-" + FRSTAMP + ".json.gz"),
+        gunzipFile("fr-adcvd-" + FRSTAMP + ".json.gz")
+      ]);
+      _frCache = { status:"snapshot", tariff:tax.docs, adDocs:ad.docs, hsIndex:ad.hs_index,
+        snapshotStamp:FRSTAMP, snapshotFetchedAt:tax.fetched_at, err:String(e.message||e) };
+      return _buildFR(d, row, _frCache, "snapshot");
+    } catch (e2){
+      throw new Error(t("errFRBoth") + " (" + (e.message||e) + ")");
+    }
+  } finally { if (timer) clearTimeout(timer); }
+}
+async function _buildFR(d, row, fr, source){
+  const adcvd = await findADCVD(d, row, { docs: fr.adDocs, hs_index: fr.hsIndex });
+  return {
+    fr: matchFR(row, d, fr.tariff),
+    adcvd,
+    source,
+    fetchedAt: fr.fetchedAt || fr.snapshotFetchedAt,
+    frCount: fr.tariff.length,
+    adcvdCount: fr.adDocs.length,
+    adcvdWithHs: Object.keys(fr.hsIndex).length,
+    snapshotStamp: fr.snapshotStamp,
+    err: fr.err
+  };
+}
+function frDataAgeDays(stamp){
+  if (!stamp) return null;
+  const y = +stamp.slice(0,4), mo = +stamp.slice(4,6) - 1, d = +stamp.slice(6,8);
+  const then = new Date(y, mo, d);
+  return Math.max(0, Math.floor((Date.now() - then.getTime()) / 864e5));
+}
+
 /* ============================================================
    二、双语（中文为源语言，硬约束：先快照再切换）
    ============================================================ */
@@ -456,14 +775,14 @@ const I18N = {
     hitStrong: "编码命中", hitWeak: "疑似 · 关键词",
     rules: "条", products: "个产品",
     ann01: "红线 01", ann01t: "快照给出「零关税」，但实时层存在相关措施 —— 不得据此下结论",
-    ann01d: "L2 基础税率为 <code>Free</code>、Chapter 99 零命中；但 L1 联邦公报命中 <b>{n}</b> 条相关文档{rule}。以公告形式实施的行政措施不写进 HTS 税率字段，快照层根本捕获不到 —— 这正是「只出参考测算、不出应缴税额」的实证。",
+    ann01d: "L1 基础税率为 <code>Free</code>、Chapter 99 零命中；但 L2 联邦公报命中 <b>{n}</b> 条相关文档{rule}。以公告形式实施的行政措施不写进 HTS 税率字段，快照层根本捕获不到 —— 这正是「只出参考测算、不出应缴税额」的实证。",
     ann01rule: "，其中 <b>{n}</b> 条为生效类（Rule / Presidential Document）",
     ann02: "红线 02", ann02t: "税率为文本交叉引用形态 —— 拒绝换算为数字",
     ann02d: "该档位写作 <code>{v}</code>，不是可解析的数值，只能展示原文。",
     ann99: "附加措施", ann99t: "命中 {n} 条 Chapter 99 附加措施 —— 基础税率不足以反映实际税负",
     ann99d: "附加措施（232 / 301 / 配额等）叠加在基础税率之上，本页仅列出原文，不做叠加计算。",
     annAD: "ADD / CVD", annADt: "存在反倾销 / 反补贴措施记录 —— 本测算未含保证金",
-    annADd: "{s}。<b>不出金额</b>：保证金率按出口商个案裁定、随年度复审变动，无法从公开数据推算。疑似命中仅按品名关键词比对标题，可能误报。",
+    annADd: "{s}。<b>不出金额</b>：保证金率按出口商个案裁定、随年度复审变动，无法从公开数据推算。编码命中 = 案件官方范围清单列出该编码（含尚在调查中的立案公告，<b>不代表已征税率</b>）；疑似命中仅按品名关键词比对标题，可能误报。",
     annADnone: "ADD / CVD", annADnonet: "未检索到相关记录",
     annADnoned: "覆盖联邦公报近 3 年文本（3,808 条，其中 133 条可抽出 HS 编码）+ 品名关键词比对。<b>未命中 ≠ 无措施</b> —— 大量 Commerce 公告既无子目号、标题也不含通用品名。",
     ann03: "红线 03", ann03t: "HS 编码由你提供，本页未做归类复核",
@@ -472,7 +791,7 @@ const I18N = {
     emptyFR: "未检索到相关记录。<b>未命中 ≠ 无措施。</b>",
     moreN: "…另有 {n} 条未列出",
     moreProd: "…另有 {n} 个产品名（共 {m} 条记录）",
-    calcSummary: "参考测算 · 默认折叠", calcHint: "先读证据，再看数字",
+    calcSummary: "参考测算 · 基于 L1 基础税率", calcHint: "只算基础税 + 规费，不含附加措施",
     calcValue: "货值 USD", calcMode: "运输方式", calcModeOcean: "海运（计 HMF）",
     calcModeAir: "空运（不计 HMF）", calcBtn: "试算",
     calcDuty: "基础税（{r}）", calcMPF: "MPF 商品处理费", calcHMF: "HMF 港口维护费",
@@ -484,6 +803,90 @@ const I18N = {
     foot2: "本页不提供 HS 归类服务，不输出应缴税额。所有数字均为参考测算值。",
     foot3: "数据源：USITC HTS 2026 rev.9（构建期快照）· Federal Register API（浏览器直连）",
     loading: "正在检索三层数据…",
+    idleKicker: "待查阅 · AWAITING QUERY",
+    idleLede: "在上方输入一个 HTS 子目，或点任一品类示例 —— 这里会给出它的<em>基础税率</em>、叠加的附加措施，以及每个数字出自哪里。",
+    idleSub: "8 位或 10 位编码均可。本页不做 HS 归类建议，也不产出应缴税额；它回答的是「这个编码被哪些措施覆盖」。",
+    idleWill1: "L1 · 基础税率",
+    idleWill1d: "HTS 2026 rev.9 的一般税率，标注从价 / 从量 / 文本引用形态",
+    idleWill2: "L1 · Ch.99 附加措施",
+    idleWill2d: "反查命中该编码的全部 Chapter 99 条款，含生效与到期日",
+    idleWill3: "L2 · 实时公告 + ADD/CVD",
+    idleWill3d: "联邦公报近 90 天相关文档；反倾销反补贴只提示存在性，不出金额",
+    scopeLine: "美国 HTS 关税参考工具（仅美国进口）",
+    l1Name: "快照 · USITC HTS 2026 rev.9",
+    l1Lead: "回答「法定税率是多少」—— 税则白纸黑字，构建期预取，可离线核对。基础税率与 Chapter 99 附加条款都在这里。",
+    l1Fig: "基础税率 {r} · Chapter 99 {n} 条",
+    l2Name: "实时 · Federal Register",
+    l2Lead: "回答「当下正在发生什么」—— 近 90 天公告、评论期、ADD/CVD 案件。优先实时取数，不可达时回退本地快照（见下方状态条）。",
+    l2Fig: "公告 {n} 条 · ADD/CVD {m} 个产品",
+    frLayer: "Federal Register 层",
+    frLiveOrSnap: "实时优先 · 失败回退快照",
+    frLiveBadge: "实时",
+    frSnapBadge: "快照",
+    frProvLive: "实时数据 · 浏览器直连 Federal Register API · 关税 {a} 条 / ADD-CVD {b} 条 · 拉取于 {t}",
+    frProvSnap: "本地快照（截至 {d}，已 {n} 天）· 实时拉取失败：{e} · 数据可能滞后，建议手动刷新",
+    errFRBoth: "L2 实时层与本地快照均不可用",
+    calcSrcNote: "输入来源：<b>货值</b>与<b>运输方式</b>由你填写；<b>基础税率</b>来自 L1 快照（上面这句结论里的那个数）；<b>MPF / HMF</b> 是 CBP FY2026 公布的规费费率，预填为默认值、可自行修改。",
+    calcExcl: "本测算只含「基础关税 + MPF + HMF」，不含 Chapter 99 附加税、ADD/CVD、FTA 优惠税率与原产地判定 —— 这几项在下方 L1 / L2 栏目中逐条列出，本页不出金额。",
+    browseBtn: "按类别浏览",
+    browseTitle: "不知道编码时，从这里逐级找",
+    browsePh: "输入关键词筛选（英文品名）…",
+    browseClose: "收起",
+    browseLv0: "选择章",
+    browseLv1: "选择 4 位 heading",
+    browseLv2: "选择 6 位子目",
+    browseLv3: "选择具体税则行",
+    browseLoad: "正在载入第 {c} 章分片…",
+    browseEmpty: "没有匹配的条目，换个关键词试试",
+    browseNote: "章的中文名是参考译名；品名一律用 HTS 英文原文，避免与申报口径产生偏差。点到最后一级编码即开始查阅。",
+    calcJump: "参考测算 ↓",
+    srchHint: "8 位或 10 位均可；查不到精确编码时自动前缀回退到同前缀的第一个子目",
+    how1: "输入 HTS 子目", how1d: "不确定编码时，先点下方任一品类示例试一次",
+    how2: "自上而下读两层证据", how2d: "L1 快照（基础税率 + Ch.99，墨黑边条）→ L2 实时（公告 + ADD/CVD，靛蓝边条），两块各自可折叠",
+    how3: "先读红线，再看数字", how3d: "朱红旁注说明「哪些不替你算」；参考测算只算基础税 + 规费，其余逐条列出但不出金额",
+    guideTitle: "怎么读这份表 · 图例",
+    guideTier: "置信度 T0–T3",
+    guideTierL: [
+      "T0 · 数据源原文 —— 税率字段直接可读，可放心引用",
+      "T1 · 需复核 —— 文本引用形态（不出数字）或前缀回退命中",
+      "T2 · 数据缺失 —— 该层未命中，不等于没有措施",
+      "T3 · 存在未量化风险 —— 命中附加措施或 ADD/CVD，但本页不出金额（编码命中 = 范围覆盖确证、可能仍在调查中；疑似命中 = 关键词比对、可能误报）"
+    ],
+    guideForm: "税率形态（形态码）",
+    guideFormL: [
+      "从价百分比 —— 形如 3.4%，可直接参与测算",
+      "从量 / 复合 —— 形如 0.05¢/kg，需重量或数量，本页不换算",
+      "文本交叉引用 —— 形如 “The duty provided in…”，拒绝输出数字（红线 02）",
+      "零税率 —— Free，基础税为 $0.00，但有确定答案"
+    ],
+    guideAnnot: "旁注与色标",
+    guideAnnotL: [
+      "朱红旁注 —— 红线提示，说明本页拒绝替你做的判断",
+      "靛蓝链接 —— 可点开核对的原文出处",
+      "灰阶文本 —— 元数据与来源标注"
+    ],
+    guideCol: "三层栏目",
+    guideColL: [
+      "L1 · 快照 —— USITC HTS 2026 rev.9：基础税率 + Chapter 99，可折叠，墨黑边条",
+      "L2 · 实时 —— Federal Register API：公告 + ADD/CVD，可折叠，靛蓝边条",
+      "¶ 溯源 —— 本页用到的数据文件与 SHA-256 前 8 位",
+      "参考测算不属于任何一层：它是「L1 基础税率 + 你填的货值 + 规费常数」的推导结果"
+    ],
+    guideEdge: "L1 与 L2 的边界怎么分",
+    guideEdgeL: [
+      "看时间：L1 是构建期的静态快照，L2 是你打开页面这一刻的实时取数",
+      "看内容：L1 给的是「税率」这个数，L2 给的是「动作」这件事（公告、评论期、案件）",
+      "看边条颜色：墨黑 = L1 快照，靛蓝 = L2 实时，两块各自可折叠",
+      "两者不一致本身就是信号 —— L1 写 Free 而 L2 有措施，即触发红线 01",
+      "固定顺序：先 L1 定基准，再 L2 看变动，最后 ¶ 溯源核对文件"
+    ],
+    sumBase: "基础税率 {r}",
+    sumNoPct: "该档位不是从价百分比形态，不出数字",
+    sumCh99: "，另有 {n} 条 Chapter 99 附加措施",
+    sumCh99z: "，Chapter 99 未命中",
+    sumAD: "，存在 ADD/CVD 记录（仅提示存在性，不出金额）",
+    sumADz: "，未检索到 ADD/CVD 记录",
+    sumTail: "规费（MPF / HMF）可算；原产地优惠、配额、归类复核不在覆盖范围内 —— 详见下方红线旁注。",
   },
   "en": {
     mastheadSub: "Tariff & Trade Compliance Reference — not a duty calculator",
@@ -512,7 +915,7 @@ const I18N = {
     rules: "", products: "products",
     ann01: "Red line 01",
     ann01t: "The snapshot says duty-free, but the live layer shows related measures — do not conclude from the snapshot alone",
-    ann01d: "L2 base rate is <code>Free</code> with zero Chapter 99 hits; yet L1 Federal Register returned <b>{n}</b> related documents{rule}. Measures imposed by proclamation are never written into HTS rate fields, so the snapshot layer cannot capture them — this is precisely why this page issues reference estimates only, never duty payable.",
+    ann01d: "L1 base rate is <code>Free</code> with zero Chapter 99 hits; yet L2 Federal Register returned <b>{n}</b> related documents{rule}. Measures imposed by proclamation are never written into HTS rate fields, so the snapshot layer cannot capture them — this is precisely why this page issues reference estimates only, never duty payable.",
     ann01rule: ", of which <b>{n}</b> are Rule / Presidential Document (in force or forthcoming)",
     ann02: "Red line 02",
     ann02t: "Rate is a text cross-reference — conversion to a number refused",
@@ -522,7 +925,7 @@ const I18N = {
     ann99d: "Additional measures (Section 232 / 301 / quotas) stack on top of the base rate. This page lists the original text only and does not compute the stack.",
     annAD: "ADD / CVD",
     annADt: "Antidumping / countervailing measures on record — cash deposit not included",
-    annADd: "{s}. <b>No amounts given</b>: deposit rates are case-specific per exporter and change with annual reviews, so they cannot be derived from public data. Tentative hits compare article keywords against titles only and may be false positives.",
+    annADd: "{s}. <b>No amounts given</b>: deposit rates are case-specific per exporter and change with annual reviews, so they cannot be derived from public data. A code hit means the case’s official HTS list includes this code — it may be a still-open investigation and <b>does not imply a rate in force</b>. Tentative hits compare article keywords against titles only and may be false positives.",
     annADnone: "ADD / CVD", annADnonet: "No records retrieved",
     annADnoned: "Covers 3 years of Federal Register text (3,808 documents, of which 133 yield an HS code) plus article-keyword matching. <b>No hit does not mean no measure</b> — many Commerce notices carry neither a subheading nor a generic article name in the title.",
     ann03: "Red line 03",
@@ -532,7 +935,7 @@ const I18N = {
     emptyFR: "No related records retrieved. <b>No hit does not mean no measure.</b>",
     moreN: "…{n} more not listed",
     moreProd: "…{n} more product names ({m} records in total)",
-    calcSummary: "Reference estimate — collapsed by default", calcHint: "Evidence first, numbers after",
+    calcSummary: "Reference estimate — from the L1 base rate", calcHint: "base duty + fees only, no additional measures",
     calcValue: "Value USD", calcMode: "Transport", calcModeOcean: "Ocean (HMF applies)",
     calcModeAir: "Air (no HMF)", calcBtn: "Estimate",
     calcDuty: "Base duty ({r})", calcMPF: "MPF merchandise processing", calcHMF: "HMF harbor maintenance",
@@ -544,6 +947,90 @@ const I18N = {
     foot2: "This page does not classify goods and does not state duty payable. All figures are reference estimates.",
     foot3: "Sources: USITC HTS 2026 rev.9 (build-time snapshot) · Federal Register API (direct from browser)",
     loading: "Querying three layers…",
+    idleKicker: "AWAITING QUERY",
+    idleLede: "Enter an HTS subheading above, or pick a category sample — this space returns its <em>base duty rate</em>, the measures stacked on top of it, and where each figure comes from.",
+    idleSub: "Both 8-digit and 10-digit codes work. This page does not classify goods and does not produce an amount payable; it answers “which measures cover this code”.",
+    idleWill1: "L1 · BASE RATE",
+    idleWill1d: "HTS 2026 rev.9 general rate, tagged ad valorem / specific / cross-reference",
+    idleWill2: "L1 · CH.99 MEASURES",
+    idleWill2d: "Every Chapter 99 provision reverse-matched to this code, with effective and expiry dates",
+    idleWill3: "L2 · LIVE NOTICES + AD/CVD",
+    idleWill3d: "Federal Register documents from the last 90 days; AD/CVD shows existence only, never amounts",
+    scopeLine: "U.S. HTS Duty Reference (US imports only)",
+    l1Name: "Snapshot · USITC HTS 2026 rev.9",
+    l1Lead: "What the statutory rate is — black-letter tariff text, pre-fetched at build time, checkable offline. Base rate and Chapter 99 provisions live here.",
+    l1Fig: "Base {r} · Chapter 99 ×{n}",
+    l2Name: "Live · Federal Register",
+    l2Lead: "What is happening right now — notices from the last 90 days, comment deadlines, AD/CVD cases. Prefers a live fetch; falls back to a local snapshot when unreachable (see the status line below).",
+    l2Fig: "{n} notices · {m} AD/CVD products",
+    frLayer: "Federal Register layer",
+    frLiveOrSnap: "live first · snapshot fallback",
+    frLiveBadge: "LIVE",
+    frSnapBadge: "SNAPSHOT",
+    frProvLive: "Live data · direct from browser (Federal Register API) · tariff {a} · AD/CVD {b} · fetched {t}",
+    frProvSnap: "Local snapshot (as of {d}, {n} days old) · live fetch failed: {e} · data may be stale, refresh manually",
+    errFRBoth: "Neither the live L2 layer nor the local snapshot is available",
+    calcSrcNote: "Where the inputs come from: <b>value</b> and <b>mode of transport</b> are yours to enter; the <b>base rate</b> comes from the L1 snapshot (the number in the conclusion above); <b>MPF / HMF</b> are CBP FY2026 published fee rates, pre-filled and editable.",
+    calcExcl: "This estimate covers base duty + MPF + HMF only. It excludes Chapter 99 surcharges, AD/CVD, FTA preferential rates and origin determinations — those are listed item by item in the L1 / L2 sections below, without amounts.",
+    browseBtn: "Browse by category",
+    browseTitle: "Not sure of the code? Drill down here",
+    browsePh: "Filter by keyword (English product names)…",
+    browseClose: "Close",
+    browseLv0: "Chapters",
+    browseLv1: "4-digit heading",
+    browseLv2: "6-digit subheading",
+    browseLv3: "Tariff line",
+    browseLoad: "Loading chapter {c}…",
+    browseEmpty: "Nothing matched — try another keyword",
+    browseNote: "Chinese chapter names are reference translations; product names are always the original HTS English, so they never drift from the filed wording. Click a code at the last level to look it up.",
+    calcJump: "Estimate ↓",
+    srchHint: "8 or 10 digits; if there is no exact match the lookup falls back to the first subheading sharing that prefix",
+    how1: "Enter an HTS subheading", how1d: "Not sure of the code? Try one of the category samples below",
+    how2: "Read the two layers top-down", how2d: "L1 snapshot (base rate + Ch. 99, ink-black edge) → L2 live (notices + AD/CVD, indigo edge); each block collapses on its own",
+    how3: "Red lines first, numbers second", how3d: "Vermilion notes state what this page refuses to compute; the estimate covers base duty + fees only, everything else is listed without amounts",
+    guideTitle: "How to read this page · legend",
+    guideTier: "Confidence T0–T3",
+    guideTierL: [
+      "T0 · Source verbatim — the rate field is directly readable and citable",
+      "T1 · Needs review — cross-reference wording (no number) or a prefix-fallback match",
+      "T2 · Data missing — nothing matched at this layer; that does not mean no measure exists",
+      "T3 · Unquantified risk — additional measures or AD/CVD hit, but no amount is produced (code hits confirm scope coverage, possibly still under investigation; tentative hits are keyword matches and may be false positives)"
+    ],
+    guideForm: "Rate form (form code)",
+    guideFormL: [
+      "Ad valorem — e.g. 3.4%, usable in the estimate",
+      "Specific / compound — e.g. 0.05¢/kg; needs weight or quantity, not converted here",
+      "Cross-reference wording — e.g. “The duty provided in…”; no number is produced (red line 02)",
+      "Zero — Free; base duty is $0.00, which is a definite answer"
+    ],
+    guideAnnot: "Notes and colours",
+    guideAnnotL: [
+      "Vermilion note — a red line: a judgment this page refuses to make for you",
+      "Indigo link — the original source, open it and check",
+      "Grey text — metadata and source attribution"
+    ],
+    guideCol: "Three layers",
+    guideColL: [
+      "L1 · Snapshot — USITC HTS 2026 rev.9: base rate + Chapter 99, collapsible, ink-black edge",
+      "L2 · Live — Federal Register API: notices + AD/CVD, collapsible, indigo edge",
+      "¶ Provenance — the data files used on this page and the first 8 hex of each SHA-256",
+      "The estimate belongs to no layer: it is derived from L1 base rate + your value + fee constants"
+    ],
+    guideEdge: "Where L1 ends and L2 begins",
+    guideEdgeL: [
+      "By time: L1 is a static build-time snapshot; L2 is fetched the moment you open the page",
+      "By content: L1 gives you a rate (a number); L2 gives you a move (a notice, a deadline, a case)",
+      "By edge colour: ink black = L1 snapshot, indigo = L2 live; the two blocks collapse independently",
+      "Disagreement is itself a signal — L1 says Free while L2 shows measures, and red line 01 fires",
+      "Fixed order: L1 sets the baseline, L2 shows what moved, ¶ lets you verify the files"
+    ],
+    sumBase: "Base rate {r}",
+    sumNoPct: "This line is not an ad valorem percentage — no number is produced",
+    sumCh99: ", plus {n} Chapter 99 additional measures",
+    sumCh99z: ", with no Chapter 99 match",
+    sumAD: ", with AD/CVD records (existence only, no amount)",
+    sumADz: ", with no AD/CVD records found",
+    sumTail: "Fees (MPF / HMF) are computable; origin preference, quotas and classification review are not — see the red-line notes below.",
   }
 };
 function t(k, vars){
@@ -578,7 +1065,7 @@ function annot(tag, title, body, muted){
 }
 
 function render(res){
-  const { base, ch99, fr, adcvd } = res;
+  const { base, ch99, fr, adcvd, frBundle } = res;
   const row = base.row, d = base.digits;
   const isFree = row.rk === "f";
   const snapClean = isFree && ch99.length === 0;
@@ -596,6 +1083,17 @@ function render(res){
     <div class="doc-path">${(row.p || []).map(esc).join(" <i>›</i> ") || "—"}<i>›</i><span>${esc(row.d || "—")}</span></div>
   </div>`;
 
+  /* ---- 结论句：结果的第一行先给「结论」，再给证据 ---- */
+  const rateTxt = (row.rk === "p" || row.rk === "f") && row.g
+    ? t("sumBase", { r: row.g })
+    : t("sumNoPct");
+  const adHit = (adcvd.strong && adcvd.strong.length) || (adcvd.weak && adcvd.weak.length);
+  const sum = rateTxt
+    + (ch99.length ? t("sumCh99", { n:String(ch99.length) }) : t("sumCh99z"))
+    + (adHit ? t("sumAD") : t("sumADz"));
+  h += `<div class="sumline">${esc(sum)}<span class="tail">${esc(t("sumTail"))}</span>` +
+       `<button type="button" class="jump" id="calcJump">${esc(t("calcJump"))}</button></div>`;
+
   /* ---- 勘校旁注 ---- */
   if (snapClean && fr.hits.length){
     h += annot(t("ann01"), t("ann01t"),
@@ -607,11 +1105,43 @@ function render(res){
   /* 红线 03 是常态提示（每次查询都成立），用 muted 以免与红线 01 抢朱红 */
   h += annot(t("ann03"), t("ann03t"), t("ann03d"), true);
 
-  /* ---- L2 基础税率 ---- */
+  /* ---- 参考测算：默认折叠（#10） ---- */
+  /* Free 是有确定答案的（基础税 $0），不是「算不了」；
+     从量 / 复合 / 文本引用 / 空 才是算不了 —— 后者才走 T2「不出数字」。 */
+  const pct = row.rk === "p" ? parseFloat(String(row.g).replace(/[^\d.]/g, ""))
+            : row.rk === "f" ? 0 : null;
+  h += `<details class="calc" id="calcBox" open>
+    <summary>${esc(t("calcSummary"))}<span class="hint">${esc(t("calcHint"))}</span></summary>
+    <div class="calc-body">
+      <div class="calc-src">${t("calcSrcNote")}</div>
+      <div class="calcrow">
+        <div><label>${esc(t("calcValue"))}</label><input type="number" id="val" value="100000" min="0" step="1000"></div>
+        <div><label>${esc(t("calcMode"))}</label><select id="mode">
+          <option value="ocean">${esc(t("calcModeOcean"))}</option>
+          <option value="air">${esc(t("calcModeAir"))}</option></select></div>
+        <div><label>MPF %</label><input type="number" id="mpf" value="0.3464" step="0.0001"></div>
+        <div><label>MPF min $</label><input type="number" id="mpfmin" value="33.58" step="0.01"></div>
+        <div><label>MPF max $</label><input type="number" id="mpfmax" value="651.50" step="0.01"></div>
+        <div><label>HMF %</label><input type="number" id="hmf" value="0.125" step="0.001"></div>
+        <div><button id="calcBtn">${esc(t("calcBtn"))}</button></div>
+      </div>
+      <div id="calcout"></div>
+      <div class="calcnote">${t("calcNote")}</div>
+    </div></details>`;
+
+  /* ---- L1 分组：快照层（基础税率 + Chapter 99），默认折叠，点标题展开 ---- */
+  h += `<details class="lgroup l1g">
+    <summary><span class="lg-tag">L1</span>
+      <span class="lg-name">${esc(t("l1Name"))}</span>
+      <span class="lg-fig">${esc(t("l1Fig", { r: row.g || "—", n: String(ch99.length) }))}</span>
+      <span class="lg-mk">＋</span></summary>
+    <div class="lg-lead">${esc(t("l1Lead"))}</div>`;
+
+  /* ---- L1 基础税率 ---- */
   const tier = row.rk === "t" || row.rk === "e" ? "t1" : "t0";
   const tierLab = tier === "t0" ? t("tierT0") : t("tierT1");
   h += `<div class="col">
-    <div class="col-head"><span class="col-tag">L2</span>
+    <div class="col-head"><span class="col-tag">L1</span>
       <span class="col-name">${esc(t("colBase"))}</span>
       <span class="col-src">${esc(t("colBaseSrc"))}</span></div>
     <div class="${tier}">
@@ -631,9 +1161,9 @@ function render(res){
   if (base.kind === "prefix")
     h += annot(t("tierT1"), t("prefix"), `输入 <code>${esc(d)}</code> 在本章分片中无精确对应，已回退到前缀匹配的第一个子目 <code>${esc(row.h)}</code>。请以实际申报编码复核。`, true);
 
-  /* ---- L2 Chapter 99 ---- */
+  /* ---- L1 Chapter 99 ---- */
   h += `<div class="col">
-    <div class="col-head"><span class="col-tag">L2</span>
+    <div class="col-head"><span class="col-tag">L1</span>
       <span class="col-name">${esc(t("col99"))}</span>
       <span class="col-src">${esc(t("col99Src"))} · ${ch99.length} ${esc(t("rules"))}</span></div>`;
   if (!ch99.length){
@@ -651,11 +1181,31 @@ function render(res){
     if (ch99.length > 12) h += `<div class="empty">${t("moreN", { n:String(ch99.length - 12) })}</div>`;
     h += `</div>`;
   }
-  h += `</div>`;
+  h += `</div></details>`;
 
-  /* ---- L1 联邦公报（出处引用给最大字号） ---- */
+  /* ---- L2 分组：实时层（联邦公报 + ADD/CVD），默认折叠，点标题展开 ---- */
+  const adProds = groupByProduct(adcvd.strong).length + groupByProduct(adcvd.weak).length;
+  const fb = frBundle || { source:"snapshot" };
+  const frAge = frDataAgeDays(fb.snapshotStamp);
+  const provBadge = fb.source === "live" ? t("frLiveBadge") : t("frSnapBadge");
+  const provText = fb.source === "live"
+    ? t("frProvLive", { a:String(fb.frCount || 0), b:String(fb.adcvdCount || 0),
+        t:(fb.fetchedAt || "").slice(11,16) || "—" })
+    : t("frProvSnap", { d:(fb.snapshotStamp || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"),
+        n:String(frAge == null ? 0 : frAge), e:String(fb.err || "").slice(0, 60) });
+  const provCls = fb.source === "live" ? "live" : ("snap" + (frAge != null && frAge > 14 ? " stale" : ""));
+  h += `<details class="lgroup l2g">
+    <summary><span class="lg-tag">L2</span>
+      <span class="lg-name">${esc(t("l2Name"))}</span>
+      <span class="lg-fig">${esc(t("l2Fig", { n:String(fr.hits.length), m:String(adProds) }))}</span>
+      <span class="lg-src ${fb.source}">${esc(provBadge)}</span>
+      <span class="lg-mk">＋</span></summary>
+    <div class="lg-lead">${esc(t("l2Lead"))}</div>
+    <div class="fr-prov ${provCls}">${esc(provText)}</div>`;
+
+  /* ---- L2 联邦公报（出处引用给最大字号） ---- */
   h += `<div class="col">
-    <div class="col-head"><span class="col-tag">L1</span>
+    <div class="col-head"><span class="col-tag">L2</span>
       <span class="col-name">${esc(t("colFR"))}</span>
       <span class="col-src">${esc(t("colFRSrc"))} · ${fr.hits.length}/${fr.total}</span></div>`;
   if (!fr.hits.length){
@@ -681,10 +1231,10 @@ function render(res){
   }
   h += `</div>`;
 
-  /* ---- L1′ ADD / CVD ---- */
+  /* ---- L2′ ADD / CVD ---- */
   const gS = groupByProduct(adcvd.strong), gW = groupByProduct(adcvd.weak);
   h += `<div class="col">
-    <div class="col-head"><span class="col-tag">L1′</span>
+    <div class="col-head"><span class="col-tag">L2′</span>
       <span class="col-name">${esc(t("colAD"))}</span>
       <span class="col-src">${esc(t("colADSrc"))} · ${adcvd.strong.length + adcvd.weak.length} ${esc(t("rules"))} / ${gS.length + gW.length} ${esc(t("products"))}</span></div>`;
   if (!adcvd.strong.length && !adcvd.weak.length){
@@ -711,30 +1261,7 @@ function render(res){
     }
     h += `</div>`;
   }
-  h += `</div>`;
-
-  /* ---- 参考测算：默认折叠（#10） ---- */
-  /* Free 是有确定答案的（基础税 $0），不是「算不了」；
-     从量 / 复合 / 文本引用 / 空 才是算不了 —— 后者才走 T2「不出数字」。 */
-  const pct = row.rk === "p" ? parseFloat(String(row.g).replace(/[^\d.]/g, ""))
-            : row.rk === "f" ? 0 : null;
-  h += `<details class="calc" id="calcBox">
-    <summary>${esc(t("calcSummary"))}<span class="hint">${esc(t("calcHint"))}</span></summary>
-    <div class="calc-body">
-      <div class="calcrow">
-        <div><label>${esc(t("calcValue"))}</label><input type="number" id="val" value="100000" min="0" step="1000"></div>
-        <div><label>${esc(t("calcMode"))}</label><select id="mode">
-          <option value="ocean">${esc(t("calcModeOcean"))}</option>
-          <option value="air">${esc(t("calcModeAir"))}</option></select></div>
-        <div><label>MPF %</label><input type="number" id="mpf" value="0.3464" step="0.0001"></div>
-        <div><label>MPF min $</label><input type="number" id="mpfmin" value="33.58" step="0.01"></div>
-        <div><label>MPF max $</label><input type="number" id="mpfmax" value="651.50" step="0.01"></div>
-        <div><label>HMF %</label><input type="number" id="hmf" value="0.125" step="0.001"></div>
-        <div><button id="calcBtn">${esc(t("calcBtn"))}</button></div>
-      </div>
-      <div id="calcout"></div>
-      <div class="calcnote">${t("calcNote")}</div>
-    </div></details>`;
+  h += `</div></details>`;
 
   /* ---- 溯源 ---- */
   h += `<div class="col"><div class="col-head">
@@ -743,6 +1270,15 @@ function render(res){
     <div class="calcnote" style="margin-top:8px">${esc(t("chainNote"))}</div></div>`;
 
   document.getElementById("out").innerHTML = h;
+
+  /* 层分组的展开标记 ＋/− */
+  document.querySelectorAll(".lgroup").forEach(d => {
+    const mk = d.querySelector(".lg-mk");
+    if (!mk) return;
+    const sync = () => { mk.textContent = d.open ? "−" : "＋"; };
+    d.addEventListener("toggle", sync);
+    sync();
+  });
 
   /* 绑定测算（pct 可能为 null → 不出基础税，红线 02） */
   const box = document.getElementById("calcBox");
@@ -766,24 +1302,40 @@ function render(res){
     o += `<div class="cline"><span class="lab">${esc(t("calcMPF"))}</span><span>${usd(mpf)}</span></div>`;
     o += `<div class="cline"><span class="lab">${esc(t("calcHMF"))}${mode === "air" ? " · n/a" : ""}</span><span>${usd(hmf)}</span></div>`;
     o += `<div class="cline total"><span class="lab">${esc(t("calcTotal"))}</span><span>${usd((duty || 0) + mpf + hmf)}</span></div>`;
+    o += `<div class="calcexcl">${esc(t("calcExcl"))}</div>`;
     document.getElementById("calcout").innerHTML = o;
   };
   document.getElementById("calcBtn").addEventListener("click", run);
   box.addEventListener("toggle", () => { if (box.open && !document.getElementById("calcout").innerHTML) run(); });
 
+  /* 结论行里的跳转：直接展开参考测算并滚动过去 —— 它不再埋在页面底部 */
+  const jmp = document.getElementById("calcJump");
+  if (jmp) jmp.addEventListener("click", () => {
+    box.open = true;
+    if (!document.getElementById("calcout").innerHTML) run();
+    box.scrollIntoView({ behavior:"smooth", block:"center" });
+  });
+
   renderChain(["hts-" + TAG + "-ch" + base.chapter + ".json.gz",
                "hts-" + TAG + "-ch99.json.gz",
                "hts-" + TAG + "-ch99refs.json.gz",
                "fr-tariff-" + FRSTAMP + ".json.gz",
-               "fr-adcvd-" + FRSTAMP + ".json.gz"]);
+               "fr-adcvd-" + FRSTAMP + ".json.gz"], frBundle);
 }
 
-function renderChain(files){
+function renderChain(files, frBundle){
   const el = document.getElementById("chain");
   if (!MANIFEST){ el.innerHTML = ""; return; }
   const all = [].concat((MANIFEST.hts && MANIFEST.hts.files) || [], (MANIFEST.fr && MANIFEST.fr.files) || []);
   const rows = files.map(f => {
     const m = all.find(x => x.file === f);
+    const isFR = f.indexOf("fr-") === 0;
+    const live = isFR && frBundle && frBundle.source === "live";
+    if (live){
+      return `<div class="row"><span class="nm">${esc(f)}</span>
+        <span>${esc(t("frLiveBadge"))} · Federal Register API</span>
+        <span class="sh">live</span></div>`;
+    }
     return `<div class="row"><span class="nm">${esc(f)}</span>
       <span>${esc(MANIFEST.generated_at || "")}</span>
       <span class="sh">${m ? esc(String(m.sha256 || "").slice(0, 8)) || "—" : "—"}</span></div>`;
@@ -794,12 +1346,127 @@ function renderChain(files){
 /* ============================================================
    四、交互装配
    ============================================================ */
+/* 8 个示例按「教学价值」挑选：每条演示一种不同的机制，而不是凑行业数。 */
 const SAMPLES = [
-  { hs:"2804.61.00.00", zh:"多晶硅",     en:"Polysilicon" },
-  { hs:"8507.60.00",    zh:"锂离子电池", en:"Li-ion battery" },
-  { hs:"7210.11.00",    zh:"镀锡钢板",   en:"Tin-plate steel" },
-  { hs:"0201.10.50",    zh:"牛肉（冷藏）", en:"Beef, chilled" }
+  { hs:"8507.60.00",    zh:"电子", en:"Electronics", tip:{ zh:"3.4% 从价税 + 3 条 Chapter 99 附加措施", en:"3.4% ad valorem + 3 Chapter 99 measures" } },
+  { hs:"2804.61.00.00", zh:"化工", en:"Chemicals",   tip:{ zh:"快照为 Free，但实时层有措施 —— 红线 01 实证", en:"Snapshot says Free while the live layer shows measures — red line 01" } },
+  { hs:"7210.11.00",    zh:"钢铁", en:"Steel",       tip:{ zh:"8 位前缀回退 + ADD/CVD 存在性提示", en:"8-digit prefix fallback + AD/CVD existence notice" } },
+  { hs:"0201.10.50",    zh:"畜牧", en:"Livestock",   tip:{ zh:"26.4% 高税 + 32 条 Chapter 99，品名靠祖先链还原", en:"26.4% plus 32 Chapter 99 hits; name restored via ancestor chain" } },
+  { hs:"1005.90.20",    zh:"粮食", en:"Grain",       tip:{ zh:"0.05¢/kg 从量税 —— 红线 02，不出数字", en:"0.05¢/kg specific rate — red line 02, no number" } },
+  { hs:"6403.99.90",    zh:"鞋类", en:"Footwear",    tip:{ zh:"10% 从价税 + 8 条 Chapter 99 附加措施", en:"10% ad valorem + 8 Chapter 99 measures" } },
+  { hs:"6109.10.00",    zh:"服装", en:"Apparel",     tip:{ zh:"16.5% —— 服装类典型高从价税", en:"16.5% — a typical high ad valorem rate for apparel" } },
+  { hs:"8481.80.90",    zh:"机械", en:"Machinery",   tip:{ zh:"2% 从价税 + 5 条 Chapter 99 叠加", en:"2% ad valorem + 5 stacked Chapter 99 measures" } }
 ];
+
+/* ============================================================
+   按类别浏览：章 → 4 位 heading → 6 位子目 → 8/10 位税则行
+   索引只到 4 位 heading（38 KB gzip，懒加载）；更细的层级拿到整章分片后本地分组。
+   ============================================================ */
+let BROWSE = null;
+const BS = { lv:0, ch:null, h4:null, h6:null, rows:null, kw:"" };
+
+/* dg() 已在上面定义（去掉非数字字符），这里直接复用 */
+function cleanName(s){ return String(s || "").replace(/[:：]\s*$/, "").trim(); }
+function subName(row){
+  const p = row.p || [];
+  if (p.length > 1) return cleanName(p[1]) || cleanName(p[0]);
+  return cleanName(p[0]) || cleanName(row.d);
+}
+
+async function openBrowse(){
+  const p = document.getElementById("browse");
+  p.classList.add("on");
+  document.getElementById("browseBtn").setAttribute("aria-expanded", "true");
+  document.getElementById("bfilt").value = "";
+  BS.lv = 0; BS.ch = null; BS.h4 = null; BS.h6 = null; BS.rows = null; BS.kw = "";
+  if (!BROWSE){
+    document.getElementById("blist").innerHTML =
+      `<div class="brow"><span class="bn">${esc(t("loading"))}</span></div>`;
+    try { BROWSE = await gunzipFile("hts-" + TAG + "-browse.json.gz"); }
+    catch (e){
+      document.getElementById("blist").innerHTML =
+        `<div class="brow"><span class="bn">${esc(String(e.message || e))}</span></div>`;
+      return;
+    }
+  }
+  renderBrowse();
+}
+
+function closeBrowse(){
+  document.getElementById("browse").classList.remove("on");
+  document.getElementById("browseBtn").setAttribute("aria-expanded", "false");
+}
+
+function browseCrumb(){
+  const parts = [{ lab: t("browseLv0"), lv:0 }];
+  if (BS.lv >= 1 && BS.ch) parts.push({ lab: "Ch. " + BS.ch, lv:1 });
+  if (BS.lv >= 2 && BS.h4) parts.push({ lab: BS.h4, lv:2 });
+  if (BS.lv >= 3 && BS.h6) parts.push({ lab: BS.h6, lv:3 });
+  return parts.map((x, i) =>
+    (i === parts.length - 1 ? `<b>${esc(x.lab)}</b>`
+                            : `<span data-lv="${x.lv}">${esc(x.lab)}</span>`)
+  ).join(" › ");
+}
+
+function renderBrowse(){
+  const list = document.getElementById("blist");
+  document.getElementById("bcrumb").innerHTML = browseCrumb();
+  document.getElementById("bcrumb").querySelectorAll("span[data-lv]").forEach(s =>
+    s.addEventListener("click", () => { BS.lv = parseInt(s.dataset.lv, 10); BS.kw = ""; document.getElementById("bfilt").value = ""; renderBrowse(); }));
+
+  const kw = BS.kw.trim().toLowerCase();
+  const item = (code, name, extra, cls, onclick) =>
+    `<button class="brow ${cls}" data-go="${esc(code)}"><span class="bc">${esc(code)}</span>` +
+    `<span class="bn">${esc(name)}</span>` +
+    (extra ? `<span class="bg">${esc(extra)}</span>` : "") + `</button>`;
+
+  let html = "", hits = [];
+  if (BS.lv === 0){
+    hits = BROWSE.chapters.map(c => ({
+      code: c.ch,
+      /* 中文模式下并列英文章名：筛选框里既能打中文也能打英文 */
+      name: LANG === "zh-CN" ? ((c.zh || c.en) + (c.en ? " · " + c.en : "")) : c.en,
+      extra: c.n + " " + t("rules"), cls: "lv0"
+    }));
+  } else if (BS.lv === 1){
+    const c = BROWSE.chapters.find(x => x.ch === BS.ch);
+    hits = (c ? c.heads : []).map(h => ({ code: h[0], name: h[1], extra: h[2] + " " + t("rules"), cls: "lv1" }));
+  } else {
+    const rows = (BS.rows || []).filter(r => dg(r.h).startsWith(BS.lv === 2 ? BS.h4 : BS.h6));
+    if (BS.lv === 2){
+      const seen = new Map();
+      rows.forEach(r => {
+        const d = dg(r.h), k = d.slice(0, 6);
+        if (k.length === 6 && !seen.has(k)) seen.set(k, { code: k, name: subName(r), extra: "", cls: "lv2", rows: 1 });
+        else if (seen.has(k)) seen.get(k).rows++;
+      });
+      hits = [...seen.values()].map(x => ({ ...x, extra: x.rows + " " + t("rules") }));
+    } else {
+      hits = rows.map(r => ({ code: r.h, name: displayName(r), extra: r.g || "", cls: "lv3" }));
+    }
+  }
+  if (kw) hits = hits.filter(x => (x.code + " " + x.name).toLowerCase().includes(kw));
+  if (!hits.length) html = `<div class="brow"><span class="bn">${esc(t("browseEmpty"))}</span></div>`;
+  else hits.slice(0, 300).forEach(x => { html += item(x.code, x.name, x.extra, x.cls); });
+  if (hits.length > 300)
+    html += `<div class="brow"><span class="bn">${esc(t("moreN", { n:String(hits.length - 300) }))}</span></div>`;
+  list.innerHTML = html;
+
+  list.querySelectorAll(".brow[data-go]").forEach(b => b.addEventListener("click", () => {
+    const code = b.dataset.go;
+    if (BS.lv === 0){ BS.ch = code; BS.lv = 1; BS.kw = ""; document.getElementById("bfilt").value = ""; renderBrowse(); }
+    else if (BS.lv === 1){
+      BS.h4 = code; BS.lv = 2; BS.kw = "";
+      document.getElementById("bfilt").value = "";
+      list.innerHTML = `<div class="brow"><span class="bn">${esc(t("browseLoad", { c:BS.ch }))}</span></div>`;
+      gunzipFile("hts-" + TAG + "-ch" + BS.ch + ".json.gz")
+        .then(j => { BS.rows = j.rows; renderBrowse(); })
+        .catch(e => { list.innerHTML = `<div class="brow"><span class="bn">${esc(String(e.message || e))}</span></div>`; });
+    }
+    else if (BS.lv === 2){ BS.h6 = code; BS.lv = 3; BS.kw = ""; document.getElementById("bfilt").value = ""; renderBrowse(); }
+    else { document.getElementById("q").value = code; closeBrowse(); query(code); }
+  }));
+}
 
 async function query(hs){
   const out = document.getElementById("out");
@@ -807,16 +1474,23 @@ async function query(hs){
   try {
     const base = await lookupHS(hs);
     if (!base.found){ out.innerHTML = `<div class="err">${esc(t("errNotFound"))}</div>`; return; }
-    const [ch99, frRaw, adcvd] = await Promise.all([
+    const [ch99, frBundle] = await Promise.all([
       findCh99(base.digits),
-      gunzipFile("fr-tariff-" + FRSTAMP + ".json.gz").then(j => matchFR(base.row, base.digits, j.docs)),
-      findADCVD(base.digits, base.row)
+      loadFR(base.digits, base.row)
     ]);
-    LAST = { hs, base, ch99, fr:frRaw, adcvd };
+    const fr = frBundle.fr, adcvd = frBundle.adcvd;
+    LAST = { hs, base, ch99, fr, adcvd, frBundle };
     render(LAST);
   } catch (e){
     out.innerHTML = `<div class="err">${esc(String(e.message || e))}</div>`;
   }
+}
+
+function markGuide(){
+  const g = document.getElementById("guide");
+  if (!g) return;
+  const mk = g.querySelector(".mk");
+  if (mk) mk.textContent = g.open ? "−" : "＋";
 }
 
 function applyStatic(){
@@ -835,18 +1509,51 @@ function applyStatic(){
   document.getElementById("q").placeholder = t("srchPh");
   const s = document.getElementById("samples");
   s.innerHTML = SAMPLES.map(x =>
-    `<button class="sample" data-hs="${x.hs}"><code>${x.hs}</code> ${esc(LANG === "zh-CN" ? x.zh : x.en)}</button>`
+    `<button class="sample" data-hs="${x.hs}" title="${esc(LANG === "zh-CN" ? x.tip.zh : x.tip.en)}">` +
+    `<span class="cat">${esc(LANG === "zh-CN" ? x.zh : x.en)}</span>` +
+    `<span class="sep">·</span><code>${x.hs}</code></button>`
   ).join("");
   s.querySelectorAll(".sample").forEach(b =>
     b.addEventListener("click", () => { document.getElementById("q").value = b.dataset.hs; query(b.dataset.hs); }));
+
+  const gsec = (title, arr) =>
+    `<div class="gsec"><b>${esc(title)}</b><ul>${arr.map(x => "<li>" + esc(x) + "</li>").join("")}</ul></div>`;
+  document.getElementById("gbody").innerHTML =
+    gsec(t("guideTier"),  t("guideTierL"))  +
+    gsec(t("guideForm"),  t("guideFormL"))  +
+    gsec(t("guideEdge"),  t("guideEdgeL"))  +
+    gsec(t("guideCol"),   t("guideColL"))   +
+    gsec(t("guideTier"),  t("guideTierL"))  +
+    gsec(t("guideForm"),  t("guideFormL"))  +
+    gsec(t("guideAnnot"), t("guideAnnotL"));
+  markGuide();
   document.getElementById("foot").innerHTML =
     [t("foot1"), t("foot2"), t("foot3")].map(esc).join("<br>");
+  const bf = document.getElementById("bfilt");
+  if (bf) bf.placeholder = t("browsePh");
+  /* 面板开着时切语言要跟着重渲染（章名会中英切换） */
+  if (BROWSE && document.getElementById("browse").classList.contains("on")) renderBrowse();
 }
 
 function setLang(l){
   LANG = l;
   applyStatic();
-  if (LAST) render(LAST);
+  if (LAST) render(LAST); else renderIdle();
+}
+
+/* 空态：首屏不预跑查询 —— 先交代「输入什么、会得到什么」，避免一进来就是一张密排结果报 */
+function renderIdle(){
+  document.getElementById("out").innerHTML =
+    `<div class="idle">
+      <div class="kicker">${esc(t("idleKicker"))}</div>
+      <p class="lede">${t("idleLede")}</p>
+      <p class="sub">${esc(t("idleSub"))}</p>
+      <ul class="will">
+        <li><b>${esc(t("idleWill1"))}</b>${esc(t("idleWill1d"))}</li>
+        <li><b>${esc(t("idleWill2"))}</b>${esc(t("idleWill2d"))}</li>
+        <li><b>${esc(t("idleWill3"))}</b>${esc(t("idleWill3d"))}</li>
+      </ul>
+    </div>`;
 }
 
 (async function init(){
@@ -855,11 +1562,11 @@ function setLang(l){
 
   try { MANIFEST = await loadPlain("manifest.json"); } catch (e) { /* 溯源表降级为空 */ }
   const mh = document.getElementById("meta");
-  const hts = MANIFEST && MANIFEST.hts, fr = MANIFEST && MANIFEST.fr;
+  const hts = MANIFEST && MANIFEST.hts;
   mh.innerHTML = [
     `<span>${esc(t("dataVer"))} <b>HTS ${esc(TAG)}</b></span>`,
     hts && hts.stats ? `<span>HTS <b>${hts.stats.leaf_rows.toLocaleString()}</b> 行</span>` : "",
-    fr ? `<span>FR <b>${(fr.tariff_count || 0) + (fr.adcvd_count || 0)}</b> 条</span>` : "",
+    `<span>${esc(t("frLayer"))} · <b>${esc(t("frLiveOrSnap"))}</b></span>`,
     `<span>${esc(t("gen"))} <b>${esc((MANIFEST && MANIFEST.generated_at || "").slice(0, 10))}</b></span>`
   ].join("");
 
@@ -868,7 +1575,7 @@ function setLang(l){
   document.getElementById("form").addEventListener("submit", e => {
     e.preventDefault();
     const v = document.getElementById("q").value.trim();
-    if (v) query(v);
+    if (v) query(v); else document.getElementById("q").focus();
   });
 
   const savedLang = localStorage.getItem("tl-lang");
@@ -891,7 +1598,33 @@ function setLang(l){
     applyStatic();
   });
 
-  query(document.getElementById("q").value.trim());
+  /* 读法图例：默认折叠 —— 需要时点标题展开，展开状态跨会话记住 */
+  const g = document.getElementById("guide");
+  g.open = localStorage.getItem("tl-guide") === "open";
+  g.addEventListener("toggle", () => {
+    localStorage.setItem("tl-guide", g.open ? "open" : "closed");
+    markGuide();
+  });
+  markGuide();
+
+  /* 按类别浏览：不知道编码时的逐级下钻入口 */
+  document.getElementById("browseBtn").addEventListener("click", () => {
+    document.getElementById("browse").classList.contains("on") ? closeBrowse() : openBrowse();
+  });
+  document.getElementById("bclose").addEventListener("click", closeBrowse);
+  document.getElementById("bfilt").addEventListener("input", e => {
+    BS.kw = e.target.value; renderBrowse();
+  });
+
+  /* 首屏不自动查询：先给空态，让读者自己发起第一次查阅。
+     例外：带 #hs=8507.60.00 这样的深链时才直接查 —— 便于分享某个具体编码的查阅结果。 */
+  const deep = new URLSearchParams((location.hash || "").replace(/^#/, "")).get("hs");
+  if (deep){
+    document.getElementById("q").value = deep;
+    query(deep);
+  } else {
+    renderIdle();
+  }
 })();
 </script>
 </body>

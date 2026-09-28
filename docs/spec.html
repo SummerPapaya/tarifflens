@@ -146,24 +146,12 @@
 
   <!-- ============ 1 ============ -->
   <h2><span class="n">01</span>三层数据架构</h2>
-  <p class="sub">每层都有独立的来源、更新节奏与标注口径。页面必须在 UI 上让三层<b>视觉可区分</b>，不得混排。</p>
+  <p class="sub">每层都有独立的来源、更新节奏与标注口径。页面必须在 UI 上让三层<b>视觉可区分</b>，不得混排。<br>
+    <b>编号即阅读顺序</b>：L1 快照（基础税率 + Chapter 99）→ L2 实时（联邦公报 + ADD/CVD）→ L3 演示。</p>
 
   <div class="layers">
     <div class="layer l1">
       <div class="lv">L1</div>
-      <div>
-        <div class="lt">实时层 · 政策变更流 <span class="tag t-ok">真实 · 免密钥 · CORS 全开</span></div>
-        <div class="ld">
-          <b>Federal Register API</b>（federalregister.gov/api/v1/documents.json）。
-          实测响应头 <code>access-control-allow-origin: *</code>，浏览器可直连，无需代理、无需密钥。
-          字段含 <code>title / type / publication_date / effective_on / comments_close_on / agencies / abstract / html_url</code>。<br>
-          体量：「Harmonized Tariff Schedule」精确短语近 90 天 <b>139 条</b>，近 60 天 95 条。<br>
-          更新：每次页面加载拉取，或按钮触发。每条必须显示抓取时间戳。
-        </div>
-      </div>
-    </div>
-    <div class="layer l2">
-      <div class="lv">L2</div>
       <div>
         <div class="lt">快照层 · 税率表 <span class="tag t-info">真实 · 构建期预取 · 非实时</span></div>
         <div class="ld">
@@ -172,6 +160,19 @@
           结构：35,502 行，含 <code>htsno / indent / description / superior / units / general / special / other / additionalDuties</code>；
           其中 29,590 行有编码，19,856 行为 10 位叶子，Chapter 99 附加措施 2,969 行。<br>
           <b>必须显式标注「快照 2026 rev.9 · 抓取 YYYY-MM-DD」</b>，且必须提示 HTS 一年修订十余次。
+        </div>
+      </div>
+    </div>
+    <div class="layer l2">
+      <div class="lv">L2</div>
+      <div>
+        <div class="lt">实时层 · 政策变更流 <span class="tag t-ok">真实 · 免密钥 · CORS 全开</span></div>
+        <div class="ld">
+          <b>Federal Register API</b>（federalregister.gov/api/v1/documents.json）。
+          实测响应头 <code>access-control-allow-origin: *</code>，浏览器可直连，无需代理、无需密钥。
+          字段含 <code>title / type / publication_date / effective_on / comments_close_on / agencies / abstract / html_url</code>。<br>
+          体量：「Harmonized Tariff Schedule」精确短语近 90 天 <b>139 条</b>，近 60 天 95 条。<br>
+          更新：每次页面加载拉取，或按钮触发。每条必须显示抓取时间戳。
         </div>
       </div>
     </div>
@@ -302,7 +303,7 @@ title: Measures To Restrict Stockpiling of Polysilicon and
        Polysilicon Derivatives Under Proclamation 11052</pre>
     <p style="font-size:13px;margin:0"><b>只看快照会得出「零关税」——这是严重误导。</b>
     而且注意生效日（09-22）<b>早于</b>发布日（09-24），这类回溯生效在联邦公报里并不罕见。
-    → 直接证明 L1 实时层不是锦上添花，是必需；也证明「只出参考测算」不是保守。</p>
+    → 直接证明 L2 实时层不是锦上添花，是必需；也证明「只出参考测算」不是保守。</p>
   </div>
 
   <div class="ev">
@@ -392,7 +393,7 @@ title: Measures To Restrict Stockpiling of Polysilicon and
     7212.10.00  7212.50.00  7225.99.00</pre>
     <p style="font-size:13px;margin:0 0 4px">
     → 正则从 <code>abstract</code> 抽取 HTS 码即可建立「HS 码 → 在效调查/措施」映射，
-    <b>零额外数据源成本</b>（L1 已有）。命中即显示提示卡 + 案号 + 原文链接，<b>不给数字</b>。</p>
+    <b>零额外数据源成本</b>（L2 已有）。命中即显示提示卡 + 案号 + 原文链接，<b>不给数字</b>。</p>
     <p style="font-size:13px;margin:0;color:var(--ink-soft)">
     <b>已知局限</b>：并非所有公告的 abstract 都含 HTS 码（本次抽样 3 条中 1 条有）。
     无码的条目退化为「产品名 + 原产国」关键词模糊匹配，并明确标注「疑似命中，需人工核对」——
@@ -419,7 +420,7 @@ title: Measures To Restrict Stockpiling of Polysilicon and
     <tr><th>事件</th><th>来源</th><th>日期</th><th>用法</th></tr>
     <tr><td>CBP《Heightened Import Disclosures for Supply Chain Visibility》</td><td>FR Proposed Rule, DHS + CBP</td><td>发布 09-02<br><b>意见截止 12-01</b></td><td>倒计时卡片（今日起 64 天）</td></tr>
     <tr><td>多晶硅囤积限制 · Proclamation 11052</td><td>FR Rule, Commerce + BIS</td><td>发布 09-24<br><b>生效 09-22</b></td><td>已生效标记；与雷达条目互链</td></tr>
-    <tr><td>镀锡钢板反倾销/反补贴终裁阶段排期</td><td>FR Notice, ITC</td><td>发布 <b>09-28（今日）</b></td><td>证明 L1 是「当天级」新鲜度</td></tr>
+    <tr><td>镀锡钢板反倾销/反补贴终裁阶段排期</td><td>FR Notice, ITC</td><td>发布 <b>09-28（今日）</b></td><td>证明 L2 是「当天级」新鲜度</td></tr>
   </table>
 
   <!-- ============ 6 ============ -->
@@ -438,7 +439,7 @@ title: Measures To Restrict Stockpiling of Polysilicon and
       宁可少给一个数，不给一个错的数字</div></div></div>
     <div class="ck"><div class="box">4</div><div>
       <div class="ct">三层架构 + 载荷改为「按章分片」（首屏 37 KB，按需 1–21 KB）</div>
-      <div class="cd">L1 实时 / L2 快照 / L3 演示，UI 上必须视觉分层；
+      <div class="cd">L1 快照 / L2 实时 / L3 演示，UI 上必须视觉分层；
       放弃枚举化与前缀压缩（实测仅省 1–4%，不值得）</div></div></div>
     <div class="ck"><div class="box">5</div><div>
       <div class="ct">交付形态：独立仓库 + 静态托管 + 双语，与 VeloCortex 一致</div>
@@ -488,8 +489,8 @@ title: Measures To Restrict Stockpiling of Polysilicon and
 
   <h3>同一条查询结果 · 三版并列</h3>
   <p style="font-size:13px;color:var(--ink-soft)">
-  均为 <code>2804.61.00.00</code>（多晶硅）—— L2 快照 <code>general = "Free"</code>、Ch99 零命中，
-  但 L1 联邦公报命中 11 条相关措施（含 Proclamation 11052）。这是最考验视觉语言的一例。</p>
+  均为 <code>2804.61.00.00</code>（多晶硅）—— L1 快照 <code>general = "Free"</code>、Ch99 零命中，
+  但 L2 联邦公报命中 11 条相关措施（含 Proclamation 11052）。这是最考验视觉语言的一例。</p>
 
   <div class="vizs">
     <div class="viz pick">

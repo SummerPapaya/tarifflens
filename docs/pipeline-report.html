@@ -52,14 +52,14 @@ font-size:11.5px;color:var(--mute);font-family:var(--mono)}
 <h1>TariffLens 数据管线 · 端到端验证</h1>
 <p class="lede">用真实 HS 码跑通「基础税率 → Chapter 99 附加措施 → ADD/CVD 风险提示」完整链路。
 下面每个数字都来自本次构建产物，不是样例数据。</p>
-<div class="meta">生成于 2026-09-28T20:27:28 · HTS 2026rev9 ·
+<div class="meta">生成于 2026-09-29T02:17:31 · HTS 2026rev9 ·
 仓库 supply-chain-portfolio</div>
 
 <div class="kpi">
 <div><div class="v">23,568</div><div class="k">可查条目（8/10 位）</div></div>
 <div><div class="v">2,969</div><div class="k">Chapter 99 附加措施</div></div>
 <div><div class="v">3,808</div><div class="k">ADD/CVD 文档（3 年）</div></div>
-<div><div class="v">821 KB</div><div class="k">全部产物（gzip 后）</div></div>
+<div><div class="v">989 KB</div><div class="k">全部产物（gzip 后）</div></div>
 </div>
 <h2><span class="n">01</span>构建产物</h2>
 <p class="sub">HTS 为构建期快照（非实时）；联邦公报为可实时直连的免密钥源。</p>
@@ -99,6 +99,30 @@ font-size:11.5px;color:var(--mute);font-family:var(--mono)}
 <div class="dd">验证点：祖先链重建：Ch99 关税行自身只有 &#x27;Valued less than 25¢/kg&#x27;，品名靠回溯还原</div>
 <div><b>基础税率</b> <span class="tag t-ok">精确匹配</span> <code>26.4%</code> <span class="tag t-info">rk=p</span></div>
 <div style="margin-top:8px"><b>Chapter 99 附加措施 · 32 条</b><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9904.02.01</code> 66.6¢/kg <span class="tag t-info">rk=s</span><div style="font-size:11.5px;color:var(--mute)">品名：Beef, provided for in subheadings 0201.10.50, 0201.20.80, 0201.30.80, 0202.10.50, 0202.20.80 or 0202.30.80: &gt; </div></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9904.02.02</code> 49¢/kg <span class="tag t-info">rk=s</span><div style="font-size:11.5px;color:var(--mute)">品名：Beef, provided for in subheadings 0201.10.50, 0201.20.80, 0201.30.80, 0202.10.50, 0202.20.80 or 0202.30.80: &gt; </div></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9904.02.03</code> 35¢/kg <span class="tag t-info">rk=s</span><div style="font-size:11.5px;color:var(--mute)">品名：Beef, provided for in subheadings 0201.10.50, 0201.20.80, 0201.30.80, 0202.10.50, 0202.20.80 or 0202.30.80: &gt; </div></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9904.02.04</code> 24.3¢/kg <span class="tag t-info">rk=s</span><div style="font-size:11.5px;color:var(--mute)">品名：Beef, provided for in subheadings 0201.10.50, 0201.20.80, 0201.30.80, 0202.10.50, 0202.20.80 or 0202.30.80: &gt; </div></div><div style="font-size:11.5px;color:var(--mute);padding-top:5px">共 32 条，此处列前 4 条</div></div><div style="margin-top:10px"><b>ADD/CVD 风险提示</b> <span class="tag t-ok">0 条</span></div>
+</div><div class="card">
+<div class="hh">1005.90.20</div>
+<div class="tt">玉米（黄马牙）</div>
+<div class="dd">验证点：红线 02 实证：0.05¢/kg 是从量形态（rk=s），参考测算必须拒绝换算成数字</div>
+<div><b>基础税率</b> <span class="tag t-ok">精确匹配</span> <code>0.05¢/kg</code> <span class="tag t-info">rk=s</span></div>
+<div style="margin-top:8px"><b>Chapter 99 附加措施</b> <span class="tag t-warn">0 条</span></div><div style="margin-top:10px"><b>ADD/CVD 风险提示</b> <span class="tag t-ok">0 条</span></div>
+</div><div class="card">
+<div class="hh">6403.99.90</div>
+<div class="tt">皮鞋（每双 &gt;$2.50）</div>
+<div class="dd">验证点：10% 从价税 + 8 条 Chapter 99，检验反查索引在密集命中下的去重与截断</div>
+<div><b>基础税率</b> <span class="tag t-ok">精确匹配</span> <code>10%</code> <span class="tag t-info">rk=p</span></div>
+<div style="margin-top:8px"><b>Chapter 99 附加措施 · 8 条</b><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9902.14.25</code> Free <span class="tag t-info">rk=f</span></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9902.14.26</code> Free <span class="tag t-info">rk=f</span></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9902.14.27</code> 2.9% <span class="tag t-info">rk=p</span></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9902.14.28</code> 7.9% <span class="tag t-info">rk=p</span></div><div style="font-size:11.5px;color:var(--mute);padding-top:5px">共 8 条，此处列前 4 条</div></div><div style="margin-top:10px"><b>ADD/CVD 风险提示</b> <span class="tag t-ok">0 条</span></div>
+</div><div class="card">
+<div class="hh">6109.10.00</div>
+<div class="tt">棉制 T 恤</div>
+<div class="dd">验证点：16.5% 高从价税，检验高税率档位的展示与规费测算</div>
+<div><b>基础税率</b> <span class="tag t-ok">精确匹配</span> <code>16.5%</code> <span class="tag t-info">rk=p</span></div>
+<div style="margin-top:8px"><b>Chapter 99 附加措施</b> <span class="tag t-warn">0 条</span></div><div style="margin-top:10px"><b>ADD/CVD 风险提示</b> <span class="tag t-ok">0 条</span></div>
+</div><div class="card">
+<div class="hh">8481.80.90</div>
+<div class="tt">阀门（其他）</div>
+<div class="dd">验证点：2% 从价税 + 5 条 Chapter 99 叠加，检验多措施并存时的排序与溢出提示</div>
+<div><b>基础税率</b> <span class="tag t-ok">精确匹配</span> <code>2%</code> <span class="tag t-info">rk=p</span></div>
+<div style="margin-top:8px"><b>Chapter 99 附加措施 · 5 条</b><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9902.15.91</code> 0.5% <span class="tag t-info">rk=p</span></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9902.15.92</code> Free <span class="tag t-info">rk=f</span></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9902.15.93</code> Free <span class="tag t-info">rk=f</span></div><div style="padding:5px 0;border-bottom:1px solid var(--line-soft)"><code>9902.15.94</code> 1.9% <span class="tag t-info">rk=p</span></div><div style="font-size:11.5px;color:var(--mute);padding-top:5px">共 5 条，此处列前 4 条</div></div><div style="margin-top:10px"><b>ADD/CVD 风险提示</b> <span class="tag t-ok">0 条</span></div>
 </div><h2><span class="n">03</span>红线是否真的被触发</h2>
 <p class="sub">数据层必须能在结构上阻止违规输出，而不是靠前端自觉。</p>
 <div class="ev">
@@ -127,5 +151,5 @@ ADD/CVD 命中                 0 条
 但<b>未命中绝不等于没有措施</b>。UI 必须写成「未检索到相关记录」，
 不能写成「无反倾销措施」。3 年窗口共 319 个可命中编码。</p>
 </div><div class="foot">
-scripts/verify_tariff_data.py · 数据目录 .workbuddy/tmp/tarifflens/data · 产物不在 docs/ 下，未被 Pages 托管
+scripts/verify_tariff_data.py · 数据目录 data · 产物不在 docs/ 下，未被 Pages 托管
 </div></div></body></html>
