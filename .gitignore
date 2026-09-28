@@ -1,0 +1,7 @@
+# 构建期缓存（下载原始整表 / API 原始响应，体积大且可再生）
+cache/
+# Python
+__pycache__/
+*.pyc
+# macOS
+.DS_Store

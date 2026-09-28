@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TariffLens · 三层数据架构与功能边界（待确认）</title>
+<style>
+  :root{
+    --ink:#1c1f23; --ink-soft:#5a6470; --ink-mute:#8b95a1;
+    --line:rgba(28,31,35,.12); --line-soft:rgba(28,31,35,.07);
+    --teal:#0e7a6d; --teal-bg:#e6f2f0;
+    --blue:#1a4fd6; --blue-bg:#eaf0fd;
+    --amber:#8a5a00; --amber-bg:#fdf3e0;
+    --red:#a32d2d; --red-bg:#fcecec;
+    --sans:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--ink);font-family:var(--sans);
+    font-size:14px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:56px 32px 96px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    color:var(--ink-mute);text-transform:uppercase}
+  h1{font-size:26px;font-weight:600;margin:10px 0 6px;letter-spacing:-.01em}
+  .lede{color:var(--ink-soft);font-size:14.5px;margin:0 0 8px;max-width:700px}
+  .meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-mute);
+    padding-bottom:26px;border-bottom:1px solid var(--line)}
+  h2{font-size:18px;font-weight:600;margin:50px 0 4px;letter-spacing:-.01em}
+  h2 .n{font-family:var(--mono);font-size:12px;color:var(--teal);
+    margin-right:10px;font-weight:500}
+  .sub{color:var(--ink-mute);font-size:12.5px;margin:0 0 18px}
+  h3{font-size:14.5px;font-weight:600;margin:26px 0 8px}
+  p{margin:0 0 12px}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  th{font-size:11.5px;font-family:var(--mono);letter-spacing:.05em;
+    color:var(--ink-mute);font-weight:500;border-bottom:1px solid var(--line)}
+  td.mono,code{font-family:var(--mono);font-size:12px}
+  code{background:#f3f5f7;padding:1.5px 5px;border-radius:4px;color:#2b3038;word-break:break-all}
+  ul{margin:8px 0 14px;padding-left:19px}
+  li{margin-bottom:6px}
+  li::marker{color:var(--ink-mute)}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.08em;padding:3px 9px;border-radius:5px;margin-right:6px}
+  .t-ok{background:var(--teal-bg);color:var(--teal)}
+  .t-warn{background:var(--amber-bg);color:var(--amber)}
+  .t-no{background:var(--red-bg);color:var(--red)}
+  .t-info{background:var(--blue-bg);color:var(--blue)}
+  .card{border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:14px 0}
+  .layers{display:grid;gap:10px;margin:14px 0}
+  .layer{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line-soft);
+    border-radius:10px;padding:14px 16px;background:#fff}
+  .layer .lv{font-family:var(--mono);font-size:11px;font-weight:600;padding-top:3px;min-width:28px}
+  .layer.l1 .lv{color:var(--teal)} .layer.l2 .lv{color:var(--blue)} .layer.l3 .lv{color:var(--amber)}
+  .layer .lt{font-weight:600;font-size:13.5px;margin-bottom:3px}
+  .layer .ld{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+  .redline{border:1px solid rgba(163,45,45,.32);background:#fffafa;
+    border-radius:12px;padding:18px 22px;margin:14px 0}
+  .redline .rl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    color:var(--red);text-transform:uppercase;margin-bottom:6px}
+  .redline h3{margin:0 0 8px;font-size:15px;color:var(--red)}
+  .ev{border-left:3px solid var(--red);background:#fff;padding:2px 0 2px 14px;margin:16px 0}
+  .ev .eh{font-family:var(--mono);font-size:11px;color:var(--red);
+    letter-spacing:.08em;text-transform:uppercase}
+  .ev .et{font-weight:600;font-size:13.5px;margin:2px 0 6px}
+  .ev pre{background:#f7f8f9;border:1px solid var(--line-soft);border-radius:7px;
+    padding:10px 12px;overflow-x:auto;font-family:var(--mono);font-size:11.5px;
+    line-height:1.65;margin:8px 0;color:#2b3038}
+  .verdict{border:1px solid var(--line);border-left:3px solid var(--teal);
+    background:#fbfdfc;border-radius:10px;padding:18px 20px;margin:16px 0}
+  .verdict .vh{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    color:var(--teal);text-transform:uppercase;margin-bottom:6px}
+  .checklist{border:1px solid var(--line);border-radius:12px;padding:6px 22px 16px;margin:14px 0}
+  .ck{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft);align-items:flex-start}
+  .ck:last-child{border-bottom:0}
+  .ck .box{font-family:var(--mono);font-size:13px;color:var(--ink-mute);
+    border:1px solid var(--line);border-radius:4px;width:17px;height:17px;
+    flex:0 0 17px;text-align:center;line-height:15px;margin-top:4px}
+  .ck .ct{font-weight:600;font-size:13.5px}
+  .ck .cd{font-size:12.5px;color:var(--ink-soft)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .box{border:1px solid var(--line-soft);border-radius:10px;padding:14px 16px}
+  .box .bh{font-weight:600;font-size:13px;margin-bottom:6px}
+  .box ul{margin:0;font-size:12.5px}
+  .box.do{border-color:rgba(14,122,109,.3);background:#fafdfc}
+  .box.dont{border-color:rgba(163,45,45,.28);background:#fffafa}
+  .box.do .bh{color:var(--teal)} .box.dont .bh{color:var(--red)}
+  .box.do li::marker{color:var(--teal)} .box.dont li::marker{color:var(--red)}
+  .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+  .kpi div{border:1px solid var(--line-soft);border-radius:9px;padding:12px 14px}
+  .kpi .v{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--teal)}
+  .kpi .k{font-size:11.5px;color:var(--ink-mute);margin-top:2px}
+  .foot{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:11.5px;color:var(--ink-mute);font-family:var(--mono)}
+  /* ---- 07 视觉语言 ---- */
+  .gz-ser{font-family:Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif}
+  .vizs{display:grid;grid-template-columns:repeat(auto-fit,minmax(198px,1fr));gap:12px;margin:16px 0}
+  .viz{border:1px solid var(--line);border-radius:10px;padding:12px}
+  .viz.pick{border:2px solid var(--blue)}
+  .viz .vt{font-weight:600;font-size:13px;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+  .viz .vd{font-size:12px;color:var(--ink-soft);margin-top:9px;line-height:1.6}
+  .pick-b{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+    background:var(--blue-bg);color:var(--blue);border-radius:4px;padding:2px 6px}
+  .sheet{background:#f7f6f2;border:1px solid #dcd9d0;padding:12px 13px}
+  .sheet .hx{font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:#6e767f}
+  .hr2{border-top:1px solid #dcd9d0;border-bottom:1px solid #dcd9d0;height:3px;margin:8px 0}
+  .annot{border-left:2px solid #a8321f;padding:3px 0 3px 8px;margin-top:9px;
+    font-size:11.5px;color:#a8321f;line-height:1.55}
+  .darkv{background:#0f141a;border:1px solid #2c3644;border-radius:7px;padding:12px 13px}
+  .sw{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0}
+  .sw div{border:1px solid var(--line-soft);border-radius:9px;padding:10px 12px}
+  .sw .chip{height:22px;border-radius:5px;border:1px solid var(--line-soft);margin-bottom:7px}
+  .sw .nm{font-family:var(--mono);font-size:11.5px}
+  .sw .us{font-size:11.5px;color:var(--ink-mute);margin-top:2px}
+  .conf{border:1px solid var(--line);border-radius:9px;padding:0;margin:14px 0}
+  .conf .r{display:grid;grid-template-columns:40px 1fr 190px;gap:12px;align-items:center;
+    padding:11px 14px;border-bottom:1px solid var(--line-soft)}
+  .conf .r:last-child{border-bottom:0}
+  .conf .lvl{font-family:var(--mono);font-size:12px;font-weight:600}
+  .conf .cn{font-weight:600;font-size:13px}
+  .conf .cx{font-size:12px;color:var(--ink-soft);margin-top:1px}
+  .conf .demo{display:flex;align-items:center;gap:8px}
+  .conf .hint{font-size:11.5px;color:var(--ink-mute);line-height:1.45}
+  @media(max-width:760px){.conf .r{grid-template-columns:32px 1fr}
+    .conf .demo{grid-column:2;margin-top:8px}}
+  .note-Y{background:#fdf6dd;border:0.5px solid #e3d08a;padding:4px 8px;margin-top:8px;
+    font-size:11.5px;color:#6b5d1e;line-height:1.55}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Spin-off App A · Specification v1.3 · 12 条全部已确认 · 可进入实现 · 2026-09-28</div>
+  <h1>TariffLens · 三层数据架构与功能边界</h1>
+  <p class="lede">关税与贸易合规「参考测算」台。本文所有数字均来自 2026-09-28 对真实数据源的实测，
+  不是估算。请重点确认第 3 节的三条红线——尤其是「不做自动归类、只出参考测算」。</p>
+  <div class="meta">2026-09-28 · supply-chain-portfolio · 对应工作流缺口 #2（关税与贸易合规自动化，8.4 分 / 紧迫性 10）</div>
+
+  <div class="kpi">
+    <div><div class="v">35,502</div><div class="k">HTS 快照总条目（2026 rev.9）</div></div>
+    <div><div class="v">139</div><div class="k">联邦公报关税文档（近 90 天）</div></div>
+    <div><div class="v">64</div><div class="k">距 CBP 意见截止（12-01）天数</div></div>
+    <div><div class="v">37 KB</div><div class="k">浏览器首屏载荷（按章分片后）</div></div>
+  </div>
+
+  <!-- ============ 1 ============ -->
+  <h2><span class="n">01</span>三层数据架构</h2>
+  <p class="sub">每层都有独立的来源、更新节奏与标注口径。页面必须在 UI 上让三层<b>视觉可区分</b>，不得混排。</p>
+
+  <div class="layers">
+    <div class="layer l1">
+      <div class="lv">L1</div>
+      <div>
+        <div class="lt">实时层 · 政策变更流 <span class="tag t-ok">真实 · 免密钥 · CORS 全开</span></div>
+        <div class="ld">
+          <b>Federal Register API</b>（federalregister.gov/api/v1/documents.json）。
+          实测响应头 <code>access-control-allow-origin: *</code>，浏览器可直连，无需代理、无需密钥。
+          字段含 <code>title / type / publication_date / effective_on / comments_close_on / agencies / abstract / html_url</code>。<br>
+          体量：「Harmonized Tariff Schedule」精确短语近 90 天 <b>139 条</b>，近 60 天 95 条。<br>
+          更新：每次页面加载拉取，或按钮触发。每条必须显示抓取时间戳。
+        </div>
+      </div>
+    </div>
+    <div class="layer l2">
+      <div class="lv">L2</div>
+      <div>
+        <div class="lt">快照层 · 税率表 <span class="tag t-info">真实 · 构建期预取 · 非实时</span></div>
+        <div class="ld">
+          <b>USITC HTS 整表</b>（hts_2026_revision_9_json.json，13.5 MB）。
+          构建期用 <code>scripts/fetch_tariff_data.py</code> 拉一次、精简、gzip 落盘。<br>
+          结构：35,502 行，含 <code>htsno / indent / description / superior / units / general / special / other / additionalDuties</code>；
+          其中 29,590 行有编码，19,856 行为 10 位叶子，Chapter 99 附加措施 2,969 行。<br>
+          <b>必须显式标注「快照 2026 rev.9 · 抓取 YYYY-MM-DD」</b>，且必须提示 HTS 一年修订十余次。
+        </div>
+      </div>
+    </div>
+    <div class="layer l3">
+      <div class="lv">L3</div>
+      <div>
+        <div class="lt">演示层 · 样例票证 <span class="tag t-warn">[DEMO] · 虚构</span></div>
+        <div class="ld">
+          内置 3–5 张构造的进口票证（HS 码 / 货值 / 原产国 / 数量），用于首次打开时不空屏、
+          以及演示「影响测算」的交互。<b>每张都必须带 [DEMO] 标记</b>，与用户真实输入在视觉上隔离。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>载荷方案 · 建议改用「按章分片」</h3>
+  <p class="sub" style="margin-top:-8px">原方案是整包 221 KB 一次加载。实测后发现：<b>压缩技巧几乎无效，分片才是真正的杠杆。</b></p>
+
+  <div class="verdict">
+    <div class="vh">反直觉的实测结果</div>
+    <table style="margin-top:4px">
+      <tr><th>优化手段</th><th>gzip 后体积</th><th>收益</th></tr>
+      <tr><td>原始（19,856 条叶子，3 字段）</td><td>217 KB</td><td>—</td></tr>
+      <tr><td><code>general</code> 取值枚举化（580 个唯一值 → 索引）</td><td>209 KB</td><td class="t-no">−8 KB（3.7%）· <b>不值得</b></td></tr>
+      <tr><td>描述前缀压缩（相邻条目共享前缀）</td><td>215 KB</td><td class="t-no">−2 KB（0.9%）· <b>不值得</b></td></tr>
+      <tr><td><b>按章切分（97 个分片，按需取）</b></td><td class="mono">中位 1.6 KB<br>最大 20.5 KB</td><td class="t-ok">首屏 217 → <b>37 KB</b></td></tr>
+    </table>
+    <p style="margin:0;font-size:12.5px">gzip 本身已经吃掉了字段重复，再做字典化/前缀压缩是重复劳动。
+    真正的杠杆是<b>别把用户不看的数据塞给他</b>。Ch84（1,694 条）gzip 后也才 18.9 KB——
+    单章加载几乎无感。</p>
+  </div>
+
+  <table>
+    <tr><th>分片</th><th>条目</th><th>gzip</th><th>加载时机</th></tr>
+    <tr><td class="mono">hts-2026rev9-index.json.gz</td><td>961（4 位 heading）</td><td><b>37 KB</b></td><td>首屏 · 用于章/目浏览与搜索联想</td></tr>
+    <tr><td class="mono">hts-2026rev9-ch&lt;NN&gt;.json.gz</td><td>97 个分片，中位 1.6 KB / 最大 20.5 KB</td><td><b>按需 1–21 KB</b></td><td>用户选定章号或输入 HS 码后取</td></tr>
+    <tr><td class="mono">hts-2026rev9-ch99.json.gz</td><td>2,969（附加措施 + 层级标题）</td><td>~143 KB</td><td>懒加载：命中附加措施时才取</td></tr>
+    <tr><td class="mono">（可选）热点包 Top 12 章</td><td>Ch84/62/29/85/61/73/03/72/44/52/90/07</td><td>102 KB</td><td>后台静默预取，覆盖多数查询</td></tr>
+  </table>
+
+  <p style="font-size:12.5px;color:var(--ink-soft)">
+  <b>附带好处</b>：① 文件名带 rev 号（<code>hts-2026rev9-ch85…</code>），HTS 一年修订十余次，
+  换 rev 即换文件名，天然免缓存失效问题；② <code>DecompressionStream('gzip')</code>
+  （Safari 16.4+ 才有）不支持时的降级变得很轻——只发该章裸 JSON（最大 104 KB），
+  而不是全量 2.1 MB。<br>
+  <b>代价</b>：构建脚本要产出 97+ 个文件；首次查某章多一个网络往返（几十毫秒级）。
+  相对 217 KB 一次性加载的收益，我认为划算。</p>
+
+  <!-- ============ 2 ============ -->
+  <h2><span class="n">02</span>功能范围</h2>
+  <p class="sub">四块功能。前两块是「看」，第三块是「算」，第四块是「说清楚」——缺第四块则前三块不成立。</p>
+
+  <div class="grid2">
+    <div class="box do">
+      <div class="bh">做</div>
+      <ul>
+        <li><b>政策变更流</b>：按日期倒序列出关税相关联邦公报文档，标 <code>type</code>（Rule / Proposed Rule / Notice），有生效日的做倒计时</li>
+        <li><b>税率查询</b>：输入已知 HS 码 → 返回 <code>general / special / other</code> 三档 + 附加措施命中</li>
+        <li><b>影响测算</b>：用户自填 HS 码 / 货值 / 原产国 / 数量 → 输出<b>参考测算</b>与逐项拆解</li>
+        <li><b>口径声明</b>：每页固定脚注，写明数据来源、快照版本、不覆盖哪些税费</li>
+        <li>与雷达条目互链（雷达 → 政策原文的溯源跳转）</li>
+      </ul>
+    </div>
+    <div class="box dont">
+      <div class="bh">不做</div>
+      <ul>
+        <li><b>不做自动归类</b>：不提供「输入商品描述 → 输出 HS 码」</li>
+        <li><b>不出应缴税额</b>：不输出「你应缴 $X」这种可被当作报关依据的数字</li>
+        <li>不碰反倾销 / 反补贴保证金（ADD/CVD 个案裁定，逐案不同）</li>
+        <li>不算 MPF / HMF 等口岸规费（费率表之外）</li>
+        <li>不做原产地规则判定（含实质性改变 / 溯源）</li>
+        <li>不提供任何法律、报关或合规建议</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ 3 ============ -->
+  <h2><span class="n">03</span>三条红线（请重点确认）</h2>
+  <p class="sub">下面每条都由实测数据直接佐证，不是保守起见加的免责声明。</p>
+
+  <div class="redline">
+    <div class="rl">Red Line 01 · 核心</div>
+    <h3>不做自动归类，只出参考测算</h3>
+    <p style="margin-bottom:6px">商品归类是<b>持证报关行（licensed customs broker）的法定工作</b>，
+    归类错误的法律责任在进口商。TariffLens 只接受<b>用户自己提供的 HS 码</b>作为输入，
+    输出一律冠以「参考测算」，并逐项列出未覆盖项。</p>
+    <p style="margin:0;font-size:12.5px;color:var(--ink-soft)">
+    这条同时也是产品定位：把「我知道怎么算」和「我能替你报关」切开，
+    前者是这个作品集的能力证明，后者是它不该碰的。</p>
+  </div>
+
+  <div class="redline">
+    <div class="rl">Red Line 02</div>
+    <h3>文本引用形态下拒绝输出数字</h3>
+    <p style="margin-bottom:6px">当税率字段不是数值（如 <code>"The duty provided in the applicable subheading"</code>、
+    <code>"No change"</code>）时，<b>页面不得换算、不得输出任何数字</b>，
+    改为展示原文并标注「需人工判读」。<span class="tag t-no">实测：9903 章 85% 条目属此类</span></p>
+    <p style="margin:0;font-size:12.5px;color:var(--ink-soft)">
+    为什么保留：这类条目的语义是「按被引用子目的税率执行」，
+    程序要正确解析就得递归跳转子目并叠加上下文——一旦跳错就是<b>静默的错误数字</b>，
+    比不给数字危险得多。</p>
+  </div>
+
+  <div class="redline">
+    <div class="rl">Red Line 03</div>
+    <h3>ADD/CVD、规费、原产地、归类 —— 不估算（建议改为分三类处理，见第 3.5 节）</h3>
+    <p style="margin-bottom:6px">原表述是「一律列为未覆盖项、不估算」。
+    经影响评估，建议<b>保留「不估算金额」这一内核</b>，但把一刀切改成三类分治：
+    规费改为可算、ADD/CVD 与 FTA 改为<b>主动风险提示</b>、归类仍只做免责提示。</p>
+    <p style="margin:0;font-size:12.5px;color:var(--ink-soft)">
+    为什么内核要保留：这四项里有三项是<b>个案裁定或法定判定</b>，
+    任何估算都是编数字。但有两类其实可以「不编数字却仍能帮到用户」——详见下方。</p>
+  </div>
+
+  <div class="ev">
+    <div class="eh">Evidence 01 · 快照会说谎</div>
+    <div class="et">多晶硅：HFS 快照写「Free」，但 6 天前已生效新措施</div>
+    <p style="font-size:13px;margin:0 0 4px">雷达里那条 §232 多晶硅，在 HTS 快照里的真实字段是：</p>
+    <pre>2804.61.00.00 | Containing by weight not less than 99.99 percent of silicon
+  general        : "Free"
+  additionalDuties: null
+全表检索 "Polysilicon" → 0 命中
+全表检索 "11052"      → 0 命中</pre>
+    <p style="font-size:13px;margin:0 0 4px">而同一天联邦公报里有：</p>
+    <pre>type: Rule | published: 2026-09-24 | effective_on: 2026-09-22
+agency: Commerce Department + Industry and Security Bureau
+title: Measures To Restrict Stockpiling of Polysilicon and
+       Polysilicon Derivatives Under Proclamation 11052</pre>
+    <p style="font-size:13px;margin:0"><b>只看快照会得出「零关税」——这是严重误导。</b>
+    而且注意生效日（09-22）<b>早于</b>发布日（09-24），这类回溯生效在联邦公报里并不罕见。
+    → 直接证明 L1 实时层不是锦上添花，是必需；也证明「只出参考测算」不是保守。</p>
+  </div>
+
+  <div class="ev">
+    <div class="eh">Evidence 02 · 税率字段不能直接当数字读</div>
+    <div class="et">9903 章只有 15% 的 general 是数值，其余是文本交叉引用</div>
+    <pre>9903 章共 495 条，general 形如 "x%" 的仅 76 条 (15%)
+其余 85% 是这样的：
+  "The duty provided in the applicable subheading"
+  "No change"</pre>
+    <p style="font-size:13px;margin:0"><b>85% 的附加措施条目根本不含可计算的数字</b>——它们的意思是「按引用子目的税率执行」或「本条不改税率」。
+    任何「读取税率字段 → 相乘 → 得出税额」的实现，在这里会静默产出错误结果。
+    → 解析器必须显式识别这几种形态（从价 % / 从量 ¢per kg / 复合 / <b>文本引用</b>），
+    文本引用形态下<b>拒绝输出数字</b>，改为展示原文并提示「需人工判读」。</p>
+  </div>
+
+  <div class="ev">
+    <div class="eh">Evidence 03 · Chapter 99 的检索陷阱</div>
+    <div class="et">产品名不在关税行里，在其上一层的标题行</div>
+    <pre>9904.02.01 | "Valued less than 25¢/kg" | additionalDuties: "66.6¢/kg"
+
+仅看这一行，完全不知道它是什么商品。往上回溯标题行（superior=true, 空 htsno）：
+  indent=0 | "Beef, provided for in subheadings 0201.10.50, 0201.20.80..."
+  indent=1 | "If entered during the effective period of safeguards based upon value:"
+  indent=2 | "Carcasses and half-carcasses and other cuts with bone in:"
+  indent=3 | "Fresh or chilled, provided for in subheadings 0201.10.50 or 0201.20.80:"
+  indent=4 | 9904.02.01  ← 关税行</pre>
+    <p style="font-size:13px;margin:0">它是<b>牛肉保障措施</b>。整表 5,912 行都是这种「空编码 + indent」的层级标题，
+    而 9904 章 512 条附加措施的产品名<b>全部</b>藏在这些标题行里——
+    直接在 Ch99 内做关键词检索（silicon / steel / aluminum）会得 <b>0 命中</b>，但商品其实都在。
+    → 必须实现「按 indent 回溯祖先链」重建完整品名，否则附加措施这一块等于做不出来。</p>
+  </div>
+
+  <!-- ============ 3.5 ============ -->
+  <h2><span class="n">3.5</span>红线 03 的影响评估与修正建议</h2>
+  <p class="sub">你问的是「一律列未覆盖项会有什么影响」。分代价、收益、修正三层回答。</p>
+
+  <h3>代价：一刀切会丢掉三样东西</h3>
+  <table>
+    <tr><th>未覆盖项</th><th>一刀切的代价</th><th>量级</th></tr>
+    <tr><td><b>ADD/CVD 保证金</b></td><td>它是<b>金额最大的一块</b>——涉案品类保证金率常见 20%–300%+，
+    远高于 MFN 基础税率（多为 0–10%）。不提示会让参考测算<b>系统性低估</b>真实现金成本</td><td class="t-no">高</td></tr>
+    <tr><td><b>MPF / HMF 规费</b></td><td>这两项其实是<b>确定性查表值</b>（从价费率 + 年度上下限），
+    不是「估算」。把它们归进不估算里是<b>过度保守</b>，白白丢掉一个本来能给准数的部分</td><td class="t-warn">中</td></tr>
+    <tr><td><b>原产地 / FTA 优惠</b></td><td>不做判定就只能用 <code>general</code>（MFN），
+    用不了 <code>special</code>（自贸协定 / GSP）。对 FTA 成员国进口会<b>反向高估</b></td><td class="t-warn">中</td></tr>
+    <tr><td><b>归类复核</b></td><td>用户给错 HS 码时不会有任何提醒，只能照着错的算</td><td class="t-warn">中</td></tr>
+  </table>
+
+  <h3>收益：为什么「不估算金额」的内核必须保留</h3>
+  <ul>
+    <li><b>ADD/CVD 是个案裁定</b>：同一个 HS 码下，不同出口商适用不同税率（单独税率 vs “all others”），
+    还会随年度行政复审变动。不存在一个「该 HS 码的倾销税率」这种东西。</li>
+    <li><b>原产地规则因产品、因协定而异</b>：实质性改变 / 税则归类改变规则各不相同，
+    USMCA 的区域价值成分（RVC）还要 BOM 成本数据。</li>
+    <li><b>归类是法定责任</b>，错误责任在进口商。</li>
+  </ul>
+
+  <h3>修正建议：不分「算 / 不算」，改分三类</h3>
+  <table>
+    <tr><th>项</th><th>性质</th><th>建议处理</th><th>是否出数字</th></tr>
+    <tr><td>MPF / HMF 规费</td><td>确定性查表</td><td><b>移出「未覆盖项」</b>，作为独立计算行展示，标注费率依据与年度上下限</td><td class="t-ok">出</td></tr>
+    <tr><td>ADD / CVD</td><td>个案裁定</td><td><b>不出金额，出「存在性提示」</b>：命中的话显示「存在在效反倾销/反补贴措施，本测算未含保证金」+ 案号 + 原文链接</td><td class="t-no">不出</td></tr>
+    <tr><td>原产地 / FTA</td><td>需资格判定</td><td><b>双向提示</b>：若所选原产国与美国有 FTA，提示「可能存在优惠税率，需凭原产地资格申报」，并<b>只读展示</b> <code>special</code> 档原文，不折算</td><td class="t-no">不出</td></tr>
+    <tr><td>归类复核</td><td>法定责任</td><td>固定提示「HS 码由你提供，未做归类复核；请与持证报关行确认」</td><td class="t-no">不出</td></tr>
+  </table>
+
+  <div class="verdict">
+    <div class="vh">这个修正为什么值</div>
+    <p style="margin:0 0 8px">它把「未覆盖项」从<b>沉默的免责声明</b>变成<b>主动的风险提示</b>。
+    最值钱的是 ADD/CVD 那条：它恰恰是金额最大、最容易让人踩坑的一块，
+    而提示它<b>不需要编任何数字</b>——只要说「这里有雷，自己去看」。</p>
+    <p style="margin:0;font-size:12.5px;color:var(--ink-soft)">
+    这更符合作品集一贯的调性：不是「我做不了所以不说」，而是「我做不了，但我告诉你这里有雷」。</p>
+  </div>
+
+  <div class="ev">
+    <div class="eh">可行性实测 · ADD/CVD 存在性提示</div>
+    <div class="et">联邦公报的 ITC 公告里，HTS 码直接写在 abstract 中</div>
+    <pre>查询：conditions[term]="antidumping duty order"，近 60 天 → 219 条
+
+样例（ITC Notice，2026-09-28 发布，与今天同步）：
+  title: Tin Mill Products From China, Taiwan, and Turkey;
+         Scheduling of the Final Phase of Countervailing Duty and
+         Antidumping Duty Investigations
+  abstract 中直接含 HTS 码：
+    7210.11.00  7210.12.00  7210.50.00
+    7212.10.00  7212.50.00  7225.99.00</pre>
+    <p style="font-size:13px;margin:0 0 4px">
+    → 正则从 <code>abstract</code> 抽取 HTS 码即可建立「HS 码 → 在效调查/措施」映射，
+    <b>零额外数据源成本</b>（L1 已有）。命中即显示提示卡 + 案号 + 原文链接，<b>不给数字</b>。</p>
+    <p style="font-size:13px;margin:0;color:var(--ink-soft)">
+    <b>已知局限</b>：并非所有公告的 abstract 都含 HTS 码（本次抽样 3 条中 1 条有）。
+    无码的条目退化为「产品名 + 原产国」关键词模糊匹配，并明确标注「疑似命中，需人工核对」——
+    提示可以有误报，但不能假装精确。</p>
+  </div>
+
+  <!-- ============ 4 ============ -->
+  <h2><span class="n">04</span>「影响测算」的输出格式</h2>
+  <p class="sub">这是唯一会产出数字的功能，格式必须锁死。</p>
+  <table>
+    <tr><th>输出项</th><th>口径</th></tr>
+    <tr><td>基础税率</td><td>来自 Ch1–98 <code>general</code> 字段。<b>不含</b> <code>special</code>（自贸协定 / GSP 优惠率，须凭原产地资格）</td></tr>
+    <tr><td>附加措施</td><td>Chapter 99 命中项。文本引用形态下只展示原文，不换算</td></tr>
+    <tr><td>参考测算值</td><td>标题必须含「参考」二字，字号不得大于基础税率行</td></tr>
+    <tr><td>规费行（可算）</td><td>MPF / HMF，独立成行并标注费率依据与年度上下限</td></tr>
+    <tr><td>风险提示行（不出数字）</td><td>ADD/CVD 存在性提示（+案号、原文链接）｜FTA 优惠可能性提示｜归类未复核提示</td></tr>
+    <tr><td>未覆盖项</td><td><b>强制列出</b>：ADD/CVD 保证金金额、配额与许可、原产地资格判定、归类复核</td></tr>
+    <tr><td>免责句</td><td>「本测算不构成报关依据，实际税责以 CBP 裁定为准」——不可折叠、不可关闭</td></tr>
+  </table>
+
+  <!-- ============ 5 ============ -->
+  <h2><span class="n">05</span>时效钩子（真实、可验证）</h2>
+  <table>
+    <tr><th>事件</th><th>来源</th><th>日期</th><th>用法</th></tr>
+    <tr><td>CBP《Heightened Import Disclosures for Supply Chain Visibility》</td><td>FR Proposed Rule, DHS + CBP</td><td>发布 09-02<br><b>意见截止 12-01</b></td><td>倒计时卡片（今日起 64 天）</td></tr>
+    <tr><td>多晶硅囤积限制 · Proclamation 11052</td><td>FR Rule, Commerce + BIS</td><td>发布 09-24<br><b>生效 09-22</b></td><td>已生效标记；与雷达条目互链</td></tr>
+    <tr><td>镀锡钢板反倾销/反补贴终裁阶段排期</td><td>FR Notice, ITC</td><td>发布 <b>09-28（今日）</b></td><td>证明 L1 是「当天级」新鲜度</td></tr>
+  </table>
+
+  <!-- ============ 6 ============ -->
+  <h2><span class="n">06</span>请确认</h2>
+  <p class="sub">逐条打勾或提出修改。第 1 条不通过则后面全部重来。</p>
+  <div class="checklist">
+    <div class="ck"><div class="box">1</div><div>
+      <div class="ct">红线 01：不做自动归类，只出「参考测算」</div>
+      <div class="cd">输入必须是用户自备 HS 码；输出不得呈现为可报关的应缴税额。← <b>最关键</b></div></div></div>
+    <div class="ck"><div class="box">2</div><div>
+      <div class="ct">红线 02：Additional Duties 文本引用形态下拒绝输出数字</div>
+      <div class="cd">9903 章 85% 条目无数值，只能展示原文 + 「需人工判读」提示</div></div></div>
+    <div class="ck"><div class="box">3</div><div>
+      <div class="ct">红线 03（修正版）：不估算金额的内核保留，但改三类分治</div>
+      <div class="cd">规费可算（独立行）｜ADD/CVD 与 FTA 出「存在性提示」不出数字｜归类仅免责提示。
+      宁可少给一个数，不给一个错的数字</div></div></div>
+    <div class="ck"><div class="box">4</div><div>
+      <div class="ct">三层架构 + 载荷改为「按章分片」（首屏 37 KB，按需 1–21 KB）</div>
+      <div class="cd">L1 实时 / L2 快照 / L3 演示，UI 上必须视觉分层；
+      放弃枚举化与前缀压缩（实测仅省 1–4%，不值得）</div></div></div>
+    <div class="ck"><div class="box">5</div><div>
+      <div class="ct">交付形态：独立仓库 + 静态托管 + 双语，与 VeloCortex 一致</div>
+      <div class="cd">不做 LLM 调用，全程无密钥</div></div></div>
+  </div>
+
+  <div class="verdict">
+    <div class="vh">确认状态 · 2026-09-28</div>
+    <table style="margin-top:4px">
+      <tr><th>项</th><th>状态</th></tr>
+      <tr><td>红线 01 不做自动归类、只出参考测算</td><td class="t-ok">已同意</td></tr>
+      <tr><td>红线 02 文本引用形态拒绝出数字</td><td class="t-ok">已同意</td></tr>
+      <tr><td>红线 03 未覆盖项处理</td><td class="t-ok">已同意 · 三类分治修正版（第 3.5 节）</td></tr>
+      <tr><td>三层架构 / 载荷方案</td><td class="t-ok">已同意 · 按章分片（第 1 节）</td></tr>
+      <tr><td>独立仓库 + 静态托管 + 双语 + 无密钥</td><td class="t-ok">已同意</td></tr>
+      <tr><td>视觉语言：公报 / Gazette（第 7 节）</td><td class="t-ok">已同意</td></tr>
+      <tr><td>#10 默认不展示参考测算数字</td><td class="t-ok">已同意 · 先证据后结论（第 7.3 节）</td></tr>
+      <tr><td>#11 排版层级按证据强度排</td><td class="t-ok">已同意</td></tr>
+      <tr><td>#12 双语 measure 分语言锁宽</td><td class="t-ok">已同意</td></tr>
+    </table>
+    <p style="margin:10px 0 0"><b>三条红线均保留。</b>Evidence 01–03 是实测出来的硬数据，
+    它们说明这些限制不是法务保守，而是数据本身就不支持更激进的实现。
+    更重要的是——<b>把这些限制显式展示出来，本身就是这个应用最有说服力的部分</b>：
+    它证明作者知道关税数据的真实结构，而不是只会调 API。</p>
+    <p style="margin:0;font-size:12.5px;color:var(--ink-soft)">
+    这一点与本站既有调性完全一致：口径守门人、不冒充实时、衍生值一律标注。</p>
+  </div>
+
+  <!-- ============ 7 ============ -->
+  <h2><span class="n">07</span>视觉语言：公报 / Gazette <span class="t-ok tag">已采纳 · 2026-09-28</span></h2>
+  <p class="sub">回应「衍生应用是否统一沿用 VeloCortex 风格」——结论是<b>不沿用</b>，改用 Gazette。
+  这不是审美取舍，而是那一套语汇会和三条红线互相拆台。</p>
+
+  <h3>为什么不用 VeloCortex 的暗色指挥台</h3>
+  <table>
+    <tr><th>#</th><th>理由</th><th>严重性</th></tr>
+    <tr><td>1</td><td><b>本体不是一类东西。</b>VeloCortex 监视的是 telemetry（船位 / 港口气象 / 咽喉点过境量），
+    天然是流数据，暗色指挥台完全正确。TariffLens 处理的是一部会修订的成文法典（HTS 税则 + 联邦公报），
+    核心动作是<b>阅读与核对</b>，不是监视</td><td class="t-warn">中</td></tr>
+    <tr><td>2</td><td><b>与红线冲突。</b>dashboard 的全套修辞——大数字、<code>LIVE</code> 徽章、状态灯、语义色、
+    条形图——都在制造<b>确定感与结算感</b>。而三条红线的全部目的恰恰是削弱这种确定感。
+    <code>Free</code> 配 teal 大字加 LIVE 徽章，视觉上是在给「零关税」盖章确认，
+    <b>正是 Evidence 01（多晶硅）要拦的那一例</b></td><td class="t-no">高</td></tr>
+    <tr><td>3</td><td><b>家族内不可区分。</b>两个衍生应用长得一样，就看不出作品集在解决两类不同性质的问题</td>
+    <td class="t-warn">中</td></tr>
+  </table>
+
+  <h3>同一条查询结果 · 三版并列</h3>
+  <p style="font-size:13px;color:var(--ink-soft)">
+  均为 <code>2804.61.00.00</code>（多晶硅）—— L2 快照 <code>general = "Free"</code>、Ch99 零命中，
+  但 L1 联邦公报命中 11 条相关措施（含 Proclamation 11052）。这是最考验视觉语言的一例。</p>
+
+  <div class="vizs">
+    <div class="viz pick">
+      <div class="vt"><span class="pick-b">推荐</span>公报 / Gazette</div>
+      <div class="sheet">
+        <div class="hx">HTS 2804.61.00.00</div>
+        <div class="hr2"></div>
+        <div style="font-size:12px;color:#3d454d;line-height:1.55">Silicon, by weight not less<br>than 99.99 percent silicon</div>
+        <div class="gz-ser" style="font-size:18px;color:#101418;margin:6px 0 1px">Free</div>
+        <div style="font-size:11px;color:#8b95a1">general rate · HTS 2026 rev.9</div>
+        <div class="annot">勘校 · 实时层另有 11 条相关措施，<br>快照零关税不得据此下结论</div>
+      </div>
+      <div class="vd">纸墨加衬线加双 rule line。告警走朱红旁注，pattern 本身就是「此文本会被后续措施改变」。</div>
+    </div>
+
+    <div class="viz">
+      <div class="vt">VeloCortex 延续</div>
+      <div class="darkv">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:var(--mono);font-size:11px;color:#9ba5b1">2804.61.00.00</span>
+          <span style="background:#0e7a6d;color:#fff;font-size:10.5px;padding:1px 6px;border-radius:3px">LIVE</span>
+        </div>
+        <div style="font-size:20px;font-weight:600;color:#2dd4bf;margin:7px 0 1px">Free</div>
+        <div style="font-size:11px;color:#6e767f">11 decrees · 3,808 ADCVD</div>
+        <div style="height:3px;background:#232c36;margin-top:9px;border-radius:2px">
+          <div style="width:38%;height:3px;background:#2dd4bf;border-radius:2px"></div></div>
+      </div>
+      <div class="vd">读起来像已结算的仪表读数。反例——正是第 3 节 Evidence 01 警告的那个误导，
+      在此被视觉语言<b>重新盖了一次章</b>。</div>
+    </div>
+
+    <div class="viz">
+      <div class="vt">Threadline 细线</div>
+      <div style="background:#fbfbfa;border:1px solid #e4e2dc;padding:12px 13px">
+        <div style="font-size:12.5px;color:#3d454d">Free</div>
+        <div style="height:1px;background:#d8d5ce;margin:9px 0"></div>
+        <div style="height:26px;display:flex;align-items:flex-end;gap:3px">
+          <div style="flex:1;height:1px;background:#b4b2a9"></div><div style="flex:1;height:1px;background:#b4b2a9"></div>
+          <div style="flex:1;height:1px;background:#b4b2a9"></div><div style="flex:1;height:1px;background:#b4b2a9"></div>
+          <div style="flex:1;height:1px;background:#b4b2a9"></div></div>
+        <div style="font-size:11px;color:#8b95a1;margin-top:6px">数值以外的信息被抽空</div>
+      </div>
+      <div class="vd">适合图表，撑不起长篇原文阅读——而引用的措辞恰恰是本产品的核心载体。</div>
+    </div>
+  </div>
+
+  <h3>为什么 Gazette 是「对」的——形式即数据本体</h3>
+  <p>HTS 税则和 Federal Register 在真实世界里就是<b>政府印刷局的出版物</b>。采用这套语汇不是贴皮，
+  是还原数据来源本来的形态。而且反过来看：<b>它比 VeloCortex 更亲主站</b>——
+  <code>--paper: #f7f6f2</code>、<code>--ink: #101418</code>、<code>--font-serif</code>、<code>--font-mono</code>
+  已经在 <code>docs/index.html</code> 里躺着了。真正是作品集异类的其实是 VeloCortex，不是这个方向。</p>
+
+  <h3>色板：只用两个语义色</h3>
+  <div class="sw">
+    <div><div class="chip" style="background:#f7f6f2"></div><div class="nm">#f7f6f2</div><div class="us">纸 · 主站 <code>--paper</code></div></div>
+    <div><div class="chip" style="background:#101418"></div><div class="nm">#101418</div><div class="us">墨 · 正文，主站 <code>--ink</code></div></div>
+    <div><div class="chip" style="background:#1a4fd6"></div><div class="nm">#1a4fd6</div><div class="us">靛蓝 · 仅用于溯源链接</div></div>
+    <div><div class="chip" style="background:#a8321f"></div><div class="nm">#a8321f</div><div class="us">朱红 · 仅用于勘校与红线</div></div>
+  </div>
+  <p style="font-size:13px;color:var(--ink-soft)">
+  其余一律灰阶。注意朱红用 <code>#a8321f</code>（砖印色，偏印章），<b>不是</b>本文自身的
+  <code>--red #a32d2d</code>——后者是通用错误色，前者专属「勘校」语义。
+  语义色越少，出现时越有分量。</p>
+
+  <h3>执行清单</h3>
+  <table>
+    <tr><th>项</th><th>取值</th><th>依据</th></tr>
+    <tr><td>正文 measure</td><td>68–72ch 单栏</td><td>印刷刊物沿用百年的阅读宽度，一行过长会丢失行首尾定位</td></tr>
+    <tr><td>正文 / 元数据字体</td><td>serif / mono 分工</td><td>正文衬线；HTS 码、文档号、sha256 一律 mono</td></tr>
+    <tr><td>三层数据呈现</td><td><b>版面栏目</b>，竖细线分隔</td><td>表达「同一份文件的不同部类」，而非三个并列 dashboard widget</td></tr>
+    <tr><td>表格</td><td>双 rule line 表头、无斑马纹、无圆角</td><td>HTS 税则表的原生样式</td></tr>
+    <tr><td>元数据 byline</td><td>机构 · 发布日 · 生效日 · 文档号</td><td>可横向扫读，同时保留印刷出处感</td></tr>
+    <tr><td>红线 01 告警</td><td><b>朱红 left-rule 旁注</b>，非顶部 banner</td><td>旁注天生比 banner 更像「需另行核对」</td></tr>
+  </table>
+
+  <div class="grid2">
+    <div class="box do">
+      <div class="bh">要做</div>
+      <ul>
+        <li>纸张实体感：hairline 分隔、双 rule line</li>
+        <li>文本优先，数字是文本的一部分而非主角</li>
+        <li>每个结论旁必有出处 mono mark</li>
+        <li>朱红勘校旁注承载红线与未覆盖项</li>
+      </ul>
+    </div>
+    <div class="box dont">
+      <div class="bh">不要做</div>
+      <ul>
+        <li>发光 / glow / 渐变</li>
+        <li>大圆角卡片网格</li>
+        <li>状态灯、<code>LIVE</code> 徽章</li>
+        <li>装饰性 sparkline、metric tile</li>
+        <li>teal 作「成功 / 已确认」色</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>暗色模式：换载体，不换颜色</h3>
+  <p>主站现在的 dark 只是把颜色反过来。这里建议换一种<b>载体</b>——暗底加暖白字、淡胶片格，
+  像档案室的<b>缩微胶片阅读灯</b>。同一个页面在不同模式下读起来是同一份文件的两种查阅方式，
+  而不是两次皮肤。这是 Gazette 方向自带的机会。</p>
+
+  <h3>明确不做的两个方向</h3>
+  <div class="grid2">
+    <div class="box dont">
+      <div class="bh">Terminal / CLI</div>
+      <ul><li>终端语汇暗示「可执行、确定」，且已被 dev tool 用滥</li>
+      <li>更要命：它引导使用者把输出当成<b>命令结果</b>（权威），与红线正相反</li></ul>
+    </div>
+    <div class="box dont">
+      <div class="bh">蓝图 / 工程图</div>
+      <ul><li>那是<b>库存蓝图</b>原型（kimi.link）的身份：图号、比例、审核栏</li>
+      <li>工程隐喻已被它占住，别抢</li></ul>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="vh">额外收益 · 三个应用三种本体</div>
+    <p style="margin:0 0 8px">若三者各自成型：<b>VeloCortex = 监视</b>（telemetry）·
+    <b>TariffLens = 阅读</b>（成文法典）· <b>库存蓝图 = 工程</b>（图纸）。
+    这件事本身对作品集叙事是加分——它说明你在<b>按数据本体选形式，而不是套一个模板做三次</b>。</p>
+    <p style="margin:0;font-size:12.5px;color:var(--ink-soft)">
+    代价说清楚：<b>信息密度比 dashboard 低，滚动更长</b>。但对本产品这个「代价」其实是优点——
+    ADD/CVD 提示本来就是一小段需要读的文字，不是一张能扫一眼的图。一个让人慢下来的界面，
+    正是这个应用该有的样子。</p>
+  </div>
+
+  <div class="checklist">
+    <div class="ck"><div class="box">6</div><div>
+      <div class="ct">视觉语言：公报 / Gazette，不用 VeloCortex 的暗色指挥台</div>
+      <div class="cd">纸墨加衬线mono 分工、68–72ch 单栏、版面栏目、双 rule line 表格、仅朱红加靛蓝两个语义色</div></div></div>
+    <div class="ck"><div class="box">7</div><div>
+      <div class="ct">红线 01 告警用朱红勘校旁注，不用顶部 banner</div>
+      <div class="cd">left-rule 竖线加朱红小字，与被勘校文本同处长存，不可折叠</div></div></div>
+    <div class="ck"><div class="box">8</div><div>
+      <div class="ct">暗色模式换成「缩微胶片阅读灯」载体</div>
+      <div class="cd">暗底加暖白字加淡胶片格，而不是把亮色方案取反</div></div></div>
+    <div class="ck"><div class="box">9</div><div>
+      <div class="ct">明确不做 Terminal / CLI 与蓝图工程图</div>
+      <div class="cd">前者与红线冲突，后者的隐喻已属于库存蓝图原型</div></div></div>
+  </div>
+
+  <h3>7.1 · 从三个竞争方向吸收的组件</h3>
+  <p style="font-size:13px;color:var(--ink-soft)">
+  另三个方向整体没采纳，但各自有一个机制值得拆下来装进 Gazette——它们解决的都是
+  「怎么把不确定性放进版面」这个具体问题。</p>
+  <table>
+    <tr><th>来源方向</th><th>吸收什么</th><th>落到哪</th><th>形态</th></tr>
+    <tr><td>审计工作底稿</td><td>review note 便签</td><td><b>需人工复核的工作注释</b>（对应 T1）</td>
+    <td>便签黄底小条，与正文同栏，不可折叠</td></tr>
+    <tr><td>证据陈列</td><td>chain of custody</td><td><b>每层数据的溯源行</b></td>
+    <td>mono 单行：来源 → 抓取时间 → sha256 前 8 位</td></tr>
+    <tr><td>层叠修订</td><td>叠加层</td><td><b>基础税率 vs 附加措施</b></td>
+    <td>底行 + 覆盖行分列，<b>不得合并成单一数字</b></td></tr>
+  </table>
+
+  <h3 style="margin-bottom:6px">勘校分两色（关键决策）</h3>
+  <p style="font-size:13px;color:var(--ink-soft);margin-bottom:10px">
+  吸收便签黄之后，朱红会被稀释。所以勘校按<b>严重度</b>分色，而不是一律朱红：</p>
+  <div style="max-width:420px">
+    <div class="sheet">
+      <div class="hx">HTS 2804.61.00.00 · 2804.61</div>
+      <div class="hr2"></div>
+      <div class="gz-ser" style="font-size:17px;color:#101418">Free</div>
+      <div style="font-size:11px;color:#8b95a1">general rate · HTS 2026 rev.9</div>
+      <div class="annot" style="border-left-color:#a8321f;color:#a8321f">勘校 T3 · 实时层另有 11 条相关措施，
+      快照零关税不得据此下结论</div>
+      <div class="note-Y">复核 T1 · Ch99 命中项含文本引用形态
+      （"see the applicable subheading"），需人工判读，本页不换算</div>
+    </div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-mute)">
+  <b>朱红</b> = 风险与层间矛盾（T3）｜<b>便签黄</b> = 待人工复核的工作注释（T1）。
+  两色分工清楚，红色才不会变成背景噪声。</p>
+
+  <h3>7.2 · 四级置信度视觉词汇表</h3>
+  <p style="font-size:13px;color:var(--ink-soft)">
+  这是整个设计里最该被固化的一节——它决定了「不确定」在版面上<b>长什么样</b>，
+  比选哪个风格更能影响这个产品看起来靠不靠谱。</p>
+  <div class="conf">
+    <div class="r">
+      <div class="lvl" style="color:#101418">T0</div>
+      <div><div class="cn">可依赖</div><div class="cx">字段完整、语义明确、有出处</div></div>
+      <div class="demo">
+        <div style="width:58px;height:26px;background:#f7f6f2;border:1px solid #101418;
+          display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:#101418">3.4%</div>
+        <div class="hint">墨黑实体边框</div></div>
+    </div>
+    <div class="r">
+      <div class="lvl" style="color:#8a5a00">T1</div>
+      <div><div class="cn">需人工判读</div><div class="cx">文本引用形态、"see applicable subheading"</div></div>
+      <div class="demo">
+        <div style="width:58px;height:26px;background:#fdf3e0;border:1px solid #c9a55a;
+          display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;color:#8a5a00">see Ch.99</div>
+        <div class="hint">琥珀 + 便签黄旁注</div></div>
+    </div>
+    <div class="r">
+      <div class="lvl" style="color:#8b95a1">T2</div>
+      <div><div class="cn">数据缺失</div><div class="cx">未命中 ≠ 无措施，只写「未检索到」</div></div>
+      <div class="demo">
+        <div style="width:58px;height:26px;border:1px dashed #b4b2a9;
+          display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:#8b95a1">n/a</div>
+        <div class="hint">灰虚线框 · 无底色</div></div>
+    </div>
+    <div class="r">
+      <div class="lvl" style="color:#a8321f">T3</div>
+      <div><div class="cn">存在未量化风险</div><div class="cx">ADD/CVD 命中、快照与实时层矛盾</div></div>
+      <div class="demo">
+        <div style="width:58px;height:26px;background:#fff;border-left:3px solid #a8321f;
+          display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10.5px;color:#a8321f">+ not incl.</div>
+        <div class="hint">朱红左竖线 · 无填充</div></div>
+    </div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-soft)">
+  两个容易做错的细节：<b>T2 不能用灰色的「0」</b>——灰色的 0 会被读成「没有措施」；
+  <b>T3 不能用红色填充块</b>——红色留给「风险存在」这件事本身，填满了就变成吓人的装饰。</p>
+
+  <h3>7.3 · 交互建议 · 已确认</h3>
+  <p style="font-size:13px;color:var(--ink-soft)">
+  三条都不依赖具体风格，但都比风格更能决定这个产品是否真的守住了红线。</p>
+  <div class="checklist">
+    <div class="ck"><div class="box">10</div><div>
+      <div class="ct">默认不展示「参考测算」数字——先过三层数据，最后才给数</div>
+      <div class="cd">数字默认折叠，用户看完 L1/L2/L3 及勘校旁注后主动展开。
+      <b>用交互顺序执行「先证据后结论」</b>，比任何措辞都有效</div></div></div>
+    <div class="ck"><div class="box">11</div><div>
+      <div class="ct">排版层级按「证据强度」排，不按「信息量」排</div>
+      <div class="cd">3.4% 不因是核心答案就用最大字号；<b>出处引用才该给最大字号</b>。
+      这条反直觉，但正是它让页面读起来像一份可被质疑的文件，而不是一个结论</div></div></div>
+    <div class="ck"><div class="box">12</div><div>
+      <div class="ct">双语切换时 measure 需重新校准</div>
+      <div class="cd">英文词长约为中文的 1.8 倍，68–72ch 的中文栏宽在英文下会变成 ~40ch。
+      建议按 <code>html[lang]</code> 分别锁定 max-width，不要只换字体</div></div></div>
+  </div>
+
+  <div class="verdict">
+    <div class="vh">状态 · 全部 12 条已确认</div>
+    <p style="margin:0">第 1–12 条<b>全部已确认</b>，本节可直接作为正式 UI 的设计依据。
+    其中第 10 条（默认不展示参考测算数字，先看三层证据后展开）会改变交互流程，
+    实现时必须做进默认状态，不能靠用户自己去折叠。</p>
+  </div>
+
+  <div class="foot">
+    proposals/tarifflens-spec.html · 数据源实测于 2026-09-28 · 不在 docs/ 下，未被 GitHub Pages 托管
+  </div>
+</div>
+</body>
+</html>

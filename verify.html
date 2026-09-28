@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TariffLens · 数据层验证页</title>
+<style>
+:root{
+  --paper:#f7f6f2; --card:#fffefb; --ink:#101418; --ink-soft:#5b6470; --ink-faint:#8d949e;
+  --line:#e2dfd6; --line-strong:#cfcbc0;
+  --l1:#5b8cff; --risk:#e05656; --warn:#f0a13a; --ok:#2f9e8f; --snap:#6b7280;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:28px 22px 80px}
+
+/* ---- header ---- */
+header{border-bottom:2px solid var(--ink); padding-bottom:14px; margin-bottom:22px}
+.brandrow{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+h1{font-size:21px; margin:0; letter-spacing:.2px}
+.badge{
+  font:11px/1 var(--mono); padding:5px 8px; border:1px solid var(--ink);
+  background:var(--ink); color:var(--paper); letter-spacing:.5px;
+}
+.sub{color:var(--ink-soft); font-size:13px; margin-top:7px}
+.status{
+  display:flex; gap:18px; flex-wrap:wrap; margin-top:12px;
+  font:11.5px/1.4 var(--mono); color:var(--ink-soft);
+}
+.status b{color:var(--ink); font-weight:600}
+
+/* ---- layers legend ---- */
+.legend{display:flex; gap:10px; flex-wrap:wrap; margin:18px 0 20px; font-size:12px}
+.lg{display:flex; align-items:center; gap:6px; padding:5px 9px; border:1px solid var(--line); background:var(--card)}
+.dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+
+/* ---- alert banner ---- */
+#alert{margin:0 0 20px}
+.alert{
+  border:1px solid var(--line-strong); border-left:4px solid var(--risk);
+  background:#fff; padding:13px 15px; margin-bottom:9px;
+}
+.alert.ok{border-left-color:var(--ok)}
+.alert.warn{border-left-color:var(--warn)}
+.alert .at{font-weight:600; font-size:13.5px; margin-bottom:4px; display:flex; gap:8px; align-items:center}
+.alert .tag{
+  font:10px/1 var(--mono); padding:3px 6px; border:1px solid var(--ink);
+  background:var(--ink); color:var(--paper);
+}
+.alert.warn .tag{background:var(--warn); border-color:var(--warn); color:#fff}
+.alert.ok .tag{background:var(--ok); border-color:var(--ok); color:#fff}
+.alert .ad{font-size:12.5px; color:var(--ink-soft)}
+.alert .ad code{font-family:var(--mono); background:#f0eee8; padding:1px 4px}
+
+/* ---- query ---- */
+.querybox{background:var(--card); border:1px solid var(--line-strong); padding:16px; margin-bottom:22px}
+.qrow{display:flex; gap:9px; flex-wrap:wrap; align-items:center}
+input[type=text]{
+  font:14px/1 var(--mono); padding:10px 12px; border:1px solid var(--line-strong);
+  background:#fff; color:var(--ink); width:210px;
+}
+input[type=text]:focus{outline:2px solid var(--l1); outline-offset:-1px}
+input[type=number]{
+  font:13px/1 var(--mono); padding:7px 9px; border:1px solid var(--line-strong);
+  background:#fff; color:var(--ink); width:110px;
+}
+button{
+  font:13px/1 inherit; padding:10px 15px; border:1px solid var(--ink);
+  background:var(--ink); color:var(--paper); cursor:pointer;
+}
+button:hover{background:#2a2f36}
+button.ghost{background:transparent; color:var(--ink); border-color:var(--line-strong)}
+button.ghost:hover{background:#efece5}
+.samples{display:flex; gap:7px; flex-wrap:wrap; margin-top:12px}
+.samples button{font-size:12px; padding:6px 10px; background:transparent; color:var(--ink); border:1px solid var(--line-strong)}
+.samples button:hover{background:#efece5}
+.samples button b{font-family:var(--mono); font-weight:600}
+.hint{font-size:12px; color:var(--ink-faint); margin-top:9px}
+
+/* ---- result blocks ---- */
+.blk{background:var(--card); border:1px solid var(--line); margin-bottom:14px}
+.blk>h2{
+  margin:0; padding:11px 15px; border-bottom:1px solid var(--line);
+  font-size:13.5px; display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+}
+.blk>h2 .ly{
+  font:10px/1 var(--mono); padding:4px 6px; border:1px solid var(--line-strong);
+  background:#f0eee8; color:var(--ink-soft);
+}
+.blk>h2 .ly.l1{background:var(--l1); border-color:var(--l1); color:#fff}
+.blk>h2 .ly.l2{background:var(--snap); border-color:var(--snap); color:#fff}
+.blk>h2 .ly.l3{background:var(--warn); border-color:var(--warn); color:#fff}
+.blk>h2 .cnt{margin-left:auto; font:11.5px/1 var(--mono); color:var(--ink-faint)}
+.bd{padding:14px 15px}
+
+/* product path */
+.path{font-size:12px; color:var(--ink-soft); margin-bottom:8px}
+.path .lv{display:inline-block; margin-right:4px}
+.path .lv:last-child{color:var(--ink)}
+.path .sep{color:var(--ink-faint); margin:0 5px}
+.self{font-size:15px; font-weight:600; margin-bottom:12px}
+.rate{display:flex; gap:26px; flex-wrap:wrap; align-items:flex-end}
+.rate .cell .k{font:10.5px/1 var(--mono); color:var(--ink-faint); letter-spacing:.4px; margin-bottom:5px}
+.rate .cell .v{font:19px/1.2 var(--mono); font-weight:600}
+.rate .cell .v.muted{font-size:14px; color:var(--ink-soft); font-weight:400}
+.chips{margin-top:11px; display:flex; gap:7px; flex-wrap:wrap}
+.chip{font:11px/1 var(--mono); padding:4px 7px; border:1px solid var(--line-strong); color:var(--ink-soft); background:#faf9f5}
+.chip.grn{border-color:var(--ok); color:var(--ok)}
+.chip.red{border-color:var(--risk); color:var(--risk)}
+.chip.blu{border-color:var(--l1); color:var(--l1)}
+
+/* doc list */
+.doc{padding:10px 0; border-top:1px dashed var(--line)}
+.doc:first-child{border-top:0; padding-top:0}
+.doc .dmeta{font:11px/1.5 var(--mono); color:var(--ink-faint); margin-bottom:3px; display:flex; gap:8px; flex-wrap:wrap}
+.doc .dtitle{font-size:13.5px; line-height:1.45}
+.doc .dtitle a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line-strong)}
+.doc .dtitle a:hover{border-bottom-color:var(--l1); color:var(--l1)}
+.doc .dabs{font-size:12px; color:var(--ink-soft); margin-top:4px; line-height:1.5}
+.doc .dhit{font:10.5px/1 var(--mono); color:var(--ink-faint); margin-top:4px}
+.str{font:10px/1 var(--mono); padding:3px 5px; border:1px solid var(--line-strong); color:var(--ink-soft)}
+.str.s3{background:var(--risk); border-color:var(--risk); color:#fff}
+.str.s2{background:var(--warn); border-color:var(--warn); color:#fff}
+.str.s1{background:#f0eee8}
+.typ{font:10px/1 var(--mono); padding:3px 5px; border:1px solid var(--line-strong); color:var(--ink-soft)}
+.typ.Rule{background:#fdecec; border-color:#f5c6c6; color:#a33}
+.empty{font-size:12.5px; color:var(--ink-soft); padding:8px 0}
+.empty b{color:var(--ink)}
+
+/* ch99 */
+.c99{padding:9px 0; border-top:1px dashed var(--line)}
+.c99:first-child{border-top:0; padding-top:0}
+.c99 .h{font:12.5px/1 var(--mono); font-weight:600}
+.c99 .nm{font-size:12.5px; color:var(--ink); margin:2px 0 3px}
+.c99 .rt{font:12.5px/1.4 var(--mono); color:var(--ink-soft)}
+.c99 .rt .ad{color:var(--risk)}
+
+/* calc */
+.calcrow{display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:14px}
+.calcrow label{font:10.5px/1 var(--mono); color:var(--ink-faint); display:block; margin-bottom:5px}
+table.out{width:100%; border-collapse:collapse; font-size:13px}
+table.out td{padding:7px 9px; border-bottom:1px solid var(--line); vertical-align:top}
+table.out td.n{text-align:right; font-family:var(--mono); white-space:nowrap}
+table.out td.k{color:var(--ink-soft)}
+table.out tr.sum td{border-bottom:2px solid var(--ink); font-weight:600; padding-top:10px}
+table.out tr.na td.n{color:var(--risk)}
+.note{font-size:12px; color:var(--ink-soft); margin-top:11px; padding:9px 11px; background:#faf9f5; border-left:3px solid var(--line-strong)}
+.note.red{border-left-color:var(--risk); background:#fdf6f6}
+
+/* uncovered */
+ul.unc{margin:0; padding-left:0; list-style:none}
+ul.unc li{padding:7px 0; border-top:1px dashed var(--line); font-size:13px; display:flex; gap:9px; align-items:flex-start}
+ul.unc li:first-child{border-top:0}
+ul.unc .m{font:10px/1 var(--mono); padding:4px 6px; border:1px solid var(--line-strong); flex:0 0 auto; margin-top:2px}
+ul.unc .m.no{background:#fdecec; border-color:#f5c6c6; color:#a33}
+ul.unc .m.yes{background:#eaf7f4; border-color:#b8e0d6; color:var(--ok)}
+ul.unc .tx{flex:1}
+ul.unc .tx b{display:block; margin-bottom:2px}
+ul.unc .tx span{color:var(--ink-soft); font-size:12px}
+
+/* footer */
+footer{margin-top:34px; border-top:1px solid var(--line-strong); padding-top:16px}
+footer h3{font-size:13px; margin:0 0 10px}
+table.src{width:100%; border-collapse:collapse; font:11.5px/1.5 var(--mono)}
+table.src th{text-align:left; color:var(--ink-faint); font-weight:500; padding:5px 8px; border-bottom:1px solid var(--line)}
+table.src td{padding:5px 8px; border-bottom:1px solid var(--line); color:var(--ink-soft)}
+table.src td.f{color:var(--ink)}
+.src-note{font-size:12px; color:var(--ink-faint); margin-top:12px; line-height:1.6}
+.loading{font:12px/1 var(--mono); color:var(--ink-faint); padding:10px 0}
+.err{border-left:4px solid var(--risk); background:#fdf6f6; padding:11px 13px; font-size:13px; margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brandrow">
+    <h1>TariffLens · 数据层验证页</h1>
+    <span class="badge">NOT A PRODUCT UI</span>
+  </div>
+  <div class="sub">
+    目的不是好看，是<strong>证伪</strong>：验证三层数据能否正确触发「不做自动归类 / 只出参考测算」的红线，
+    特别是 —— 当快照层显示零关税、而实时层躺着一条生效措施时，页面会不会照着一个干净的误导结论往下走。
+  </div>
+  <div class="status" id="status">正在载入 manifest…</div>
+</header>
+
+<div class="legend">
+  <div class="lg"><span class="dot" style="background:var(--l1)"></span>L1 实时 · 联邦公报（浏览器直连，免密钥）</div>
+  <div class="lg"><span class="dot" style="background:var(--snap)"></span>L2 快照 · USITC HTS 2026 rev.9（构建期预取）</div>
+  <div class="lg"><span class="dot" style="background:var(--warn)"></span>L1′ · ADD/CVD 存在性提示（不出金额）</div>
+  <div class="lg"><span class="dot" style="background:var(--ink-faint)"></span>L3 演示 · 本验证页未启用</div>
+</div>
+
+<div id="err"></div>
+<div id="alert"></div>
+
+<div class="querybox">
+  <div class="qrow">
+    <input type="text" id="hs" placeholder="HS 码，如 8507.60.00" value="2804.61.00.00">
+    <button id="go">查询</button>
+    <button class="ghost" id="rand">随机抽一条</button>
+  </div>
+  <div class="samples">
+    <button data-hs="8507.60.00">锂离子电池 <b>8507.60.00</b></button>
+    <button data-hs="2804.61.00.00">多晶硅 <b>2804.61.00.00</b></button>
+    <button data-hs="7210.11.00">镀锡钢板 <b>7210.11.00</b></button>
+    <button data-hs="0201.10.50">牛肉（冷藏带骨）<b>0201.10.50</b></button>
+  </div>
+  <div class="hint">
+    8 位或 10 位均可；找不到精确编码时自动前缀回退（库里有些条目只有 10 位叶子，没有 8 位行）。
+  </div>
+</div>
+
+<div id="result"><div class="loading">输入 HS 码开始。</div></div>
+
+<footer>
+  <h3>数据溯源</h3>
+  <table class="src">
+    <thead><tr><th>文件</th><th>内容</th><th>gzip</th><th>条目</th><th>sha256</th></tr></thead>
+    <tbody id="src"></tbody>
+  </table>
+  <div class="src-note">
+    全部产物由 <code>scripts/fetch_tariff_data.py</code> 生成，落地在
+    <code>.workbuddy/tmp/tarifflens/data/</code>（不在 <code>docs/</code> 下，未被 Pages 托管）。<br>
+    本页面通过 <code>DecompressionStream(&apos;gzip&apos;)</code> 在浏览器端解压分片 —— 服务器刻意不设
+    <code>Content-Encoding</code>，因此本页本身即为「按章分片 + 浏览器解压」方案的可行性验证。
+  </div>
+</footer>
+
+</div>
+
+<script>
+"use strict";
+
+const DATA = "data/";
+const TAG  = "2026rev9";
+const cache = new Map();
+
+// ---------- 加载 ----------
+async function gunzipFile(name){
+  if (cache.has(name)) return cache.get(name);
+  const res = await fetch(DATA + name);
+  if (!res.ok) throw new Error(name + " → HTTP " + res.status);
+  const buf = await res.arrayBuffer();
+  // 托管平台若已代理解压（返回 Content-Encoding: gzip），字节里就没有 gzip magic，
+  // 此时按裸 JSON 直接解析；否则自己用 DecompressionStream 解压。
+  const head = new Uint8Array(buf.slice(0, 2));
+  let obj;
+  if (head[0] === 0x1f && head[1] === 0x8b) {
+    if (typeof DecompressionStream === "undefined")
+      throw new Error("此浏览器不支持 DecompressionStream，无法验证 gzip 分片方案（需 Chrome 80+ / Safari 16.4+）");
+    const ds = new DecompressionStream("gzip");
+    const stream = new Blob([buf]).stream().pipeThrough(ds);
+    obj = JSON.parse(await new Response(stream).text());
+  } else {
+    obj = JSON.parse(new TextDecoder().decode(buf));
+  }
+  cache.set(name, obj);
+  return obj;
+}
+// manifest.json 是裸 JSON（其余产物均为 .gz），单独走一条路径
+async function loadPlain(name){
+  if (cache.has(name)) return cache.get(name);
+  const res = await fetch(DATA + name);
+  if (!res.ok) throw new Error(name + " → HTTP " + res.status);
+  const obj = await res.json();
+  cache.set(name, obj);
+  return obj;
+}
+
+const dg = s => (s || "").replace(/\D/g, "");
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// ---------- 停用词（HTS 品名里的高频通用词，用来做关键词匹配） ----------
+const STOP = new Set(("the a an of and or for in to with not over other than each valued provided subheadings headings "+
+  "subheading heading nos containing weight percent more less there their from into such any which these those "+
+  "whether including parts thereof articles goods products wares items having being been was were are its it "+
+  "all some most least highest lowest value values total net gross unit units number numbers").split(/\s+/));
+
+// ---------- 形态码释义（对应红线 02） ----------
+const RK = {
+  p: ["从价 %",      "grn", "可换算"],
+  s: ["从量 ¢/$",    "warn","需计量单位，本页不换算"],
+  c: ["复合",        "warn","需计量单位，本页不换算"],
+  f: ["Free",        "grn", "基础税率为零"],
+  t: ["文本引用",    "red", "禁止换算"],
+  e: ["空",          "red", "需人工判读"]
+};
+
+function rateChip(rk){
+  const m = RK[rk] || RK.e;
+  return '<span class="chip ' + m[1] + '">' + m[0] + " · " + m[2] + "</span>";
+}
+
+// ---------- 查询 ----------
+async function lookupHS(hs){
+  const d = dg(hs);
+  if (d.length < 4) throw new Error("HS 码至少需要 4 位数字");
+  const ch = d.slice(0, 2);
+  const shard = await gunzipFile("hts-" + TAG + "-ch" + ch + ".json.gz");
+  let row = shard.rows.find(r => dg(r.h) === d);
+  let matchKind = "exact";
+  if (!row){                                   // 前缀容错：库里只有 10 位叶子时
+    const c = shard.rows.filter(r => dg(r.h).startsWith(d));
+    if (c.length){ row = c[0]; matchKind = "prefix"; }
+  }
+  if (!row) return { found:false, hs, digits:d };
+  return { found:true, row, matchKind, digits:d, chapter:ch, shardSize:shard.rows.length };
+}
+
+async function findCh99(d){
+  const [c99, refs] = await Promise.all([
+    gunzipFile("hts-" + TAG + "-ch99.json.gz"),
+    gunzipFile("hts-" + TAG + "-ch99refs.json.gz")
+  ]);
+  const out = [];
+  for (const k in refs.refs){
+    if (d.startsWith(k) || k.startsWith(d)){
+      for (const i of refs.refs[k]) out.push({ idx:i, row:c99.rows[i], via:k });
+    }
+  }
+  const seen = new Set();
+  return out.filter(x => !seen.has(x.idx) && seen.add(x.idx));
+}
+
+// 关键词分两级：self（叶子自身描述，特异性高）> path（祖先链品名，通用词多）。
+// 踩过的坑：把两级混在一起按长度排序，电池的关键词变成 rectangular / separators，
+// 于是命中一堆钢管和电工钢的反倾销案。self 词优先后，电池的命中只剩锂相关 4 条。
+function kwSets(row){
+  const grab = s => [...new Set(((s || "").toLowerCase().match(/[a-z]{5,}/g) || []))].filter(w => !STOP.has(w));
+  const byLen = a => a.slice().sort((x, y) => y.length - x.length);
+  const sSelf = new Set(grab(row.d));
+  const path  = grab((row.p || []).join(" ")).filter(w => !sSelf.has(w));
+  return { self: byLen([...sSelf]).slice(0, 5), path: byLen(path).slice(0, 6),
+           all:  byLen([...sSelf].concat(path)).slice(0, 10) };
+}
+
+// 判定：self 词命中 1 个即算（特异性高）；仅路径词命中则需 ≥2 个共现
+function scoreHit(bl, K){
+  const hs = K.self.filter(w => bl.includes(w));
+  const hp = K.path.filter(w => bl.includes(w));
+  if (hs.length >= 2) return { s:3, hit:hs.concat(hp) };   // 品名强命中
+  if (hs.length === 1) return { s:2, hit:hs.concat(hp) };  // 品名命中
+  if (hp.length >= 2)  return { s:1, hit:hp };             // 仅祖先链通用词 → 弱
+  return null;
+}
+
+function matchFR(row, d, docs){
+  const K = kwSets(row);
+  const out = [];
+  for (const x of docs){
+    const blob = x.t + " " + (x.ab || "");
+    if (dg(blob).includes(d)){ out.push({ s:4, doc:x, hit:[] }); continue; }  // 编码命中
+    const r = scoreHit(blob.toLowerCase(), K);
+    if (r) out.push({ s:r.s, doc:x, hit:r.hit });
+  }
+  out.sort((a,b) => b.s - a.s || String(b.doc.pub).localeCompare(String(a.doc.pub)));
+  return { kw: K.all, K, hits: out };
+}
+
+// ADD/CVD 提示走两条路：
+//   强 = HS 编码索引命中；弱 = 品名关键词命中。
+// 原因：3,808 条里只有 133 条（3.5%）能从文本抽出 HS 码 —— Commerce/ITA 的公告
+// 大多不在摘要列子目号。只走强路径会漏掉绝大多数（实测：多晶硅的 Silicon Metal
+// 反倾销令就被漏掉），所以必须补一条关键词路径，并明确标注为「疑似，需人工核对」。
+async function findADCVD(d, row){
+  const ad = await gunzipFile("fr-adcvd-20260928.json.gz");
+  const byNo = new Map(ad.docs.map(x => [x.no, x]));
+  const seen = new Set();
+
+  const strong = [];
+  for (const k in ad.hs_index){
+    if (d.startsWith(k) || k.startsWith(d)){
+      for (const no of ad.hs_index[k]){
+        if (!seen.has(no)){ seen.add(no); strong.push(Object.assign({ via:"编码 " + k }, byNo.get(no) || { no })); }
+      }
+    }
+  }
+
+  const K = kwSets(row);
+  const weak = [];
+  for (const x of ad.docs){
+    if (seen.has(x.no)) continue;
+    const r = scoreHit((x.t || "").toLowerCase(), K);
+    if (r){ seen.add(x.no); weak.push(Object.assign({ hit:r.hit, s:r.s }, x)); }
+  }
+  weak.sort((a,b) => (b.s - a.s) || String(b.pub || "").localeCompare(String(a.pub || "")));
+  return { strong, weak, kw: K.all };
+}
+
+// ADD/CVD 命中按「产品名」聚合：同一产品的各国案件/各阶段公告会重复几十条，
+// 摊平显示会把提示稀释成一堆流水（实测多晶硅 188 条 → 实际只有 17 个产品名）。
+function groupByProduct(docs){
+  const g = new Map();
+  for (const x of docs){
+    let name = (x.t || "").split(/\s+From\s+/i)[0];
+    name = name.split(/[;:]/)[0].trim() || (x.t || "").slice(0, 60);
+    if (!g.has(name)) g.set(name, []);
+    g.get(name).push(x);
+  }
+  return [...g.entries()].map(([name, items]) => {
+    items.sort((a, b) => String(b.pub || "").localeCompare(String(a.pub || "")));
+    const words = new Set();
+    for (const it of items) (it.hit || []).forEach(w => words.add(w));
+    return { name, n: items.length, latest: items[0].pub || "", sample: items[0], hit: [...words] };
+  }).sort((a, b) => b.n - a.n);
+}
+
+// ---------- 渲染 ----------
+function renderPath(row){
+  const p = (row.p || []).map(x => '<span class="lv">' + esc(x) + "</span>");
+  p.push('<span class="lv" style="color:var(--ink);font-weight:600">' + esc(row.d) + "</span>");
+  return '<div class="path">' + p.join('<span class="sep">›</span>') + "</div>";
+}
+
+const SNAME = { 4:"编码命中", 3:"品名强命中", 2:"品名命中", 1:"弱·通用词" };
+const SCLS  = { 4:"s3", 3:"s3", 2:"s2", 1:"s1" };
+
+function docHTML(x, frUrl){
+  return '<div class="doc">' +
+    '<div class="dmeta">' +
+      '<span class="str ' + SCLS[x.s] + '">' + SNAME[x.s] + "</span>" +
+      '<span class="typ ' + esc(x.doc.ty||"") + '">' + esc(x.doc.ty || "—") + "</span>" +
+      "<span>" + esc(x.doc.pub || "") + "</span>" +
+      (x.doc.eff ? "<span>生效 " + esc(x.doc.eff) + "</span>" : "") +
+      (x.doc.close ? "<span>意见截止 " + esc(x.doc.close) + "</span>" : "") +
+      "<span>" + esc((x.doc.ag||[]).join(" / ")) + "</span>" +
+    "</div>" +
+    '<div class="dtitle"><a href="' + esc(frUrl) + '" target="_blank" rel="noopener">' + esc(x.doc.t) + "</a></div>" +
+    (x.doc.ab ? '<div class="dabs">' + esc(x.doc.ab.slice(0,240)) + (x.doc.ab.length>240?"…":"") + "</div>" : "") +
+    (x.hit && x.hit.length ? '<div class="dhit">命中词：' + x.hit.map(esc).join(" · ") + "</div>" : "") +
+  "</div>";
+}
+
+function render(res){
+  const { base, ch99, fr, adcvd, kw } = res;
+  const row = base.row;
+  const d = base.digits;
+
+  // ---------- 红线自检 ----------
+  const alerts = [];
+  const isFree   = row.rk === "f";
+  const snapClean = isFree && ch99.length === 0;
+  // 触发条件刻意放宽到「L1 有任何命中」：编码命中与单词模糊命中都算。
+  // 上一版只认强度≥2 的命中，结果多晶硅（Free + Ch99 零命中 + 实时层的
+  // Proclamation 11052）反而不告警 —— 那条恰恰是最需要拦住的一例。
+  const l1Rules = fr.hits.filter(x => x.doc.ty === "Rule" || x.doc.ty === "Presidential Document");
+  if (snapClean && fr.hits.length){
+    alerts.push({cls:"", tag:"红线 01", t:"快照给出「零关税」，但实时层存在相关措施 —— 不得据此下结论",
+      d:"L2 基础税率 <code>Free</code>、Chapter 99 零命中；但 L1 联邦公报命中 <b>" + fr.hits.length +
+        "</b> 条相关文档" +
+        (l1Rules.length ? "，其中 <b>" + l1Rules.length + "</b> 条为 <code>Rule</code> 类（已生效或将生效）" : "") +
+        "。以公告形式实施的行政措施不写进 HTS 税率字段，快照层根本捕获不到 —— " +
+        "这正是「只出参考测算、不出应缴税额」的实证。"});
+  }
+  if (row.rk === "t")
+    alerts.push({cls:"", tag:"红线 02", t:"税率为文本交叉引用形态 —— 拒绝换算为数字",
+      d:"该档位写作 <code>" + esc(row.g.slice(0,90)) + "</code>，不是可解析的数值，只能展示原文。"});
+  if (ch99.length)
+    alerts.push({cls:"warn", tag:"L2 附加", t:"命中 " + ch99.length + " 条 Chapter 99 附加措施，基础税率不足以反映实际税负",
+      d:"附加措施（232 / 301 / 配额等）叠加在基础税率之上，本页仅列出原文，不做叠加计算。"});
+  if (adcvd.strong.length || adcvd.weak.length){
+    const a = [], b = [];
+    if (adcvd.strong.length) a.push("<b>" + adcvd.strong.length + "</b> 条编码命中");
+    if (adcvd.weak.length)   a.push("<b>" + adcvd.weak.length + "</b> 条关键词疑似命中（标题匹配）");
+    if (adcvd.weak.length)   b.push("疑似命中仅按品名关键词比对标题，可能误报，需人工核对。");
+    b.push("保证金率按出口商个案裁定、随年度复审变动，无法从公开数据推算，<b>不出金额</b>。");
+    alerts.push({cls:"warn", tag:"ADD/CVD", t:"存在反倾销 / 反补贴措施记录 —— 本测算未含保证金",
+      d: a.join(" + ") + "。" + b.join(" ")});
+  } else {
+    alerts.push({cls:"warn", tag:"ADD/CVD", t:"未检索到相关记录",
+      d:"覆盖联邦公报近 3 年文本（3,808 条，其中 133 条能抽出 HS 编码）+ 品名关键词比对。" +
+        "<b>未命中 ≠ 无措施</b> —— 大量 Commerce 公告既无子目号、标题也不含通用品名。"});
+  }
+  alerts.push({cls:"", tag:"红线 03", t:"HS 码由你提供，本页未做归类复核",
+    d:"归类是持证报关行的法定责任。原产地 / FTA 优惠率、配额与许可同样不在本页覆盖范围内。"});
+
+  document.getElementById("alert").innerHTML = alerts.map(a =>
+    '<div class="alert ' + a.cls + '"><div class="at"><span class="tag">' + a.tag + "</span>" + a.t +
+    '</div><div class="ad">' + a.d + "</div></div>").join("");
+
+  // ---------- 主体 ----------
+  const frUrl = x => "https://www.federalregister.gov/d/" + (x.no || "");
+  let h = "";
+
+  // L2 基础税率
+  h += '<div class="blk"><h2><span class="ly l2">L2 快照</span>HTS 基础税率 · USITC 2026 rev.9' +
+       '<span class="cnt">' + esc(row.h) + " · 本章 " + base.shardSize + " 条</span></h2><div class=\"bd\">" +
+       renderPath(row) +
+       '<div class="rate">' +
+         '<div class="cell"><div class="k">GENERAL（MFN）</div><div class="v' + (isFree?" muted":"") + '">' + esc(row.g || "—") + "</div></div>" +
+         '<div class="cell"><div class="k">SPECIAL</div><div class="v muted" style="max-width:340px">' + esc((row.s||"—").slice(0,110)) + "</div></div>" +
+         '<div class="cell"><div class="k">COL.2</div><div class="v muted">' + esc(row.o || "—") + "</div></div>" +
+       "</div>" +
+       '<div class="chips">' + rateChip(row.rk) +
+         (base.matchKind === "prefix" ? '<span class="chip blu">前缀回退匹配（输入 ' + esc(d) + "）</span>" : '<span class="chip grn">精确匹配</span>') +
+         (row.gi ? '<span class="chip">税率继承自 ' + esc(row.gi) + "</span>" : '<span class="chip">税率来自本行</span>') +
+       "</div>" +
+       "</div></div>";
+
+  // L2 Chapter 99
+  h += '<div class="blk"><h2><span class="ly l2">L2 快照</span>Chapter 99 附加措施' +
+       '<span class="cnt">' + ch99.length + " 条</span></h2><div class=\"bd\">";
+  if (!ch99.length){
+    h += '<div class="empty">未命中。<b>这不等于该商品没有附加措施</b> —— Chapter 99 只收录以税则号列明的措施，' +
+         "以行政公告形式实施的措施（如 §232 公告）不进这张表。</div>";
+  } else {
+    const show = ch99.slice(0, 12);
+    h += show.map(x => {
+      const r = x.row;
+      const nm = (r.p && r.p.length) ? r.p.join(" › ") : r.d;
+      return '<div class="c99"><div class="h">' + esc(r.h) + "</div>" +
+        '<div class="nm">' + esc(nm.slice(0,160)) + (nm.length>160?"…":"") + "</div>" +
+        '<div class="rt">general ' + esc(r.g || "—") +
+          (r.a ? ' · <span class="ad">additionalDuties ' + esc(String(r.a).slice(0,90)) + "</span>" : "") +
+          " · 经子目 " + esc(x.via) + "</div></div>";
+    }).join("");
+    if (ch99.length > show.length) h += '<div class="empty">…另有 ' + (ch99.length - show.length) + " 条未列出</div>";
+  }
+  h += "</div></div>";
+
+  // L1 联邦公报
+  h += '<div class="blk"><h2><span class="ly l1">L1 实时</span>联邦公报 · 关税类文档（近 90 天，' +
+       fr.total + " 条）<span class=\"cnt\">命中 " + fr.hits.length + "</span></h2><div class=\"bd\">";
+  h += '<div class="dhit" style="margin-bottom:8px">检索词（自品名抽取，按长度排序）：' +
+       (kw.length ? kw.map(esc).join(" · ") : "（无可抽词）") + "</div>";
+  if (!fr.hits.length){
+    h += '<div class="empty">未检索到相关记录。<b>未命中 ≠ 无措施。</b></div>';
+  } else {
+    h += fr.hits.slice(0, 14).map(x => docHTML(x, frUrl(x.doc))).join("");
+    if (fr.hits.length > 14) h += '<div class="empty">…另有 ' + (fr.hits.length - 14) + " 条</div>";
+  }
+  h += "</div></div>";
+
+  // ADD/CVD
+  const gStrong = groupByProduct(adcvd.strong);
+  const gWeak   = groupByProduct(adcvd.weak);
+  const adGroup = (g, kind) => '<div class="doc"><div class="dmeta">' +
+      '<span class="str ' + (kind === "s" ? "s3" : "s1") + '">' + (kind === "s" ? "编码命中" : "疑似·关键词") + "</span>" +
+      '<span class="typ ' + esc(g.sample.ty||"") + '">' + esc(g.sample.ty || "—") + "</span>" +
+      "<span>" + g.n + " 条记录</span><span>最新 " + esc(g.latest) + "</span>" +
+      "<span>匹配词 " + g.hit.map(esc).join("·") + "</span>" +
+      "<span>" + esc((g.sample.ag||[]).join(" / ")) + "</span></div>" +
+      '<div class="dtitle"><a href="' + esc(frUrl(g.sample)) + '" target="_blank" rel="noopener">' + esc(g.name) + "</a></div></div>";
+
+  h += '<div class="blk"><h2><span class="ly l3">L1′ 提示</span>反倾销 / 反补贴 · 存在性提示（不出金额）' +
+       '<span class="cnt">' + adcvd.strong.length + " 条 / " + (gStrong.length + gWeak.length) +
+       " 个产品</span></h2><div class=\"bd\">";
+  if (!adcvd.strong.length && !adcvd.weak.length){
+    h += '<div class="empty">未检索到。覆盖范围见上方口径说明。</div>';
+  } else {
+    if (gStrong.length){
+      h += '<div class="dhit" style="margin-bottom:6px">编码命中（强）</div>';
+      h += gStrong.map(g => adGroup(g, "s")).join("");
+    }
+    if (gWeak.length){
+      h += '<div class="dhit" style="margin:11px 0 5px">按品名关键词比对标题命中（弱，<b>可能误报</b>），按产品名聚合：</div>';
+      h += gWeak.slice(0, 8).map(g => adGroup(g, "w")).join("");
+      if (gWeak.length > 8)
+        h += '<div class="empty">…另有 ' + (gWeak.length - 8) + " 个产品名（共 " +
+             gWeak.slice(8).reduce((s,g) => s + g.n, 0) + " 条记录）</div>";
+    }
+    h += '<div class="note red" style="margin-top:10px">上述仅提示「存在措施记录」，' +
+         "<b>不给保证金率、不给金额</b>。个案裁定按出口商分别确定，且随年度复审变动。</div>";
+  }
+  h += "</div></div>";
+
+  // 参考测算
+  h += '<div class="blk"><h2><span class="ly">参考测算</span>仅基础税 + 法定规费 · 非应缴税额</h2><div class="bd">' +
+       '<div class="calcrow">' +
+         "<div><label>货值（USD）</label><input type=\"number\" id=\"val\" value=\"100000\" min=\"0\" step=\"1000\"></div>" +
+         "<div><label>运输方式</label><select id=\"mode\" style=\"font:13px/1 var(--mono);padding:7px 9px;border:1px solid var(--line-strong);background:#fff\">" +
+           '<option value="ocean">海运（计 HMF）</option><option value="air">空运（不计 HMF）</option></select></div>' +
+         "<div><label>MPF 费率 %</label><input type=\"number\" id=\"mpf\" value=\"0.3464\" step=\"0.0001\"></div>" +
+         "<div><label>MPF 下限 $</label><input type=\"number\" id=\"mpfmin\" value=\"33.58\" step=\"0.01\"></div>" +
+         "<div><label>MPF 上限 $</label><input type=\"number\" id=\"mpfmax\" value=\"651.50\" step=\"0.01\"></div>" +
+         "<div><label>HMF 费率 %</label><input type=\"number\" id=\"hmf\" value=\"0.125\" step=\"0.001\"></div>" +
+         "<div><button class=\"ghost\" id=\"calc\" style=\"padding:8px 14px\">计算</button></div>" +
+       "</div>" +
+       '<div id="calcout"></div>' +
+       '<div class="note red"><b>这不是应缴税额。</b>输出仅覆盖「基础税率 × 货值 + MPF/HMF 规费」两项，' +
+       "未含 Chapter 99 附加措施、ADD/CVD 保证金、配额与许可、原产地优惠率，也未做归类复核。" +
+       "实际税负需由持证报关行按完整要素确定。</div>" +
+       '<div class="note">MPF / HMF 为确定性查表值，取自 CBP FY2026 用户费公告（90 FR 34665，2025-10-01 生效）：' +
+       "MPF 0.3464%，每票下限 $33.58 / 上限 $651.50；HMF 0.125%，仅海运，无上下限。CBP 每年按通胀调整上下限，请核对当期公告。</div>" +
+       "</div></div>";
+
+  // 未覆盖项
+  h += '<div class="blk"><h2><span class="ly">未覆盖</span>本页明确不做的部分</h2><div class="bd"><ul class="unc">' +
+    '<li><span class="m no">不出</span><div class="tx"><b>自动 HS 归类</b><span>持证报关行的法定工作。本页的 HS 码由你输入，未做复核。</span></div></li>' +
+    '<li><span class="m no">不出</span><div class="tx"><b>ADD / CVD 保证金金额</b><span>按出口商个案裁定、随年度复审变动，无法从公开数据推算。仅出存在性提示。</span></div></li>' +
+    '<li><span class="m no">不出</span><div class="tx"><b>原产地 / FTA 优惠率判定</b><span>规则因产品、因协定而异。SPECIAL 档原文只读展示，不代判 eligibility。</span></div></li>' +
+    '<li><span class="m no">不出</span><div class="tx"><b>Chapter 99 附加措施的叠加计算</b><span>叠加顺序、排除清单、配额状态都会改变结果。仅列原文。</span></div></li>' +
+    '<li><span class="m no">不出</span><div class="tx"><b>文本引用形态税率的换算</b><span>形如 “The duty provided in the applicable subheading” 的档位拒绝出数字。</span></div></li>' +
+    '<li><span class="m yes">出</span><div class="tx"><b>MPF / HMF 规费</b><span>确定性查表值（CBP FY2026 公告），独立成行并标注依据与上下限。</span></div></li>' +
+    "</ul></div></div>";
+
+  document.getElementById("result").innerHTML = h;
+  bindCalc(row);
+}
+
+function bindCalc(row){
+  const run = () => {
+    const v   = parseFloat(document.getElementById("val").value) || 0;
+    const mode= document.getElementById("mode").value;
+    const mpf = parseFloat(document.getElementById("mpf").value) || 0;
+    const mn  = parseFloat(document.getElementById("mpfmin").value) || 0;
+    const mx  = parseFloat(document.getElementById("mpfmax").value) || 0;
+    const hmf = parseFloat(document.getElementById("hmf").value) || 0;
+
+    let dutyHTML, dutyVal = null;
+    if (row.rk === "p"){
+      const pct = parseFloat(String(row.g).replace(/[^\d.]/g, ""));
+      dutyVal = v * pct / 100;
+      dutyHTML = '<td class="n">' + dutyVal.toFixed(2) + "</td>";
+    } else if (row.rk === "f"){
+      dutyVal = 0;
+      dutyHTML = '<td class="n">0.00</td>';
+    } else {
+      dutyHTML = '<td class="n">不出数字</td>';
+    }
+
+    const rawM = v * mpf / 100;
+    const mpfV = Math.min(Math.max(rawM, mn), mx);
+    const hmfV = mode === "ocean" ? v * hmf / 100 : 0;
+
+    let rows = "";
+    const na = row.rk !== "p" && row.rk !== "f";
+    rows += '<tr class="' + (na?"na":"") + '"><td class="k">基础关税（general ' + esc(row.g || "—") + "）</td>" + dutyHTML + "</tr>";
+    rows += '<tr><td class="k">MPF ' + mpf + "%（下限 " + mn + " / 上限 " + mx + "）</td>" +
+            '<td class="n">' + mpfV.toFixed(2) + (rawM<mn?" ← 触下限":rawM>mx?" ← 触上限":"") + "</td></tr>";
+    rows += '<tr><td class="k">HMF ' + hmf + "%（" + (mode==="ocean"?"海运适用":"空运不计") + "）</td>" +
+            '<td class="n">' + hmfV.toFixed(2) + "</td></tr>";
+
+    const total = (dutyVal == null ? null : dutyVal + mpfV + hmfV);
+    rows += '<tr class="sum"><td class="k">参考合计（基础税 + 规费）</td><td class="n">' +
+            (total == null ? "不可计" : total.toFixed(2)) + "</td></tr>";
+
+    document.getElementById("calcout").innerHTML =
+      '<table class="out">' + rows + "</table>" +
+      (na ? '<div class="note red">该档位不是可解析的数值形态（' + (RK[row.rk]||RK.e)[0] +
+             "），基础关税一栏拒绝出数字；合计因此不可计。</div>" : "");
+  };
+  document.getElementById("calc").addEventListener("click", run);
+  ["val","mode","mpf","mpfmin","mpfmax","hmf"].forEach(id =>
+    document.getElementById(id).addEventListener("change", run));
+  run();
+}
+
+// ---------- 主流程 ----------
+async function query(hs){
+  const box = document.getElementById("result");
+  box.innerHTML = '<div class="loading">载入分片并检索…</div>';
+  document.getElementById("alert").innerHTML = "";
+  try{
+    const base = await lookupHS(hs);
+    if (!base.found){
+      box.innerHTML = '<div class="blk"><div class="bd"><div class="empty">HS 码 <b>' + esc(hs) +
+        "</b> 在本章分片中未找到。请检查位数（8 / 10 位）。</div></div></div>";
+      return;
+    }
+    const [ch99, frDocs, adcvd] = await Promise.all([
+      findCh99(base.digits),
+      gunzipFile("fr-tariff-20260928.json.gz"),
+      findADCVD(base.digits, base.row)
+    ]);
+    const fr = matchFR(base.row, base.digits, frDocs.docs);
+    render({ base, ch99, fr: Object.assign(fr, {total: frDocs.count}), adcvd, kw: fr.kw });
+  } catch (e){
+    box.innerHTML = '<div class="err">查询失败：' + esc(e.message) + "</div>";
+  }
+}
+
+async function boot(){
+  try{
+    const m = await loadPlain("manifest.json");
+    const s = m.hts.stats;
+    document.getElementById("status").innerHTML =
+      "<span>HTS <b>" + esc(m.hts.tag) + "</b></span>" +
+      "<span>整表 <b>" + s.total_rows.toLocaleString() + "</b> 行</span>" +
+      "<span>按章分片 <b>" + s.chapters + "</b> 章 / <b>" + s.leaf_rows.toLocaleString() + "</b> 条</span>" +
+      "<span>Ch99 <b>" + s.ch99_rows.toLocaleString() + "</b> 条（<b>" + s.ch99_ref_keys + "</b> 子目可反查）</span>" +
+      "<span>FR 关税 <b>" + (m.fr ? m.fr.tariff_count : "—") + "</b> 条</span>" +
+      "<span>ADD/CVD <b>" + (m.fr ? m.fr.adcvd_count.toLocaleString() : "—") + "</b> 条</span>" +
+      "<span>生成 <b>" + esc(m.generated_at) + "</b></span>";
+
+    const rows = m.hts.files.map(f =>
+      "<tr><td class=\"f\">" + esc(f.file) + "</td><td>" + esc(f.note || "") + "</td><td>" +
+      (f.gzip != null ? (f.gzip/1024).toFixed(1) + " KB" : (f.raw/1024).toFixed(1) + " KB") +
+      "</td><td>—</td><td>" + esc(String(f.sha256).slice(0,16)) + "</td></tr>").join("");
+    const frf = (m.fr && m.fr.files) || [];
+    document.getElementById("src").innerHTML = rows + frf.map(f =>
+      "<tr><td class=\"f\">" + esc(f.file) + "</td><td>" + esc(f.note || "") + "</td><td>" +
+      (f.gzip != null ? (f.gzip/1024).toFixed(1) + " KB" : (f.raw/1024).toFixed(1) + " KB") +
+      "</td><td>—</td><td>" + esc(String(f.sha256).slice(0,16)) + "</td></tr>").join("");
+  } catch (e){
+    document.getElementById("err").innerHTML = '<div class="err">manifest 载入失败：' + esc(e.message) +
+      "。<br>请用 <code>serve.py</code> 起服务后访问，不要直接以 file:// 打开。</div>";
+    return;
+  }
+  await query(document.getElementById("hs").value);
+}
+
+document.getElementById("go").addEventListener("click", () => query(document.getElementById("hs").value));
+document.getElementById("hs").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("go").click(); });
+document.querySelectorAll(".samples button").forEach(b =>
+  b.addEventListener("click", () => { document.getElementById("hs").value = b.dataset.hs; query(b.dataset.hs); }));
+document.getElementById("rand").addEventListener("click", async () => {
+  const idx = await gunzipFile("hts-" + TAG + "-index.json.gz");
+  const h = idx.rows[Math.floor(Math.random() * idx.rows.length)];
+  document.getElementById("hs").value = h.h;
+  query(h.h);
+});
+
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,750 @@
+{
+ "generated_at": "2026-09-28T21:59:38",
+ "generator": "scripts/fetch_tariff_data.py",
+ "hts": {
+  "tag": "2026rev9",
+  "stats": {
+   "total_rows": 35502,
+   "leaf_rows": 23568,
+   "rate_inherited": 11708,
+   "chapters": 97,
+   "ch99_rows": 2969,
+   "ch99_with_refs": 2571,
+   "ch99_ref_keys": 1050,
+   "heading_index": 961
+  },
+  "files": [
+   {
+    "file": "hts-2026rev9-index.json.gz",
+    "raw": 145315,
+    "gzip": 38182,
+    "sha256": "70b4f939c75793b3",
+    "note": "961 个 4 位 heading"
+   },
+   {
+    "file": "hts-2026rev9-ch01.json.gz",
+    "raw": 17860,
+    "gzip": 1804,
+    "sha256": "99b41fbc3bdbbd96",
+    "note": "91 条"
+   },
+   {
+    "file": "hts-2026rev9-ch02.json.gz",
+    "raw": 54015,
+    "gzip": 3165,
+    "sha256": "ae69a1c71879847e",
+    "note": "196 条"
+   },
+   {
+    "file": "hts-2026rev9-ch03.json.gz",
+    "raw": 267887,
+    "gzip": 13551,
+    "sha256": "b7e54d8b3ace4413",
+    "note": "645 条"
+   },
+   {
+    "file": "hts-2026rev9-ch04.json.gz",
+    "raw": 111093,
+    "gzip": 6198,
+    "sha256": "681f7caa070006c0",
+    "note": "281 条"
+   },
+   {
+    "file": "hts-2026rev9-ch05.json.gz",
+    "raw": 15126,
+    "gzip": 1885,
+    "sha256": "b6b7c6da0db16e69",
+    "note": "48 条"
+   },
+   {
+    "file": "hts-2026rev9-ch06.json.gz",
+    "raw": 28714,
+    "gzip": 2003,
+    "sha256": "f8dfe456512c6aa7",
+    "note": "87 条"
+   },
+   {
+    "file": "hts-2026rev9-ch07.json.gz",
+    "raw": 144029,
+    "gzip": 8703,
+    "sha256": "90ec344609dfaea5",
+    "note": "467 条"
+   },
+   {
+    "file": "hts-2026rev9-ch08.json.gz",
+    "raw": 77548,
+    "gzip": 5793,
+    "sha256": "d8fe4b5a1fe95314",
+    "note": "288 条"
+   },
+   {
+    "file": "hts-2026rev9-ch09.json.gz",
+    "raw": 26306,
+    "gzip": 2045,
+    "sha256": "7c56947fc6a2ba03",
+    "note": "102 条"
+   },
+   {
+    "file": "hts-2026rev9-ch10.json.gz",
+    "raw": 16493,
+    "gzip": 1643,
+    "sha256": "b7faac869ad4b171",
+    "note": "80 条"
+   },
+   {
+    "file": "hts-2026rev9-ch11.json.gz",
+    "raw": 14088,
+    "gzip": 1558,
+    "sha256": "40ee68a157ac747b",
+    "note": "61 条"
+   },
+   {
+    "file": "hts-2026rev9-ch12.json.gz",
+    "raw": 53434,
+    "gzip": 4085,
+    "sha256": "328a1dc0dd31e09f",
+    "note": "197 条"
+   },
+   {
+    "file": "hts-2026rev9-ch13.json.gz",
+    "raw": 9104,
+    "gzip": 953,
+    "sha256": "7911585736aa300f",
+    "note": "28 条"
+   },
+   {
+    "file": "hts-2026rev9-ch14.json.gz",
+    "raw": 4703,
+    "gzip": 870,
+    "sha256": "e1e9b42fcddcf769",
+    "note": "16 条"
+   },
+   {
+    "file": "hts-2026rev9-ch15.json.gz",
+    "raw": 44067,
+    "gzip": 3591,
+    "sha256": "fb1a6104bb1adfde",
+    "note": "134 条"
+   },
+   {
+    "file": "hts-2026rev9-ch16.json.gz",
+    "raw": 62233,
+    "gzip": 4477,
+    "sha256": "db51584170cee3da",
+    "note": "212 条"
+   },
+   {
+    "file": "hts-2026rev9-ch17.json.gz",
+    "raw": 53058,
+    "gzip": 3078,
+    "sha256": "b5bc2a5df0fbf092",
+    "note": "101 条"
+   },
+   {
+    "file": "hts-2026rev9-ch18.json.gz",
+    "raw": 42969,
+    "gzip": 2425,
+    "sha256": "f2310327b91f4f0f",
+    "note": "88 条"
+   },
+   {
+    "file": "hts-2026rev9-ch19.json.gz",
+    "raw": 73160,
+    "gzip": 3672,
+    "sha256": "efadac45cd73b5ef",
+    "note": "117 条"
+   },
+   {
+    "file": "hts-2026rev9-ch20.json.gz",
+    "raw": 131797,
+    "gzip": 7386,
+    "sha256": "e334911da8454a77",
+    "note": "334 条"
+   },
+   {
+    "file": "hts-2026rev9-ch21.json.gz",
+    "raw": 54288,
+    "gzip": 3854,
+    "sha256": "3a5f7c2b9ce5138c",
+    "note": "124 条"
+   },
+   {
+    "file": "hts-2026rev9-ch22.json.gz",
+    "raw": 53838,
+    "gzip": 3737,
+    "sha256": "03b698f98509fb28",
+    "note": "136 条"
+   },
+   {
+    "file": "hts-2026rev9-ch23.json.gz",
+    "raw": 24260,
+    "gzip": 2168,
+    "sha256": "a88b9cc8a64227b1",
+    "note": "77 条"
+   },
+   {
+    "file": "hts-2026rev9-ch24.json.gz",
+    "raw": 100367,
+    "gzip": 3969,
+    "sha256": "b12bbab64cd6e85f",
+    "note": "246 条"
+   },
+   {
+    "file": "hts-2026rev9-ch25.json.gz",
+    "raw": 31598,
+    "gzip": 3598,
+    "sha256": "9663202219c42a85",
+    "note": "114 条"
+   },
+   {
+    "file": "hts-2026rev9-ch26.json.gz",
+    "raw": 32483,
+    "gzip": 2558,
+    "sha256": "86285a4c17f5c83b",
+    "note": "122 条"
+   },
+   {
+    "file": "hts-2026rev9-ch27.json.gz",
+    "raw": 98180,
+    "gzip": 4722,
+    "sha256": "d486d80959dd65cf",
+    "note": "162 条"
+   },
+   {
+    "file": "hts-2026rev9-ch28.json.gz",
+    "raw": 99053,
+    "gzip": 8019,
+    "sha256": "ad350392371835d5",
+    "note": "373 条"
+   },
+   {
+    "file": "hts-2026rev9-ch29.json.gz",
+    "raw": 438674,
+    "gzip": 35069,
+    "sha256": "0568e87e803be334",
+    "note": "1284 条"
+   },
+   {
+    "file": "hts-2026rev9-ch30.json.gz",
+    "raw": 95537,
+    "gzip": 5215,
+    "sha256": "5facea0854a081d6",
+    "note": "201 条"
+   },
+   {
+    "file": "hts-2026rev9-ch31.json.gz",
+    "raw": 8972,
+    "gzip": 1044,
+    "sha256": "c2b2826380c7c3dd",
+    "note": "33 条"
+   },
+   {
+    "file": "hts-2026rev9-ch32.json.gz",
+    "raw": 100650,
+    "gzip": 7506,
+    "sha256": "6f043750fda410ed",
+    "note": "183 条"
+   },
+   {
+    "file": "hts-2026rev9-ch33.json.gz",
+    "raw": 36100,
+    "gzip": 2484,
+    "sha256": "5ff5ba4d810cc1e6",
+    "note": "81 条"
+   },
+   {
+    "file": "hts-2026rev9-ch34.json.gz",
+    "raw": 26524,
+    "gzip": 2250,
+    "sha256": "48bbb485406570b3",
+    "note": "52 条"
+   },
+   {
+    "file": "hts-2026rev9-ch35.json.gz",
+    "raw": 11880,
+    "gzip": 1518,
+    "sha256": "2f8f83b49420f915",
+    "note": "35 条"
+   },
+   {
+    "file": "hts-2026rev9-ch36.json.gz",
+    "raw": 5126,
+    "gzip": 963,
+    "sha256": "2e9c8ed36b29594a",
+    "note": "22 条"
+   },
+   {
+    "file": "hts-2026rev9-ch37.json.gz",
+    "raw": 27987,
+    "gzip": 1892,
+    "sha256": "3e28af6c508c25dc",
+    "note": "80 条"
+   },
+   {
+    "file": "hts-2026rev9-ch38.json.gz",
+    "raw": 98274,
+    "gzip": 8846,
+    "sha256": "d713c5725d376058",
+    "note": "234 条"
+   },
+   {
+    "file": "hts-2026rev9-ch39.json.gz",
+    "raw": 114727,
+    "gzip": 10144,
+    "sha256": "b6150c139d429d33",
+    "note": "366 条"
+   },
+   {
+    "file": "hts-2026rev9-ch40.json.gz",
+    "raw": 69210,
+    "gzip": 5253,
+    "sha256": "be5643f7776f0c15",
+    "note": "230 条"
+   },
+   {
+    "file": "hts-2026rev9-ch41.json.gz",
+    "raw": 86082,
+    "gzip": 3410,
+    "sha256": "58b9eb7dce6e1ada",
+    "note": "211 条"
+   },
+   {
+    "file": "hts-2026rev9-ch42.json.gz",
+    "raw": 109879,
+    "gzip": 4359,
+    "sha256": "f5f090debfbb6b93",
+    "note": "138 条"
+   },
+   {
+    "file": "hts-2026rev9-ch43.json.gz",
+    "raw": 17433,
+    "gzip": 1356,
+    "sha256": "dd87d845455090db",
+    "note": "45 条"
+   },
+   {
+    "file": "hts-2026rev9-ch44.json.gz",
+    "raw": 236852,
+    "gzip": 12592,
+    "sha256": "03c6c6cbda640661",
+    "note": "639 条"
+   },
+   {
+    "file": "hts-2026rev9-ch45.json.gz",
+    "raw": 4596,
+    "gzip": 873,
+    "sha256": "6608e19c5af5a26d",
+    "note": "19 条"
+   },
+   {
+    "file": "hts-2026rev9-ch46.json.gz",
+    "raw": 20448,
+    "gzip": 1279,
+    "sha256": "3e71f5cf16f0fe63",
+    "note": "50 条"
+   },
+   {
+    "file": "hts-2026rev9-ch47.json.gz",
+    "raw": 6084,
+    "gzip": 771,
+    "sha256": "4475bc98ae9e9c14",
+    "note": "31 条"
+   },
+   {
+    "file": "hts-2026rev9-ch48.json.gz",
+    "raw": 191704,
+    "gzip": 8687,
+    "sha256": "676b57213f6dd04a",
+    "note": "368 条"
+   },
+   {
+    "file": "hts-2026rev9-ch49.json.gz",
+    "raw": 14775,
+    "gzip": 2277,
+    "sha256": "eda0dd90367eecb1",
+    "note": "58 条"
+   },
+   {
+    "file": "hts-2026rev9-ch50.json.gz",
+    "raw": 8775,
+    "gzip": 995,
+    "sha256": "b9c21da07458e568",
+    "note": "36 条"
+   },
+   {
+    "file": "hts-2026rev9-ch51.json.gz",
+    "raw": 39471,
+    "gzip": 2714,
+    "sha256": "6befc8189927b8eb",
+    "note": "137 条"
+   },
+   {
+    "file": "hts-2026rev9-ch52.json.gz",
+    "raw": 218282,
+    "gzip": 8772,
+    "sha256": "d8a1cda92e456e44",
+    "note": "665 条"
+   },
+   {
+    "file": "hts-2026rev9-ch53.json.gz",
+    "raw": 17470,
+    "gzip": 1549,
+    "sha256": "e946a1f6ff32aa01",
+    "note": "71 条"
+   },
+   {
+    "file": "hts-2026rev9-ch54.json.gz",
+    "raw": 127016,
+    "gzip": 5346,
+    "sha256": "663d0e73717fec39",
+    "note": "325 条"
+   },
+   {
+    "file": "hts-2026rev9-ch55.json.gz",
+    "raw": 149083,
+    "gzip": 5828,
+    "sha256": "464a66eac4173350",
+    "note": "469 条"
+   },
+   {
+    "file": "hts-2026rev9-ch56.json.gz",
+    "raw": 30120,
+    "gzip": 2918,
+    "sha256": "5d8031f898af11d4",
+    "note": "98 条"
+   },
+   {
+    "file": "hts-2026rev9-ch57.json.gz",
+    "raw": 28727,
+    "gzip": 2098,
+    "sha256": "569f232f9206e3fd",
+    "note": "88 条"
+   },
+   {
+    "file": "hts-2026rev9-ch58.json.gz",
+    "raw": 42297,
+    "gzip": 3374,
+    "sha256": "a8904e2c74365d3b",
+    "note": "134 条"
+   },
+   {
+    "file": "hts-2026rev9-ch59.json.gz",
+    "raw": 26063,
+    "gzip": 2644,
+    "sha256": "62ea43b793af267b",
+    "note": "83 条"
+   },
+   {
+    "file": "hts-2026rev9-ch60.json.gz",
+    "raw": 37222,
+    "gzip": 2230,
+    "sha256": "b2818bc14119aa71",
+    "note": "132 条"
+   },
+   {
+    "file": "hts-2026rev9-ch61.json.gz",
+    "raw": 368102,
+    "gzip": 15438,
+    "sha256": "d2c71f8d56a3b75a",
+    "note": "976 条"
+   },
+   {
+    "file": "hts-2026rev9-ch62.json.gz",
+    "raw": 604437,
+    "gzip": 22580,
+    "sha256": "32d968ff229d2996",
+    "note": "1480 条"
+   },
+   {
+    "file": "hts-2026rev9-ch63.json.gz",
+    "raw": 79217,
+    "gzip": 5380,
+    "sha256": "09bc6cb336d0d273",
+    "note": "280 条"
+   },
+   {
+    "file": "hts-2026rev9-ch64.json.gz",
+    "raw": 243307,
+    "gzip": 9300,
+    "sha256": "ff4d78251b33088a",
+    "note": "482 条"
+   },
+   {
+    "file": "hts-2026rev9-ch65.json.gz",
+    "raw": 32294,
+    "gzip": 2268,
+    "sha256": "34d1d987af880ab5",
+    "note": "81 条"
+   },
+   {
+    "file": "hts-2026rev9-ch66.json.gz",
+    "raw": 1880,
+    "gzip": 529,
+    "sha256": "2f3dc561b89fbae4",
+    "note": "8 条"
+   },
+   {
+    "file": "hts-2026rev9-ch67.json.gz",
+    "raw": 3779,
+    "gzip": 768,
+    "sha256": "a624a6fecd026dc7",
+    "note": "13 条"
+   },
+   {
+    "file": "hts-2026rev9-ch68.json.gz",
+    "raw": 45870,
+    "gzip": 4013,
+    "sha256": "bcdb0679194a5c03",
+    "note": "111 条"
+   },
+   {
+    "file": "hts-2026rev9-ch69.json.gz",
+    "raw": 59122,
+    "gzip": 4204,
+    "sha256": "3142910b6e90b131",
+    "note": "147 条"
+   },
+   {
+    "file": "hts-2026rev9-ch70.json.gz",
+    "raw": 133666,
+    "gzip": 8314,
+    "sha256": "e3ed8c1cbb4b69fb",
+    "note": "336 条"
+   },
+   {
+    "file": "hts-2026rev9-ch71.json.gz",
+    "raw": 47035,
+    "gzip": 3863,
+    "sha256": "181c51637ed326cd",
+    "note": "154 条"
+   },
+   {
+    "file": "hts-2026rev9-ch72.json.gz",
+    "raw": 188694,
+    "gzip": 10638,
+    "sha256": "95e23bd69a179097",
+    "note": "669 条"
+   },
+   {
+    "file": "hts-2026rev9-ch73.json.gz",
+    "raw": 241323,
+    "gzip": 13749,
+    "sha256": "5e983d276998a96b",
+    "note": "677 条"
+   },
+   {
+    "file": "hts-2026rev9-ch74.json.gz",
+    "raw": 46003,
+    "gzip": 3791,
+    "sha256": "50dfb9556d3856b5",
+    "note": "160 条"
+   },
+   {
+    "file": "hts-2026rev9-ch75.json.gz",
+    "raw": 5929,
+    "gzip": 811,
+    "sha256": "83df297c44577f4d",
+    "note": "30 条"
+   },
+   {
+    "file": "hts-2026rev9-ch76.json.gz",
+    "raw": 51333,
+    "gzip": 4184,
+    "sha256": "d1dd0ebf01c541ee",
+    "note": "153 条"
+   },
+   {
+    "file": "hts-2026rev9-ch78.json.gz",
+    "raw": 2948,
+    "gzip": 665,
+    "sha256": "4dc59601a1874e6a",
+    "note": "15 条"
+   },
+   {
+    "file": "hts-2026rev9-ch79.json.gz",
+    "raw": 2476,
+    "gzip": 655,
+    "sha256": "a24e83a3cfc0f1da",
+    "note": "13 条"
+   },
+   {
+    "file": "hts-2026rev9-ch80.json.gz",
+    "raw": 3178,
+    "gzip": 746,
+    "sha256": "de38098c626ad5b0",
+    "note": "15 条"
+   },
+   {
+    "file": "hts-2026rev9-ch81.json.gz",
+    "raw": 23197,
+    "gzip": 1921,
+    "sha256": "cb882ee9d51ae349",
+    "note": "89 条"
+   },
+   {
+    "file": "hts-2026rev9-ch82.json.gz",
+    "raw": 105118,
+    "gzip": 6561,
+    "sha256": "0d8214e69ed29d6f",
+    "note": "223 条"
+   },
+   {
+    "file": "hts-2026rev9-ch83.json.gz",
+    "raw": 51583,
+    "gzip": 3646,
+    "sha256": "9f47f4a31cd6e2d6",
+    "note": "105 条"
+   },
+   {
+    "file": "hts-2026rev9-ch84.json.gz",
+    "raw": 812768,
+    "gzip": 43286,
+    "sha256": "9f27e42f98b83c04",
+    "note": "2035 条"
+   },
+   {
+    "file": "hts-2026rev9-ch85.json.gz",
+    "raw": 458796,
+    "gzip": 27521,
+    "sha256": "c9f6c3f8ddab76eb",
+    "note": "1137 条"
+   },
+   {
+    "file": "hts-2026rev9-ch86.json.gz",
+    "raw": 10698,
+    "gzip": 1549,
+    "sha256": "c8324decec0d00ad",
+    "note": "40 条"
+   },
+   {
+    "file": "hts-2026rev9-ch87.json.gz",
+    "raw": 163877,
+    "gzip": 8891,
+    "sha256": "7da0a7a0a33cd09a",
+    "note": "472 条"
+   },
+   {
+    "file": "hts-2026rev9-ch88.json.gz",
+    "raw": 22910,
+    "gzip": 1637,
+    "sha256": "e27f3bec889de576",
+    "note": "78 条"
+   },
+   {
+    "file": "hts-2026rev9-ch89.json.gz",
+    "raw": 20835,
+    "gzip": 1730,
+    "sha256": "fc376f906f7a7c57",
+    "note": "70 条"
+   },
+   {
+    "file": "hts-2026rev9-ch90.json.gz",
+    "raw": 206957,
+    "gzip": 12517,
+    "sha256": "d764b23def30502a",
+    "note": "474 条"
+   },
+   {
+    "file": "hts-2026rev9-ch91.json.gz",
+    "raw": 69609,
+    "gzip": 5121,
+    "sha256": "f15307109604582c",
+    "note": "179 条"
+   },
+   {
+    "file": "hts-2026rev9-ch92.json.gz",
+    "raw": 24319,
+    "gzip": 2152,
+    "sha256": "7970b5e0e25dcacb",
+    "note": "71 条"
+   },
+   {
+    "file": "hts-2026rev9-ch93.json.gz",
+    "raw": 28742,
+    "gzip": 2315,
+    "sha256": "87716aad506eacf9",
+    "note": "80 条"
+   },
+   {
+    "file": "hts-2026rev9-ch94.json.gz",
+    "raw": 114898,
+    "gzip": 6499,
+    "sha256": "1314b6aab9267fda",
+    "note": "338 条"
+   },
+   {
+    "file": "hts-2026rev9-ch95.json.gz",
+    "raw": 62428,
+    "gzip": 4044,
+    "sha256": "836a43a5d5854401",
+    "note": "140 条"
+   },
+   {
+    "file": "hts-2026rev9-ch96.json.gz",
+    "raw": 65941,
+    "gzip": 6097,
+    "sha256": "4d129b236341846d",
+    "note": "174 条"
+   },
+   {
+    "file": "hts-2026rev9-ch97.json.gz",
+    "raw": 10236,
+    "gzip": 1046,
+    "sha256": "0e1ab5a5cfb7464e",
+    "note": "35 条"
+   },
+   {
+    "file": "hts-2026rev9-ch98.json.gz",
+    "raw": 311891,
+    "gzip": 23919,
+    "sha256": "e7361ea761c89b81",
+    "note": "503 条"
+   },
+   {
+    "file": "hts-2026rev9-ch99.json.gz",
+    "raw": 1367191,
+    "gzip": 128659,
+    "sha256": "9b74635c3fe4262e",
+    "note": "2969 条（含祖先链）"
+   },
+   {
+    "file": "hts-2026rev9-ch99refs.json.gz",
+    "raw": 79366,
+    "gzip": 10745,
+    "sha256": "eba15a1318f6d13a",
+    "note": "1050 个被引子目（2571/2969 条可反查）"
+   }
+  ]
+ },
+ "fr": {
+  "since": "2026-06-30",
+  "days": 90,
+  "files": [
+   {
+    "file": "fr-tariff-20260928.json.gz",
+    "raw": 139802,
+    "gzip": 25677,
+    "sha256": "255a51fe48592472",
+    "note": "154 条"
+   },
+   {
+    "file": "fr-adcvd-20260928.json.gz",
+    "raw": 2204638,
+    "gzip": 269078,
+    "sha256": "2838bd3d630e21b1",
+    "note": "3808 条，133 条含 HS 码，319 个码"
+   }
+  ],
+  "tariff_count": 154,
+  "adcvd_count": 3808,
+  "adcvd_with_hs": 133,
+  "adcvd_hs_keys": 319,
+  "adcvd_since": "2023-09-29"
+ },
+ "notes": [
+  "HTS 为构建期快照（非实时），页面必须标注版本与抓取日期。",
+  "税率字段一律保留原文；rk=t 表示文本引用，前端禁止换算成数字（红线 02）。",
+  "Chapter 99 的 p 字段为按 indent 回溯还原的祖先链，产品名在此而非 d 字段（红线相关实现要点）。",
+  "fr-adcvd 的 hs 来自文本抽取，存在缺漏与误报，仅作存在性风险提示（红线 03）。"
+ ]
+}
