@@ -1,0 +1,819 @@
+{
+ "kind": "section232-measure-registry",
+ "schema": 1,
+ "updated_at": "2026-09-29",
+ "hts_snapshot": "2026rev9",
+ "fr_snapshot": "20260928",
+ "provenance": "手工维护（非脚本生成）。费率档位与 Chapter 99 税号取自库内 HTS 2026 rev.9 快照原文；生效日与减免条件取自总统公告 / CBP CSMS / 官方贸易通告。公告更新时需人工复核本表。s232_families 是 Ch.99 族号白名单，供页面「同族未收录税号」一节遍历快照用；program 为 null 表示该族尚未在本表登记、也未判定归属。",
+ "scope_precision_labels": {
+  "chapter": {
+   "zh": "按章近似",
+   "en": "chapter-level approximation"
+  },
+  "heading": {
+   "zh": "按品目近似",
+   "en": "heading-level approximation"
+  },
+  "exact": {
+   "zh": "按公告/CSMS 列明编码",
+   "en": "codes as enumerated in the proclamation / CSMS"
+  }
+ },
+ "s232_families": [
+  {
+   "prefix": "9903.74.",
+   "zh": "中重型车辆与客车",
+   "en": "Medium- and heavy-duty vehicles",
+   "program": "mhdv"
+  },
+  {
+   "prefix": "9903.76.",
+   "zh": "木材 · 家具 · 厨柜",
+   "en": "Timber, furniture and cabinets",
+   "program": "timber"
+  },
+  {
+   "prefix": "9903.79.",
+   "zh": "半导体",
+   "en": "Semiconductors",
+   "program": "semis"
+  },
+  {
+   "prefix": "9903.82.",
+   "zh": "钢 / 铝 / 铜及衍生品",
+   "en": "Steel, aluminum, copper and derivatives",
+   "program": "metals"
+  },
+  {
+   "prefix": "9903.85.",
+   "zh": "铝（俄罗斯原产，或俄冶炼 / 俄铸造）",
+   "en": "Aluminum of Russian origin, or smelted / cast in Russia",
+   "program": "metals"
+  },
+  {
+   "prefix": "9903.94.",
+   "zh": "乘用车与轻卡及零部件",
+   "en": "Passenger vehicles, light trucks and parts",
+   "program": "autos"
+  },
+  {
+   "prefix": "9903.96.",
+   "zh": "民用航空器及其发动机与零部件",
+   "en": "Civil aircraft, their engines, parts and components",
+   "program": null,
+   "note": {
+    "zh": "该族在描述里载明与 9903.94 同期适用（2025-06-30 起），但本页未收录，也未判定其计划归属 —— 列在此处只作查证线索，不作结论。",
+    "en": "Its descriptions date it alongside 9903.94 (entries on or after 2025-06-30), but it is not registered here and its programme membership is not determined — listed as an investigative pointer, not a conclusion."
+   }
+  }
+ ],
+ "measures": [
+  {
+   "id": "metals",
+   "program": "Steel / Aluminum / Copper",
+   "title": {
+    "zh": "钢铁、铝与铜及其衍生品",
+    "en": "Steel, Aluminum and Copper Articles and Derivatives"
+   },
+   "basis": {
+    "zh": "2026-04-02 公告（自 2026-04-06 起按全额报关价计征，不再只对金属含量计税）",
+    "en": "Proclamation of Apr 2, 2026 — effective Apr 6, 2026, duties apply to full customs value rather than metal content"
+   },
+   "effective_date": "2026-04-06",
+   "rate_kind": "ad_valorem",
+   "scope": [
+    "72",
+    "73",
+    "74",
+    "76"
+   ],
+   "scope_precision": "chapter",
+   "scope_note": {
+    "zh": "钢在 72–73 章、铝在 76 章、铜在 74 章；衍生品按公告附件（Annex I-A / I-B / II / III）逐条列明，本页不逐条比对。",
+    "en": "Steel in Ch. 72–73, aluminum in Ch. 76, copper in Ch. 74; derivatives are enumerated in the proclamation's Annexes I-A/I-B/II/III, which this page does not itemise."
+   },
+   "ch99": [
+    {
+     "h": "9903.82.02",
+     "g": "The duty provided in the applicable subheading + 50%",
+     "rk": "t",
+     "d": "Except as provided for in headings 9903.82.14, 9903.85.67 and 9903.85.68, articles of aluminum, of steel or of copper and derivative aluminum or steel articles,"
+    },
+    {
+     "h": "9903.82.03",
+     "g": "No change",
+     "rk": "t",
+     "d": "Except for articles classifiable in chapters 72, 73, 74 or 76, articles where the weight of the applicable metal is less than 15 percent of the weight of the im"
+    },
+    {
+     "h": "9903.82.07",
+     "g": "10%",
+     "rk": "p",
+     "d": "Except as provided for in headings 9903.82.12, 9903.82.17 and 9903.85.68, derivative aluminum and steel articles with an ad valorem (or ad valorem equivalent) r"
+    },
+    {
+     "h": "9903.82.09",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Except as provided for in headings 9903.82.16 and 9903.85.68, articles of copper and derivative aluminum and steel articles, as provided for in subdivisions (c)"
+    },
+    {
+     "h": "9903.82.10",
+     "g": "15%",
+     "rk": "p",
+     "d": "Except as provided for in headings 9903.82.12, 9903.82.17 and 9903.85.68, derivative aluminum and steel articles with an ad valorem (or ad valorem equivalent) r"
+    },
+    {
+     "h": "9903.85.67",
+     "g": "The duty provided in the applicable subheading + 200%",
+     "rk": "t",
+     "d": "Aluminum articles that are the product of Russia, or where any amount of primary aluminum used in the manufacture of the aluminum articles is smelted in Russia,"
+    },
+    {
+     "h": "9903.85.68",
+     "g": "The duty provided in the applicable subheading + 200%",
+     "rk": "t",
+     "d": "Derivative aluminum articles that are products of Russia, or where any amount of primary aluminum used in the manufacture of the derivative articles is smelted "
+    }
+   ],
+   "options": [
+    {
+     "pct": 50,
+     "ch99": "9903.82.02",
+     "label": {
+      "zh": "铝/钢/铜基本制品及衍生品",
+      "en": "Core aluminum, steel and copper articles and derivatives"
+     }
+    },
+    {
+     "pct": 25,
+     "ch99": "9903.82.09",
+     "label": {
+      "zh": "铜制品及铝/钢衍生品",
+      "en": "Copper articles and aluminum/steel derivative articles"
+     }
+    },
+    {
+     "pct": 15,
+     "ch99": "9903.82.10",
+     "label": {
+      "zh": "第 1 栏税率低于 15% 的衍生品（过渡上限，至 2027 年底）",
+      "en": "Derivatives with a Column 1 rate below 15% (transitional cap through 2027)"
+     }
+    },
+    {
+     "pct": 10,
+     "ch99": "9903.82.07",
+     "label": {
+      "zh": "第 1 栏税率低于 10% 的衍生品",
+      "en": "Derivatives with a Column 1 rate below 10%"
+     }
+    },
+    {
+     "pct": 200,
+     "ch99": "9903.85.67 / 9903.85.68",
+     "label": {
+      "zh": "俄罗斯原产（或俄冶炼/铸造）铝",
+      "en": "Aluminum of Russia origin (or smelted/cast in Russia)"
+     }
+    },
+    {
+     "pct": 0,
+     "ch99": "9903.82.03",
+     "label": {
+      "zh": "不适用（金属重量占比低于 15%，且不属 72/73/74/76 章）",
+      "en": "Not applicable (metal under 15% of weight and outside Ch. 72/73/74/76)"
+     }
+    }
+   ],
+   "notes": {
+    "zh": "同一货物同时含多种金属时只按其中一个税率计征；金属含量 85% 以上源自美国的衍生品适用 10%；已获批准的回流计划可减征。本页不判定商品落在哪个附件。",
+    "en": "Goods containing more than one metal are subject to only one of the applicable rates; derivatives with at least 85% U.S.-sourced metal take 10%; approved onshoring plans may reduce the rate. This page does not determine which Annex applies."
+   },
+   "sources": [
+    {
+     "title": "White House — Proclamation, Apr 2, 2026",
+     "url": "https://www.whitehouse.gov/presidential-actions/2026/04/strengthening-actions-taken-to-adjust-imports-of-aluminum-steel-and-copper-into-the-united-states/"
+    },
+    {
+     "title": "Hong Kong TID — CIC 312/2026",
+     "url": "https://www.tid.gov.hk/en/tradecircular/2026/ci3122026.html"
+    },
+    {
+     "title": "EDC — U.S. tariff measures fact sheet",
+     "url": "https://www.edc.ca/content/dam/edc/en/non-premium/export-help-hub/united-states-factsheet.pdf"
+    }
+   ]
+  },
+  {
+   "id": "autos",
+   "program": "Automobiles & Parts",
+   "title": {
+    "zh": "乘用车、轻型卡车及其零部件",
+    "en": "Passenger Vehicles, Light Trucks and Parts"
+   },
+   "basis": {
+    "zh": "2025 年汽车公告（车辆自 2025-04-03、零部件自 2025-05-03 起生效）",
+    "en": "2025 automobile proclamation — vehicles from Apr 3, 2025; parts from May 3, 2025"
+   },
+   "effective_date": "2025-04-03",
+   "rate_kind": "ad_valorem",
+   "scope": [
+    "8703",
+    "8704",
+    "8708"
+   ],
+   "scope_precision": "heading",
+   "scope_note": {
+    "zh": "8703 乘用车、8704 货车（含轻卡）、8708 零部件；确切范围见 HTSUS 第 99 章 U.S. note 33 的分项。",
+    "en": "8703 passenger vehicles, 8704 goods vehicles (incl. light trucks), 8708 parts; the precise scope is set out in U.S. note 33 to Ch. 99."
+   },
+   "ch99": [
+    {
+     "h": "9903.94.01",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Except for products described in headings 9903.94.02, 9903.94.03, 9903.94.04, 9903.94.31, 9903.94.40, 9903.94.41, 9903.94.50, 9903.94.51, 9903.94.60, and 9903.9"
+    },
+    {
+     "h": "9903.94.03",
+     "g": "The duty provided in the applicable subheading + a duty of 25% upon the value of the non-U.S. content",
+     "rk": "t",
+     "d": "Effective with respect to entries on or after April 3, 2025, certain passenger vehicles and light trucks, as provided for in subdivision (d) of U.S. note 33 to "
+    },
+    {
+     "h": "9903.94.05",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Except for products described in headings 9903.94.06, 9903.94.32, 9903.94.33, 9903.94.42, 9903.94.43, 9903.94.44, 9903.94.45, 9903.94.52, 9903.94.53, 9903.94.54"
+    },
+    {
+     "h": "9903.94.07",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Except as provided for in headings 9903.94.33, 9903.94.44, 9903.94.45, 9903.94.54, 9903.94.55, 9903.94.64, 9903.94.65, 9903.94.68, and 9903.94.69, automobile pa"
+    }
+   ],
+   "options": [
+    {
+     "pct": 25,
+     "ch99": "9903.94.01",
+     "label": {
+      "zh": "乘用车与轻卡",
+      "en": "Passenger vehicles and light trucks"
+     }
+    },
+    {
+     "pct": 25,
+     "ch99": "9903.94.05 / 9903.94.07",
+     "label": {
+      "zh": "汽车零部件",
+      "en": "Automobile parts"
+     }
+    },
+    {
+     "pct": 25,
+     "ch99": "9903.94.03",
+     "label": {
+      "zh": "仅对非美国成分价值计征（USMCA 合规车辆）",
+      "en": "On non-U.S. content only (USMCA-qualifying vehicles)"
+     }
+    },
+    {
+     "pct": 0,
+     "ch99": "9903.94.02 / 9903.94.04",
+     "label": {
+      "zh": "不适用",
+      "en": "Not applicable"
+     }
+    }
+   ],
+   "notes": {
+    "zh": "汽车类 §232 不再与其他 §232 措施叠加；美国成分、进口调整抵扣额（MSRP 的 3.75%）等减免需另行核定。",
+    "en": "Automotive §232 duties do not stack with other §232 measures; U.S. content and the import adjustment offset (3.75% of MSRP) require separate determination."
+   },
+   "sources": [
+    {
+     "title": "USTR — 2026 USMCA Autos Report to Congress",
+     "url": "https://ustr.gov/sites/default/files/files/agreements/FTA/USMCA/2026%20USMCA%20Autos%20Report%20to%20Congress_070126.pdf"
+    }
+   ]
+  },
+  {
+   "id": "mhdv",
+   "program": "MHDV & Buses",
+   "title": {
+    "zh": "中重型车辆、中重型车辆零部件与客车",
+    "en": "Medium- and Heavy-Duty Vehicles, Parts and Buses"
+   },
+   "basis": {
+    "zh": "Proclamation 10984（2025-10-17 签署，2025-11-01 起生效）",
+    "en": "Proclamation 10984 — signed Oct 17, 2025, effective Nov 1, 2025"
+   },
+   "effective_date": "2025-11-01",
+   "rate_kind": "ad_valorem",
+   "scope": [
+    "8702",
+    "8704",
+    "8708"
+   ],
+   "scope_precision": "heading",
+   "scope_note": {
+    "zh": "8702 客车、8704 中重型货车、8708 零部件；与「乘用车、轻卡及其零部件」在 8704 / 8708 上有重叠，请自行判断适用哪一项。",
+    "en": "8702 buses, 8704 MHDVs, 8708 parts; overlaps the passenger-vehicle measure on 8704/8708 — determine which applies."
+   },
+   "ch99": [
+    {
+     "h": "9903.74.01",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Medium- and heavy-duty vehicles as provided for in subdivision (b) of U.S. note 38 to this subchapter."
+    },
+    {
+     "h": "9903.74.02",
+     "g": "The duty provided in the applicable subheading + 10%",
+     "rk": "t",
+     "d": "Buses and other vehicles classified in HTSUS heading 8702 as provided for in subdivision (c) of U.S. note 38 to this subchapter."
+    },
+    {
+     "h": "9903.74.08",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Medium- and heavy-duty vehicle parts, as provided for in subdivision (i) of U.S. note 38 to this subchapter."
+    },
+    {
+     "h": "9903.74.09",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Medium- and heavy-duty vehicle parts, as provided for in subdivision (j) of U.S. note 38 to this subchapter."
+    }
+   ],
+   "options": [
+    {
+     "pct": 25,
+     "ch99": "9903.74.01",
+     "label": {
+      "zh": "中重型车辆",
+      "en": "Medium- and heavy-duty vehicles"
+     }
+    },
+    {
+     "pct": 25,
+     "ch99": "9903.74.08 / 9903.74.09",
+     "label": {
+      "zh": "中重型车辆零部件",
+      "en": "Medium- and heavy-duty vehicle parts"
+     }
+    },
+    {
+     "pct": 10,
+     "ch99": "9903.74.02",
+     "label": {
+      "zh": "客车及 8702 项下车辆",
+      "en": "Buses and other vehicles of heading 8702"
+     }
+    },
+    {
+     "pct": 0,
+     "ch99": "9903.74.05 / 9903.74.06",
+     "label": {
+      "zh": "不适用",
+      "en": "Not applicable"
+     }
+    }
+   ],
+   "notes": {
+    "zh": "USMCA 合规的中重型车辆可仅对非美国成分计征；客车无此待遇。USMCA 合规零部件在商务部机制落地前暂不适用。",
+    "en": "USMCA-qualifying MHDVs may be taxed on non-U.S. content only; buses get no such treatment. USMCA-qualifying parts are held back pending Commerce procedures."
+   },
+   "sources": [
+    {
+     "title": "White House — Proclamation 10984, Oct 17, 2025",
+     "url": "https://www.whitehouse.gov/presidential-actions/2025/10/adjusting-imports-of-medium-and-heavy-duty-vehicles-medium-and-heavy-duty-vehicle-parts-and-buses-into-the-united-states/"
+    }
+   ]
+  },
+  {
+   "id": "timber",
+   "program": "Timber, Lumber & Wood Derivatives",
+   "title": {
+    "zh": "木材、原木及其衍生产品（含软包木家具与厨柜）",
+    "en": "Timber, Lumber and Derivative Products (incl. upholstered furniture and cabinets)"
+   },
+   "basis": {
+    "zh": "Proclamation 10976（2025-09-29 签署，2025-10-14 起生效）",
+    "en": "Proclamation 10976 — signed Sep 29, 2025, effective Oct 14, 2025"
+   },
+   "effective_date": "2025-10-14",
+   "rate_kind": "ad_valorem",
+   "scope": [
+    "440311",
+    "440321",
+    "440322",
+    "440323",
+    "440324",
+    "440325",
+    "440326",
+    "440399",
+    "440611",
+    "440691",
+    "440711",
+    "440712",
+    "440713",
+    "440714",
+    "440719",
+    "940161",
+    "940171",
+    "940340",
+    "940360",
+    "940391"
+   ],
+   "scope_precision": "exact",
+   "scope_note": {
+    "zh": "范围取自 CBP CSMS # 66492057 对 9903.76.xx 列明的 HTSUS 编码。",
+    "en": "Scope taken from the HTSUS codes enumerated against 9903.76.xx in CBP CSMS # 66492057."
+   },
+   "ch99": [
+    {
+     "h": "9903.76.01",
+     "g": "The duty provided in the applicable subheading + 10%",
+     "rk": "t",
+     "d": "Softwood timber and lumber products provided for in subdivision (b) of U.S. note 37 of this subchapter"
+    },
+    {
+     "h": "9903.76.02",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Upholstered wooden furniture products provided for in subdivision (d) of U.S. note 37 of this subchapter"
+    },
+    {
+     "h": "9903.76.03",
+     "g": "The duty provided in the applicable subheading + 25%",
+     "rk": "t",
+     "d": "Completed kitchen cabinets and vanities and parts of kitchen cabinets and vanities provided for in subdivision (f) of U.S. note 37 of this subchapter"
+    },
+    {
+     "h": "9903.76.04",
+     "g": "The duty provided in the applicable subheading",
+     "rk": "t",
+     "d": "Articles as provided for in subdivision (g) of U.S. note 37 of this subchapter"
+    },
+    {
+     "h": "9903.76.20",
+     "g": "The duty provided in the applicable subheading + 10%",
+     "rk": "t",
+     "d": "Wood products of the United Kingdom as provided for in subdivisions (d) and (f) of U.S. note 37 of this subchapter"
+    },
+    {
+     "h": "9903.76.21",
+     "g": "15%",
+     "rk": "p",
+     "d": "Wood products of Japan as provided for in subdivisions (d) and (f) of U.S. note 37 of this subchapter"
+    },
+    {
+     "h": "9903.76.22",
+     "g": "15%",
+     "rk": "p",
+     "d": "Wood products of the European Union as provided for in subdivisions (d) and (f) of U.S. note 37 of this subchapter"
+    }
+   ],
+   "options": [
+    {
+     "pct": 10,
+     "ch99": "9903.76.01",
+     "label": {
+      "zh": "软木原木与木材",
+      "en": "Softwood timber and lumber"
+     }
+    },
+    {
+     "pct": 25,
+     "ch99": "9903.76.02",
+     "label": {
+      "zh": "软包木家具",
+      "en": "Upholstered wooden furniture"
+     }
+    },
+    {
+     "pct": 25,
+     "ch99": "9903.76.03",
+     "label": {
+      "zh": "成品厨柜、洗手台及其零件",
+      "en": "Completed kitchen cabinets, vanities and parts"
+     }
+    },
+    {
+     "pct": 15,
+     "ch99": "9903.76.21 / 9903.76.22",
+     "label": {
+      "zh": "日本 / 欧盟原产（15% 上限）",
+      "en": "Products of Japan / the EU (15% ceiling)"
+     }
+    },
+    {
+     "pct": 10,
+     "ch99": "9903.76.20",
+     "label": {
+      "zh": "英国原产",
+      "en": "Products of the United Kingdom"
+     }
+    },
+    {
+     "pct": 0,
+     "ch99": "9903.76.04",
+     "label": {
+      "zh": "不适用",
+      "en": "Not applicable"
+     }
+    }
+   ],
+   "notes": {
+    "zh": "家具与厨柜两项自 2027-01-01 起拟分别升至 30% 与 50%（已由 2026-01-01 推迟一年）。与汽车类 §232 重叠时以汽车类为准。",
+    "en": "The furniture and cabinet rates are scheduled to rise to 30% and 50% on Jan 1, 2027 (deferred by one year from Jan 1, 2026). Where they overlap the automotive program, the automotive measure prevails."
+   },
+   "sources": [
+    {
+     "title": "Hong Kong TID — CIC 839/2025",
+     "url": "https://www.tid.gov.hk/en/tradecircular/2025/ci8392025.html"
+    },
+    {
+     "title": "CBP CSMS # 66492057 — coding for 9903.76.xx",
+     "url": "https://content.govdelivery.com/bulletins/gd/USDHSCBP-3f69699"
+    }
+   ]
+  },
+  {
+   "id": "semis",
+   "program": "Semiconductors",
+   "title": {
+    "zh": "特定先进计算芯片及其衍生产品",
+    "en": "Certain Advanced Computing Chips and Derivative Products"
+   },
+   "basis": {
+    "zh": "Proclamation 11002（2026-01-14 签署，2026-01-15 起生效）",
+    "en": "Proclamation 11002 — signed Jan 14, 2026, effective Jan 15, 2026"
+   },
+   "effective_date": "2026-01-15",
+   "rate_kind": "ad_valorem",
+   "scope": [
+    "847150",
+    "847180",
+    "847330"
+   ],
+   "scope_precision": "exact",
+   "scope_note": {
+    "zh": "仅公告附件列明的三项：8471.50（服务器）、8471.80（显示卡）、8473.30（零组件）；不符合高算力门槛者不适用。",
+    "en": "Only the three items in the proclamation's annex: 8471.50 (servers), 8471.80 (graphics), 8473.30 (parts); goods below the advanced-computing threshold are out of scope."
+   },
+   "ch99": [
+    {
+     "h": "9903.79.01",
+     "g": "The duty provided in the applicable subheading +25%",
+     "rk": "t",
+     "d": "Semiconductor articles as provided for in subdivisions (a) and (b) of U.S. note 39 to this subchapter"
+    },
+    {
+     "h": "9903.79.03",
+     "g": "The duty provided in the applicable subheading",
+     "rk": "t",
+     "d": "Semiconductor articles, as defined in subdivision (b) of U.S. note 39 to this subchapter, that are for use in U.S. data centers, as defined in subdivision (d) o"
+    },
+    {
+     "h": "9903.79.04",
+     "g": "The duty provided in the applicable subheading",
+     "rk": "t",
+     "d": "Semiconductor articles, as defined in subdivision (b) of U.S. note 39 to this subchapter, that are for repairs or replacement in the United States"
+    },
+    {
+     "h": "9903.79.05",
+     "g": "The duty provided in the applicable subheading",
+     "rk": "t",
+     "d": "Semiconductor articles, as defined in subdivision (b) of U.S. note 39 to this subchapter, that are for research and development in the United States, as defined"
+    },
+    {
+     "h": "9903.79.06",
+     "g": "The duty provided in the applicable subheading",
+     "rk": "t",
+     "d": "Semiconductor articles, as defined in subdivision (b) of U.S. note 39 to this subchapter, that are for use by startups in the United States, as defined in subdi"
+    },
+    {
+     "h": "9903.79.07",
+     "g": "The duty provided in the applicable subheading",
+     "rk": "t",
+     "d": "Semiconductor articles, as defined in subdivision (b) of U.S. note 39 to this subchapter, that are for use in non-data center consumer electronics applications "
+    },
+    {
+     "h": "9903.79.08",
+     "g": "The duty provided in the applicable subheading",
+     "rk": "t",
+     "d": "Semiconductor articles, as defined in subdivision (b) of U.S. note 39 to this subchapter, that are for use in non-data center civil industrial applications in t"
+    },
+    {
+     "h": "9903.79.09",
+     "g": "The duty provided in the applicable subheading",
+     "rk": "t",
+     "d": "Semiconductor articles, as defined in subdivision (b) of U.S. note 39 to this subchapter, that are for use in United States public sector applications"
+    }
+   ],
+   "options": [
+    {
+     "pct": 25,
+     "ch99": "9903.79.01",
+     "label": {
+      "zh": "在范围内且非豁免用途",
+      "en": "In scope and not an exempt use"
+     }
+    },
+    {
+     "pct": 0,
+     "ch99": "9903.79.03–9903.79.09",
+     "label": {
+      "zh": "豁免用途（美国数据中心、维修更换、研发、初创、非数据中心消费与民用工业、公共部门等）",
+      "en": "Exempt uses (U.S. data centres, repairs, R&D, startups, non-data-centre consumer/civil industrial, public sector, etc.)"
+     }
+    }
+   ],
+   "notes": {
+    "zh": "范围极窄；与其他 §232 措施重叠时只适用本项税率。第二阶段调查结论尚未发布。",
+    "en": "Very narrow scope; where it overlaps other §232 measures, only this rate applies. The phase-two investigation has not yet reported."
+   },
+   "sources": [
+    {
+     "title": "Proclamation 11002 — full text (GovInfo)",
+     "url": "https://govinfo.gov/content/pkg/DCPD-202600026/html/DCPD-202600026.htm"
+    },
+    {
+     "title": "CRS — Legal Authority for Tariffs on Semiconductor Chips",
+     "url": "https://www.congress.gov/crs_external_products/LSB/PDF/LSB11409/LSB11409.1.pdf"
+    }
+   ]
+  },
+  {
+   "id": "pharma",
+   "program": "Pharmaceuticals",
+   "title": {
+    "zh": "专利药品及配套药用原料",
+    "en": "Patented Pharmaceuticals and Associated Ingredients"
+   },
+   "basis": {
+    "zh": "Proclamation 11020（2026-04-02 签署）",
+    "en": "Proclamation 11020 — signed Apr 2, 2026"
+   },
+   "effective_date": "2026-07-31",
+   "rate_kind": "ad_valorem",
+   "scope": [
+    "30"
+   ],
+   "scope_precision": "chapter",
+   "scope_note": {
+    "zh": "第 30 章为近似范围；实际以公告附件 I 列明的 HTSUS 编码为准，仿制药及其原料暂不适用。",
+    "en": "Ch. 30 is an approximation; the operative list is Annex I to the proclamation. Generics and their ingredients are currently out of scope."
+   },
+   "ch99": [],
+   "options": [
+    {
+     "pct": 100,
+     "eff": "2026-09-29",
+     "label": {
+      "zh": "未列入附件三的公司",
+      "en": "Companies not listed in Annex III"
+     }
+    },
+    {
+     "pct": 100,
+     "eff": "2026-07-31",
+     "label": {
+      "zh": "列入附件三的公司",
+      "en": "Companies listed in Annex III"
+     }
+    },
+    {
+     "pct": 20,
+     "label": {
+      "zh": "已获批回流协议的公司",
+      "en": "Companies with an approved onshoring agreement"
+     }
+    },
+    {
+     "pct": 15,
+     "label": {
+      "zh": "欧盟 / 日本 / 韩国 / 瑞士 / 列支敦士登原产",
+      "en": "Products of the EU / Japan / Korea / Switzerland / Liechtenstein"
+     }
+    },
+    {
+     "pct": 0,
+     "label": {
+      "zh": "回流协议 + 最惠国定价协议（至 2029-01-20）／附件四税号／仿制药",
+      "en": "Onshoring + MFN pricing agreement (through Jan 20, 2029) / Annex IV codes / generics"
+     }
+    }
+   ],
+   "notes": {
+    "zh": "第 1 栏税率与本项税率合计不得超过公告所列税率；多个税率同时适用时取最低。快照尚未编入对应的 Chapter 99 税号。",
+    "en": "The sum of the Column 1 rate and this §232 rate may not exceed the proclaimed rate; where several rates apply, the lowest governs. No corresponding Chapter 99 heading is present in the snapshot."
+   },
+   "sources": [
+    {
+     "title": "Proclamation 11020 — full text (Federal Register)",
+     "url": "https://www.govinfo.gov/content/pkg/FR-2026-04-09/pdf/2026-06956.pdf"
+    },
+    {
+     "title": "BIS — onshoring agreement procedures (91 FR, May 13, 2026)",
+     "url": "https://www.govinfo.gov/content/pkg/FR-2026-05-13/pdf/2026-09489.pdf"
+    }
+   ]
+  },
+  {
+   "id": "polysilicon",
+   "program": "Polysilicon & Derivatives",
+   "title": {
+    "zh": "多晶硅及其衍生产品",
+    "en": "Polysilicon and Its Derivative Products"
+   },
+   "basis": {
+    "zh": "Proclamation 11052（2026-08-06 签署）—— 最低进口价（MIP）计划 + 对下游衍生品加征 15% 从价关税",
+    "en": "Proclamation 11052 — signed Aug 6, 2026: a minimum import price (MIP) programme plus a 15% ad valorem duty on downstream derivative products"
+   },
+   "effective_date": "2026-12-04",
+   "rate_kind": "mip",
+   "scope": [
+    "280461",
+    "280469",
+    "381800",
+    "854142",
+    "854143"
+   ],
+   "scope_precision": "heading",
+   "scope_note": {
+    "zh": "多晶硅 2804.61 / 2804.69、掺杂晶圆 3818.00、太阳能电池 8541.42 与组件 8541.43；实际以公告附件 I / II 为准。",
+    "en": "Polysilicon 2804.61/2804.69, doped wafers 3818.00, solar cells 8541.42 and modules 8541.43; the operative lists are Annexes I / II to the proclamation."
+   },
+   "ch99": [],
+   "options": [
+    {
+     "pct": 15,
+     "label": {
+      "zh": "多晶硅锭及公告附件所列下游衍生品（从价部分）",
+      "en": "Polysilicon ingots and listed downstream derivatives (ad valorem component)"
+     }
+    },
+    {
+     "pct": 0,
+     "label": {
+      "zh": "不适用",
+      "en": "Not applicable"
+     }
+    }
+   ],
+   "mip": [
+    {
+     "item": {
+      "zh": "多晶硅",
+      "en": "Polysilicon"
+     },
+     "price": "US$21 / kg"
+    },
+    {
+     "item": {
+      "zh": "多晶硅锭与晶圆",
+      "en": "Polysilicon ingots and wafers"
+     },
+     "price": "US$100 / kg"
+    },
+    {
+     "item": {
+      "zh": "太阳能电池",
+      "en": "Solar cells"
+     },
+     "price": "US$0.22 / W"
+    },
+    {
+     "item": {
+      "zh": "太阳能组件",
+      "en": "Solar modules"
+     },
+     "price": "US$0.38 / W"
+    }
+   ],
+   "notes": {
+    "zh": "措施自 2026-12-04（美东 00:01）起生效，此前不产生关税；进口商须提交不低于 MIP 的售价证明，否则按 MIP 差额补征特定关税。日/韩/中国台湾/瑞士/列支敦士登/欧盟产品：第 1 栏税率与本项合计不超过 15%；英国为 10%。快照尚未编入对应的 Chapter 99 税号 —— 与「以公告形式实施的措施不进 HTS 税率字段」一致。",
+    "en": "The measures take effect at 00:01 ET on Dec 4, 2026 and impose no duty before then; importers must document a price at or above the MIP, failing which a specific duty equal to the shortfall applies. For products of Japan/Korea/Taiwan, China/Switzerland/Liechtenstein/the EU, the Column 1 rate plus this measure may not exceed 15%; the UK is 10%. No corresponding Chapter 99 heading appears in the snapshot — consistent with proclamation-based measures never entering HTS rate fields."
+   },
+   "sources": [
+    {
+     "title": "White House — Proclamation 11052, Aug 6, 2026",
+     "url": "https://www.whitehouse.gov/presidential-actions/2026/08/adjusting-imports-of-polysilicon-and-its-derivatives-into-the-united-states/"
+    },
+    {
+     "title": "Hong Kong TID — CIC 700/2026",
+     "url": "https://www.tid.gov.hk/en/tradecircular/2026/ci7002026.html"
+    },
+    {
+     "title": "Federal Register 2026-19537 — stockpiling measures under Proclamation 11052 (in repository snapshot)",
+     "url": "https://www.federalregister.gov/d/2026-19537"
+    }
+   ]
+  }
+ ]
+}

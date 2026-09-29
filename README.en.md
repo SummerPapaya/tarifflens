@@ -23,6 +23,8 @@ Enter an HTS subheading and see which measures apply to it today, where each num
 
 TariffLens is the second entry (#2 Tariff & trade-compliance automation) in the *spin-off apps* series of [supply-chain-portfolio](https://github.com/SummerPapaya/supply-chain-portfolio). It is a **purely static site**: no backend, no build step, no API keys. All data is pre-fetched at build time and shipped with the repository; the browser reads it directly.
 
+> Below the "reference estimates only" block sits a **collapsed-by-default**, scope-independent **Scenario estimate — including §232 additional measures**: it **counts only measures already in force**, and it is **for reference only**. The boundary between the two is spelled out in the red-lines section below.
+
 - **Live demo**: https://summerpapaya.github.io/tarifflens/ (available once Pages is enabled)
 - **Specification**: [`docs/spec.html`](docs/spec.html) (v1.3 — all 12 design decisions confirmed and implemented)
 - **Pipeline verification report**: [`docs/pipeline-report.html`](docs/pipeline-report.html)
@@ -38,6 +40,8 @@ The boundary of what this tool will do is defined before any feature is. These t
 | 01 | **No automatic HS classification** | Reference estimates only. Results are shown for whatever subheading you enter; the tool never decides which subheading a product belongs to. |
 | 02 | **No numbers from cross-reference wording** | When a rate reads `"The duty provided in..."` (form code `rk=t`), no number is produced or estimated — only the cited source text. |
 | 03 | **Three-way split for uncovered items** | Fees (MPF / HMF) are computable → shown normally; ADD/CVD yields an **existence notice only**, never an amount; FTA / origin / classification → read-only notice plus disclaimer. |
+
+> **"Reference estimates only" is a hard rule, and the scenario estimate does not relax it.** The reference estimate keeps its exact scope, wording and algorithm — base duty + MPF + HMF, Chapter 99 surcharges excluded. A separate, **scope-independent** block sits below it: *Scenario estimate — including §232 additional measures*. It **counts only measures whose effective date has passed** (every measure carries its date), and the rate tier is **declared by you** from the published proclamation (each tier is labelled with its Chapter 99 subheading and source — never reverse-engineered from `rk=t` cross-reference wording, so red line 02 still holds). Non-ad-valorem minimum import prices (MIP) are **listed, never converted**. The block is **for reference only**, and the two estimates never contaminate each other.
 
 ## 2. Three-layer data architecture
 
@@ -60,6 +64,8 @@ The boundary of what this tool will do is defined before any feature is. These t
 Above the results sits a collapsed *How to read this page* legend, with a section devoted to **where L1 ends and L2 begins**: by time (build-time snapshot vs fetched the moment you open the page), by content (a rate vs a move), by edge colour (ink black vs indigo).
 
 > **Where the estimate's inputs come from**: value and mode of transport are yours to enter; the base rate comes from the L1 snapshot; MPF / HMF are CBP FY2026 published fee rates, pre-filled and editable. The estimate is **not** a third data layer — L3 is the offline demo layer. It excludes Chapter 99 surcharges, AD/CVD, FTA preferences and origin determinations, which are listed item by item in the L1 / L2 sections without amounts.
+
+> **What the scenario estimate does and does not cover**: it **shares the same inputs** as the reference estimate (value / mode of transport / MPF / HMF); the only difference is whether effective §232 measures are added at the tier you declare. When measures match, the block starts collapsed and its header states how many matched. **Measures whose effective date is still in the future are registered but never counted** — they are listed below with their date in plain sight. If *every* measure matching a code is not yet in force, the block **produces no scenario total at all**: a total would equal the reference estimate above and read as "§232 = 0", which is the opposite of the truth. Tiers are always your declaration; the page only shows each tier's Chapter 99 source text and citation. **Every figure in this block is an estimate for reference only** and is no substitute for a CBP ruling or the current HTS text.
 
 ### End-to-end verification samples (`docs/pipeline-report.html`)
 
@@ -91,6 +97,7 @@ data/                      Data products (committed, ≈1.2 MB)
   hts-2026rev9-browse.json.gz    Category browser: 97 chapters -> 1,250 four-digit headings (38 KB, lazy-loaded)
   fr-tariff-20260928.json.gz     Federal Register tariff documents
   fr-adcvd-20260928.json.gz      AD/CVD documents
+  section232-measures.json       §232 measure registry (hand-maintained, not a pipeline output): effective dates / rate tiers / scopes / Ch. 99 source text / citations
 scripts/
   fetch_tariff_data.py     Pipeline: hts / fr / all
   build_browse_index.py    Builds the category-browser index (chapters -> 4-digit headings)

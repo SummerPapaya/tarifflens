@@ -383,12 +383,108 @@ th+th, td+td{ padding-left:12px; border-left:1px solid var(--line-hair) }
   align-self:flex-end; font-family:var(--serif); font-size:13px;
   background:var(--ink); color:var(--paper); border:1px solid var(--ink); padding:7px 15px; cursor:pointer;
 }
-#calcout{ margin-top:14px }
+/* 两个测算块的输出容器同构 → 共用一条规则 */
+#calcout,#scenout{ margin-top:14px }
 .cline{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line-hair); font-family:var(--mono); font-size:12.5px }
 .cline.total{ border-top:1px solid var(--rule); border-bottom:3px double var(--rule); font-size:15px; font-weight:600; margin-top:4px }
 .cline .lab{ color:var(--ink-soft) }
 .calcnote{ font-family:var(--sans); font-size:11.5px; color:var(--ink-mute); margin-top:9px; line-height:1.65 }
 .calcnote b{ color:var(--vermilion) }
+
+/* 情景估算（含 §232 附加措施）--------------------------------------------------
+   与上方「参考测算」共用同一组输入值，但口径严格分离：这一块是「情景」，
+   不是测算。默认折叠，避免与主测算抢读序；朱红警示条常驻，先声明再加数。 */
+.scen summary .hint{ color:var(--vermilion) }
+.scen-warn{
+  display:flex; gap:9px; align-items:flex-start;
+  border:1px solid var(--vermilion); background:var(--paper);
+  padding:9px 11px; margin:0 0 12px;
+}
+.scen-warn .mk{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.08em;
+  background:var(--vermilion); color:var(--paper-2);
+  padding:2px 5px; white-space:nowrap; margin-top:2px;
+}
+.scen-warn .tx{ font-family:var(--sans); font-size:11.5px; line-height:1.62; color:var(--ink-soft) }
+.scen-warn .tx b{ color:var(--vermilion); font-weight:700 }
+.scen-sec{
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; color:var(--ink-mute);
+  border-top:1px solid var(--rule); padding-top:6px; margin:16px 0 0;
+}
+.scen-sec.off{ border-top-color:var(--line); color:var(--amber) }
+.scen-m{ border-bottom:1px solid var(--line-hair); padding:11px 0 }
+.scen-m:last-child{ border-bottom:none }
+.scen-m .mh{ display:flex; flex-wrap:wrap; gap:6px 9px; align-items:baseline }
+.scen-m .nm{ font-family:var(--serif); font-size:14.5px; flex:1 1 180px; min-width:0 }
+.scen-m .eff{ font-family:var(--mono); font-size:9.5px; color:var(--ink-mute); white-space:nowrap }
+.scen-m .tag{
+  font-family:var(--mono); font-size:9px; letter-spacing:.08em;
+  border:1px solid currentColor; padding:1px 5px; white-space:nowrap;
+}
+.scen-m .tag.on{ color:var(--ok) }
+.scen-m .tag.off{ color:var(--amber) }
+.scen-m .rr{ display:flex; flex-wrap:wrap; gap:9px; align-items:center; margin-top:9px }
+.scen-m .rr label{ font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; color:var(--ink-mute); white-space:nowrap }
+.scen-m select{
+  font-family:var(--mono); font-size:11px; padding:5px 7px;
+  border:1px solid var(--line); background:var(--paper); color:var(--ink);
+  flex:1 1 250px; min-width:0; max-width:100%;
+}
+.scen-m .raw{ font-family:var(--mono); font-size:10.5px; color:var(--ink-mute); margin-top:7px; line-height:1.65 }
+.scen-m .raw b{ color:var(--ink-soft); font-weight:500 }
+.scen-m .mip{ font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); margin-top:7px; line-height:1.75 }
+.scen-m .mip b{ color:var(--amber); font-weight:500 }
+.scen-m .note{ font-family:var(--sans); font-size:11px; color:var(--ink-mute); line-height:1.62; margin-top:7px }
+.scen-m .src{ font-family:var(--mono); font-size:10px; line-height:1.7; margin-top:6px }
+.scen-m .src a{ color:var(--indigo); text-decoration:none; border-bottom:1px solid currentColor }
+.scen-m.pend{ border-left:2px solid var(--amber); padding-left:11px; background:linear-gradient(90deg,rgba(138,106,31,.07),transparent 70%) }
+/* 档位标签：情景合计里只在「已生效且选定」时才出，故只有 .on 一种状态 */
+.cline .lab i{ font-style:normal; font-family:var(--mono); font-size:9.5px; color:var(--ink-mute) }
+.cline .lab i.tag{ border:1px solid currentColor; padding:0 4px; margin-left:5px }
+.cline .lab i.tag.on{ color:var(--ok) }
+.cline.na{ color:var(--ink-mute) }
+.cline.na .lab{ color:var(--ink-mute) }
+
+/* 同族未收录税号（说明性一节）------------------------------------------------
+   只做陈列：不参与求值、不出数、不判定归属。默认再折叠一层，避免与上面
+   真正出数的部分抢读序。族清单来自登记表 s232_families，行数据来自 Ch.99 快照。
+   选择器都带 .scen 前缀 —— 否则会被上面的 `.calc summary` 规则继承去大字号。 */
+.scen .fam{ margin-top:18px; border-top:3px double var(--rule) }
+.scen .fam>summary{
+  display:block; padding:10px 0 0; list-style:none; cursor:pointer;
+  font-family:var(--mono); font-size:10px; font-weight:400;
+  letter-spacing:.1em; color:var(--ink-mute);
+}
+.scen .fam>summary::before{ content:"▸ "; font-family:var(--mono); font-size:10px; color:var(--ink-mute) }
+.scen .fam[open]>summary::before{ content:"▾ " }
+.scen .fam>summary:hover{ color:var(--ink-soft) }
+.scen .fam .fintro{ font-family:var(--sans); font-size:11px; color:var(--ink-mute); line-height:1.65; margin:9px 0 0 }
+.scen .fam .fintro b{ color:var(--ink-soft) }
+.scen .fam .fstat{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; color:var(--ink-mute); margin-top:7px }
+.scen .fam .fg{
+  display:flex; flex-wrap:wrap; gap:4px 9px; align-items:baseline;
+  border-top:1px solid var(--rule); padding:9px 0 3px; margin-top:12px;
+  font-family:var(--mono); font-size:10px; letter-spacing:.06em;
+}
+.scen .fam .fg .no{ color:var(--ink-soft) }
+.scen .fam .fg .cn{ color:var(--ink-mute) }
+.scen .fam .fg .cn .un{ color:var(--amber); white-space:nowrap }
+.scen .fam .fnote{ font-family:var(--sans); font-size:10.5px; color:var(--amber); line-height:1.6; margin:5px 0 0 }
+.scen .fam .fr{ display:flex; flex-wrap:wrap; gap:1px 9px; align-items:baseline; padding:5px 0; border-bottom:1px dotted var(--line-hair) }
+.scen .fam .fr .h{ font-family:var(--mono); font-size:10.5px; color:var(--ink-soft); white-space:nowrap }
+.scen .fam .fr .k{ font-family:var(--mono); font-size:9px; color:var(--ink-mute); border:1px solid var(--line); padding:0 3px; white-space:nowrap }
+/* 地区标签：快照原文里的国别/地区表述一律按中国口径标注 */
+.scen .fam .fr .rg{ font-family:var(--sans); font-size:9.5px; color:var(--indigo); border:1px solid currentColor; padding:0 4px; white-space:nowrap }
+.scen .fam .fr .rg i{ font-style:normal; color:var(--ink-mute); font-size:9px; margin-right:3px }
+.scen .fam .freg{ font-family:var(--sans); font-size:10.5px; color:var(--ink-mute); line-height:1.65; margin:8px 0 0 }
+.scen .fam .fr .ef{ font-family:var(--mono); font-size:9.5px; color:var(--ink-mute) }
+.scen .fam .fr .ef i{ font-style:normal; letter-spacing:.06em }
+/* .d 的 flex-basis 决定每行高度：与长 .g（rk=t 的文本引用约 310px）并排时会被挤到
+   下一行；basis 给 240px 是为了让短 .g（如 "15%"）能与它同行，rk=t 的行则自然折行。 */
+.scen .fam .fr .gd{ flex:1 1 100%; min-width:0; display:flex; flex-wrap:wrap; gap:1px 8px; align-items:baseline }
+.scen .fam .fr .g{ flex:0 1 auto; min-width:0; font-family:var(--mono); font-size:10px; color:var(--ink-soft); overflow-wrap:anywhere }
+.scen .fam .fr .d{ flex:1 1 240px; min-width:0; font-family:var(--sans); font-size:10.5px; color:var(--ink-mute); line-height:1.5 }
+.scen .fam .ftail{ font-family:var(--sans); font-size:10.5px; color:var(--ink-mute); line-height:1.65; margin-top:11px; border-top:1px solid var(--line-hair); padding-top:9px }
 
 /* 溯源 */
 .chain{ font-family:var(--mono); font-size:10.5px; color:var(--ink-mute); line-height:1.9 }
@@ -549,6 +645,7 @@ async function findCh99(d){
     gunzipFile("hts-" + TAG + "-ch99.json.gz"),
     gunzipFile("hts-" + TAG + "-ch99refs.json.gz")
   ]);
+  C99ROWS = c99.rows;                  // 顺手缓存全量行：本函数不返回它，但「同族未收录」一节要用
   const out = [];
   for (const k in refs.refs){
     if (d.startsWith(k) || k.startsWith(d)){
@@ -828,6 +925,40 @@ const I18N = {
     errFRBoth: "L2 实时层与本地快照均不可用",
     calcSrcNote: "输入来源：<b>货值</b>与<b>运输方式</b>由你填写；<b>基础税率</b>来自 L1 快照（上面这句结论里的那个数）；<b>MPF / HMF</b> 是 CBP FY2026 公布的规费费率，预填为默认值、可自行修改。",
     calcExcl: "本测算只含「基础关税 + MPF + HMF」，不含 Chapter 99 附加税、ADD/CVD、FTA 优惠税率与原产地判定 —— 这几项在下方 L1 / L2 栏目中逐条列出，本页不出金额。",
+    /* ---- 情景估算（含 §232 附加措施）：与参考测算口径分离 ---- */
+    scenSummary: "情景估算 · 含 §232 附加措施", scenHint: "情景 · 仅供参考",
+    scenWarnT: "情景 · 非应缴税额",
+    scenWarnD: "这是<b>情景估算</b>，不是应缴税额，也不构成申报依据。它在「参考测算」之上，按<b>生效日</b>叠加你自行声明的 §232 措施 —— <b>只对已生效的措施计数</b>；尚未生效的一律不计，本页也不替你判定商品落在哪个公告附件。",
+    scenSrcNote: "输入来源：<b>货值 / 运输方式 / 规费费率</b>复用上方「参考测算」的同一组输入；<b>措施范围、生效日、费率档位</b>来自库内 <code>data/section232-measures.json</code> —— 费率与 Chapter 99 税号取自 HTS 2026 rev.9 快照原文，公告事实引用总统公告 / CBP / 官方贸易通告。",
+    scenSecOn: "已生效 · 计入情景", scenSecOff: "尚未生效 · 不计入",
+    scenPick: "费率档位", scenUnset: "未选定 · 不计入", scenEff: "生效日",
+    scenTagOn: "已生效", scenTagOff: "待生效",
+    scenCh99: "对应 Chapter 99", scenCh99None: "快照未编入 Ch.99 税号",
+    scenMip: "最低进口价（MIP）", scenSrc: "出处",
+    scenBtn: "试算情景",
+    scenBase: "基础税（{r}）", scenBaseNo: "基础税 · 不可算（红线 02）",
+    scen232: "§232 · {n}", scen232Na: "§232 · {n}（非从价，不计入）",
+    scenTap: "§232 附加措施 · 未选定任何档位",
+    scenTotal: "情景合计 · 仅供参考", scenTotalP: "§232 部分合计 · 不含基础税（仅供参考）",
+    scenNote: "<b>仅供参考。</b>该情景只叠加了本页登记的 §232 措施，<b>未含</b> §301、IEEPA 对等关税、ADD/CVD 保证金、配额与许可、原产地与 FTA 优惠、归类复核，也未做去重判断。实际应缴税额以 CBP 裁定为准。",
+    scenDedup: "范围匹配为近似口径（按章 / 品目 / 公告列明编码）；同一货物若同时落入多项措施，只需选定实际适用的那一项，其余选「不适用」。",
+    scenMore: "另有 <b>{n}</b> 项措施的范围与本品目不符，未列出。",
+    scenNoMatch: "本品目未落入本页登记的 §232 措施范围。这<b>不等于</b>没有 §232 措施 —— 本表覆盖 {n} 项主要计划，并非全量；同族未收录的 Ch.99 税号见本块末尾「{fam}」一节。",
+    scenNoActive: "本品目命中的措施<b>均尚未生效</b> —— 按「只对已生效项计数」的口径，这里不出情景合计（出了只会与上方的参考测算重复，反而误导）。生效日之后再查阅，该项会自动计入。",
+    scenDateMoved: "生效日按查询当日的本机日期判定；跨过生效日后重新试算，该项会自动从「尚未生效」移入「已生效」。",
+    famTitle: "同族的 Ch.99 税号 · 未录入登记表",
+    famIntro: "下面这些税号与本品目命中的措施<b>同属一个 Ch.99 族</b>，但<b>尚未录入本页登记表</b>。列出来是为了让「并非全量」可查证 —— 它们<b>不参与求值、不出数</b>，也不代表自动适用；是否适用以公告、U.S. notes 与实际归类为准。",
+    famStat: "{f} 个族 · 族内快照 {n} 行 · 已收录 {u} · 未收录 {m}",
+    famGrp: "族内 {n} 行",
+    famRec: "已收录 {u}/{n}",
+    famUnrec: "未收录 {m}",
+    famEff: "生效线索",
+    famEffNote: "见 U.S. {n}",
+    famEffNone: "描述未载明",
+    famUnlinked: "未判定归属",
+    famRegion: "描述提及",
+    famRegionNote: "本节引述的快照原文保留来源自身的国别 / 地区表述；台湾、香港、澳门是中国领土不可分割的一部分。凡<b>在国别之间并列</b>出现（§232 的国别分支即属此类，如「products of Taiwan」），本页中文按中国口径写作「中国台湾」「中国香港」「中国澳门」；若只是与城市并列，或属机构 / 媒体 / 文件名称，则照原名书写、不另加前缀。",
+    famTail: "「生效线索」是从快照描述里摘出的片段（一个日期，或描述所引的 U.S. note 分节），<b>不是本页的判定</b>；两者都摘不出时显示「描述未载明」。税率字段一律照录原文 —— 含 <b>rk=t</b> 的文本引用形态，本页不换算成数字。",
     browseBtn: "按类别浏览",
     browseTitle: "不知道编码时，从这里逐级找",
     browsePh: "输入关键词筛选（英文品名）…",
@@ -972,6 +1103,39 @@ const I18N = {
     errFRBoth: "Neither the live L2 layer nor the local snapshot is available",
     calcSrcNote: "Where the inputs come from: <b>value</b> and <b>mode of transport</b> are yours to enter; the <b>base rate</b> comes from the L1 snapshot (the number in the conclusion above); <b>MPF / HMF</b> are CBP FY2026 published fee rates, pre-filled and editable.",
     calcExcl: "This estimate covers base duty + MPF + HMF only. It excludes Chapter 99 surcharges, AD/CVD, FTA preferential rates and origin determinations — those are listed item by item in the L1 / L2 sections below, without amounts.",
+    scenSummary: "Scenario estimate — including §232 additional measures", scenHint: "scenario · reference only",
+    scenWarnT: "Scenario · not duty payable",
+    scenWarnD: "This is a <b>scenario estimate</b>, not duty payable, and not a basis for entry. It layers the §232 measures you declare on top of the reference estimate, <b>counting only measures already in force</b> by effective date; measures not yet in force are never counted, and this page does not decide which Annex your goods fall under.",
+    scenSrcNote: "Where the inputs come from: <b>value / transport / fee rates</b> are shared with the reference estimate above; <b>scope, effective dates and rate tiers</b> come from <code>data/section232-measures.json</code> in this repository — rates and Chapter 99 headings are taken verbatim from the HTS 2026 rev.9 snapshot, while proclamation facts cite the presidential proclamations, CBP and official trade circulars.",
+    scenSecOn: "In force · counted in the scenario", scenSecOff: "Not yet in force · not counted",
+    scenPick: "Rate tier", scenUnset: "Not selected · not counted", scenEff: "Effective",
+    scenTagOn: "in force", scenTagOff: "pending",
+    scenCh99: "Chapter 99 heading", scenCh99None: "no Ch.99 heading in the snapshot",
+    scenMip: "Minimum import price (MIP)", scenSrc: "Source",
+    scenBtn: "Run scenario",
+    scenBase: "Base duty ({r})", scenBaseNo: "Base duty · not computable (red line 02)",
+    scen232: "§232 · {n}", scen232Na: "§232 · {n} (not ad valorem, excluded)",
+    scenTap: "§232 additional measures · no tier selected",
+    scenTotal: "Scenario total · for reference only", scenTotalP: "§232 subtotal · excludes base duty (reference only)",
+    scenNote: "<b>For reference only.</b> This scenario adds only the §232 measures registered on this page and <b>excludes</b> §301, IEEPA reciprocal tariffs, ADD/CVD cash deposits, quotas and licences, origin and FTA preference, and classification review; it performs no de-duplication. Duty payable is determined by CBP.",
+    scenDedup: "Scope matching is approximate (chapter / heading / codes enumerated in the proclamation); where several measures cover the same goods, select only the one that applies and mark the rest “not applicable”.",
+    scenMore: "<b>{n}</b> further measures did not match this heading and are not listed.",
+    scenNoMatch: "This heading falls outside the §232 measures registered on this page. That does <b>not</b> mean no §232 measure applies — the registry covers {n} major programmes, not the full universe. Sibling Ch.99 headings that are not registered are listed in the “{fam}” section at the end of this block.",
+    scenNoActive: "Every measure matching this heading is <b>not yet in force</b> — under the “count only what is in force” rule no scenario total is produced here (producing one would merely duplicate the reference estimate above and mislead). Re-query after the effective date and it is counted automatically.",
+    scenDateMoved: "Effective dates are evaluated against today’s local date; once a date passes, re-running the scenario moves that measure from “not yet in force” to “in force” automatically.",
+    famTitle: "Sibling Ch.99 headings · not in the registry",
+    famIntro: "These headings belong to the <b>same Ch.99 families</b> as the measures matching this heading, but are <b>not registered on this page</b>. They are listed so that “not the full universe” is checkable — they are <b>not evaluated, produce no amounts</b>, and do not mean they automatically apply; applicability rests on the proclamations, the U.S. notes and the actual classification.",
+    famStat: "{f} families · {n} rows in the snapshot · {u} registered · {m} not registered",
+    famGrp: "{n} rows in family",
+    famRec: "{u}/{n} registered",
+    famUnrec: "{m} not registered",
+    famEff: "Effective clue",
+    famEffNote: "see U.S. {n}",
+    famEffNone: "no date in the description",
+    famUnlinked: "programme not determined",
+    famRegion: "mentions",
+    famRegionNote: "Quoted snapshot text keeps the source’s own country/region wording. Taiwan, Hong Kong and Macao are inalienable parts of China. Wherever they appear <b>alongside sovereign countries</b> — as in the §232 country-branch clauses, e.g. “products of Taiwan” — the Chinese wording here follows the China form (中国台湾 / 中国香港 / 中国澳门). Where they merely sit alongside cities, or form part of an organisation, publication or document name, the original name is kept without a prefix.",
+    famTail: "An “effective clue” is a fragment lifted from the snapshot description — a date, or the U.S. note subdivision the description points to. It is <b>not a determination made by this page</b>; when neither is present the note says so. Rate fields are reproduced verbatim — including <b>rk=t</b> textual references, which this page never converts to a number.",
     browseBtn: "Browse by category",
     browseTitle: "Not sure of the code? Drill down here",
     browsePh: "Filter by keyword (English product names)…",
@@ -1064,6 +1228,300 @@ function annot(tag, title, body, muted){
     <div class="ad">${body}</div></div>`;
 }
 
+/* ============================================================
+/* ============================================================
+   测算公共内核 —— 「参考测算」与「情景估算」共用
+   ------------------------------------------------------------
+   两块必须落在同一组输入与同一套规费口径上，否则数字会悄悄漂移。
+   所以费率只在这里实现一次；两块的差别仅在于「要不要再加 §232」。
+   ============================================================ */
+const usd = n => "$" + n.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
+/* 基础税：pct 为 null 表示税率形态不可换算（红线 02）→ 不出数字 */
+const dutyAt = (val, pct) => pct == null ? null : val * pct / 100;
+function fees(){
+  const g = id => document.getElementById(id);
+  const n = id => parseFloat((g(id) || {}).value) || 0;
+  const val  = n("val");
+  const mode = (g("mode") || {}).value || "ocean";
+  const mpf  = Math.min(Math.max(val * n("mpf") / 100, n("mpfmin")), n("mpfmax"));
+  const hmf  = mode === "ocean" ? val * n("hmf") / 100 : 0;
+  return { val, mode, mpf, hmf };
+}
+/* 两个测算块的装配同构：点按钮算一次；展开时若还没出数就补算 */
+function wireCalc(box, btn, out, run){
+  if (btn) btn.addEventListener("click", run);
+  box.addEventListener("toggle", () => { if (box.open && !out.innerHTML) run(); });
+}
+
+/* ============================================================
+   §232 措施登记表 —— 情景估算的数据侧
+   ------------------------------------------------------------
+   纪律边界（改这里之前先读）：
+   · 本区块与上面的「参考测算」口径分离：那里只算「基础税 + MPF + HMF」，
+     这里才是「再加 §232」。两块各自出数、互不写入，参考测算的字面不受影响。
+   · 红线 02 继续生效：Ch.99 的 g 字段是 "The duty provided in… + 25%" 这类
+     文本引用形态，本页原文照录、不解析。情景里的费率档位是用户在 UI 上
+     「声明」的选项（每档标注对应 Ch.99 税号与出处），不是从 rk=t 反推的数字。
+   · 只对「生效日 <= 今日」的措施计数；未生效的另列一节、永不入数。
+   ============================================================ */
+let S232 = null;                     // data/section232-measures.json
+let C99ROWS = null;                  // Ch.99 全量行，由 findCh99() 顺手缓存，供「同族未收录」一节遍历
+const l10n = v => v ? ((LANG === "zh-CN" ? v.zh : v.en) || v.zh) : "";
+/* 取本机日期而非 toISOString()：后者是 UTC，会让生效日当天凌晨被判成「未生效」。
+   生效日比较用字符串即可（同为 YYYY-MM-DD，字典序 == 时间序）。 */
+function todayISO(){
+  const n = new Date();
+  return n.getFullYear() + "-" + String(n.getMonth() + 1).padStart(2, "0")
+                           + "-" + String(n.getDate()).padStart(2, "0");
+}
+const isEff = ds => !!ds && ds <= todayISO();
+/* 范围匹配：登记表存的是纯数字前缀。问询编码比前缀长 → 前缀命中；
+   问询编码更短（如只输 4 位）→ 仅当前缀够长时反向命中，避免过度匹配整个章。 */
+function scopeHit(digits, scope){
+  for (const p of (scope || [])){
+    if (digits.startsWith(p)) return true;
+    if (digits.length >= 4 && p.length >= 6 && p.startsWith(digits)) return true;
+  }
+  return false;
+}
+const s232Hits = digits => (S232 && S232.measures)
+  ? S232.measures.filter(m => scopeHit(digits, m.scope)) : [];
+
+/* ---- 同族未收录税号：只陈列，不参与求值 ------------------------------------
+   「并非全量」这句得可查证，所以把同族里没录进登记表的 Ch.99 税号也摆出来。
+   三条纪律：
+   · 族清单取自登记表的 s232_families（手工维护的白名单），行数据取自 Ch.99 快照；
+   · 一律不出数、不进 runScen、不进任何判定 —— 列出来 ≠ 适用；
+   · 「生效线索」只做原文片段提取（日期，或描述所引的 U.S. note 分节），
+     摘不出就明说「描述未载明」，绝不猜一个日期写上去。 */
+const MON = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const z2  = n => String(n).padStart(2, "0");
+const s232Fams = () => (S232 && S232.s232_families) || [];
+function usedCh99(){
+  const s = new Set();
+  ((S232 && S232.measures) || []).forEach(m => (m.ch99 || []).forEach(c => s.add(c.h)));
+  return s;
+}
+function effClue(txt){
+  const d = txt || "";
+  const dm = /\bon or after\s+([A-Z][a-z]+)\s+(\d{1,2}),\s*(\d{4})/.exec(d);
+  if (dm){
+    const i = MON.indexOf(dm[1]);
+    if (i >= 0) return dm[3] + "-" + z2(i + 1) + "-" + z2(parseInt(dm[2], 10));
+  }
+  const nm = /U\.S\. note\s+(\d+[A-Za-z]?)/.exec(d);
+  if (!nm) return "";
+  const sm = /subdivision\s+\(([a-z0-9]+)\)/i.exec(d);
+  /* 简写：这行要在 54 行里重复，写全 "subdivision (n)" 会显著撑高表格 */
+  return t("famEffNote", { n: "note " + nm[1] + (sm ? " (" + sm[1] + ")" : "") });
+}
+const cutTxt = (s, n) => { s = String(s == null ? "" : s); return s.length > n ? s.slice(0, n) + "…" : s; };
+
+/* 地区/贸易安排：快照原文用的是来源自身的表述（Taiwan / Hong Kong …）。
+   本表只服务 §232 的国别分支条款 —— 那里台港澳与主权国家并列列举
+   （products of Taiwan / Japan / Korea / the EU…），按中国口径写
+   「中国台湾」/ Taiwan, China，英文并列形同理。
+   站内其它位置若只是与城市并列，或属机构 / 媒体 / 文件名称，一律照原名写、不加前缀。
+   这里只做「描述提到了谁」的提取，不判定适用，也不改写原文。 */
+const REGIONS = [
+  { re: /\bTaiwan\b/i,                       zh: "中国台湾", en: "Taiwan, China" },
+  { re: /\bHong Kong\b/,                     zh: "中国香港", en: "Hong Kong, China" },
+  { re: /\bMacao\b|\bMacau\b/i,              zh: "中国澳门", en: "Macao, China" },
+  { re: /\bEuropean Union\b/,                zh: "欧盟",     en: "the European Union" },
+  { re: /\bSouth Korea\b|\bKorea\b/,         zh: "韩国",     en: "South Korea" },
+  { re: /\bJapan\b/,                         zh: "日本",     en: "Japan" },
+  { re: /\bUnited Kingdom\b/,                zh: "英国",     en: "the United Kingdom" },
+  { re: /\bRussian Federation\b|\bRussia\b/,  zh: "俄罗斯",   en: "Russia" },
+  { re: /\bNicaragua\b/,                     zh: "尼加拉瓜", en: "Nicaragua" },
+  { re: /\bMexico\b/,                        zh: "墨西哥",   en: "Mexico" },
+  { re: /\bCanada\b/,                        zh: "加拿大",   en: "Canada" }
+];
+const regionTags = txt => REGIONS
+  .filter(r => r.re.test(txt || ""))
+  .map(r => (LANG === "zh-CN" ? r.zh : r.en));
+
+function famBlock(){
+  if (!C99ROWS || !s232Fams().length) return "";
+  const rows = C99ROWS.filter(r => s232Fams().some(f => (r.h || "").startsWith(f.prefix)));
+  if (!rows.length) return "";
+  const used = usedCh99();
+  const left = rows.filter(r => !used.has(r.h));
+  const fams = s232Fams().filter(f => rows.some(r => r.h.startsWith(f.prefix)));
+  const inFam = p => rows.filter(r => r.h.startsWith(p));
+  const unFam = p => left.filter(r => r.h.startsWith(p));
+
+  let h = `<details class="fam" id="famBox">
+    <summary>${esc(t("famTitle"))} · ${left.length}</summary>
+    <div class="fintro">${t("famIntro")}</div>
+    <div class="fstat">${esc(t("famStat", {
+      f: String(fams.length), n: String(rows.length),
+      u: String(rows.length - left.length), m: String(left.length) }))}</div>
+    <div class="freg">${t("famRegionNote")}</div>`;
+
+  fams.forEach(f => {
+    const all = inFam(f.prefix), un = unFam(f.prefix);
+    const tail = un.length ? t("famUnrec", { m: String(un.length) })
+                           : t("famRec", { u: String(all.length), n: String(all.length) });
+    h += `<div class="fg"><span class="no">${esc(f.prefix.replace(/\.$/, ""))}</span>
+      <span>${esc(l10n(f))}</span>
+      <span class="cn">${esc(t("famGrp", { n: String(all.length) }))} · ${esc(tail)}</span>
+      ${f.program ? "" : `<span class="cn"><span class="un">${esc(t("famUnlinked"))}</span></span>`}</div>`;
+    if (f.note) h += `<div class="fnote">${esc(l10n(f.note))}</div>`;
+    un.forEach(r => {
+      const e = effClue(r.d), rg = regionTags(r.d);
+      h += `<div class="fr">
+        <span class="h">${esc(r.h)}</span>
+        <span class="k">rk=${esc(r.rk || "—")}</span>
+        ${rg.length ? `<span class="rg"><i>${esc(t("famRegion"))}</i>${esc(rg.join(" · "))}</span>` : ""}
+        <span class="ef"><i>${esc(t("famEff"))}</i> ${esc(e || t("famEffNone"))}</span>
+        <div class="gd">
+          <span class="g" title="${esc(r.g || "")}">${esc(cutTxt(r.g, 96) || "—")}</span>
+          <span class="d" title="${esc(r.d || "")}">${esc(cutTxt(r.d, 104))}</span>
+        </div></div>`;
+    });
+  });
+  h += `<div class="ftail">${t("famTail")}</div></details>`;
+  return h;
+}
+
+function measureRow(m, on){
+  let h = `<div class="scen-m${on ? "" : " pend"}">
+    <div class="mh">
+      <span class="nm">${esc(l10n(m.title))}</span>
+      <span class="tag ${on ? "on" : "off"}">${esc(on ? t("scenTagOn") : t("scenTagOff"))}</span>
+      <span class="eff">${esc(t("scenEff"))} ${esc(m.effective_date)}</span>
+    </div>
+    <div class="raw">${esc(l10n(m.basis))}</div>`;
+
+  if (on){
+    h += `<div class="rr"><label>${esc(t("scenPick"))}</label>
+      <select id="scen-${esc(m.id)}"><option value="">${esc(t("scenUnset"))}</option>` +
+      (m.options || []).map((o, i) => {
+        const ready = !o.eff || isEff(o.eff);
+        const lab = (o.pct === 0 ? "0%" : o.pct + "%") + " · " + l10n(o.label)
+                  + (ready ? "" : " — " + t("scenTagOff") + " " + o.eff);
+        return `<option value="${i}"${ready ? "" : " disabled"}>${esc(lab)}</option>`;
+      }).join("") + `</select></div>`;
+  }
+
+  if (m.mip && m.mip.length)
+    h += `<div class="mip"><b>${esc(t("scenMip"))}</b> · ` +
+      m.mip.map(x => esc(l10n(x.item)) + " " + esc(x.price)).join(" · ") + `</div>`;
+
+  if (m.notes) h += `<div class="note">${esc(l10n(m.notes))}</div>`;
+  if (m.scope_note) h += `<div class="raw">${esc(l10n(m.scope_note))}</div>`;
+
+  /* Ch.99 线索：站点 L1 的 Chapter 99 栏只显示反查命中的税号，而 §232 这类
+     税号反查为空（其范围写在美国注释里）。所以原文必须由登记表自带，
+     既给出可回查的税号，也满足「来源可溯」。 */
+  h += `<div class="raw ch99">${esc(t("scenCh99"))}：` +
+    (m.ch99 && m.ch99.length
+      ? m.ch99.map(x => `<b>${esc(x.h)}</b> <i>${esc(x.g)}</i>`).join("；")
+      : `<b>${esc(t("scenCh99None"))}</b>`) + `</div>`;
+
+  if (m.sources && m.sources.length)
+    h += `<div class="src">${esc(t("scenSrc"))}：` + m.sources.map(s =>
+      `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ") + `</div>`;
+
+  return h + `</div>`;
+}
+
+function scenBlock(digits){
+  if (!S232 || !S232.measures || !S232.measures.length) return "";
+  const all  = S232.measures;
+  const hits = s232Hits(digits);
+  const on   = hits.filter(m => isEff(m.effective_date));
+  const off  = hits.filter(m => !isEff(m.effective_date));
+  const miss = all.length - hits.length;
+
+  let h = `<details class="calc scen" id="scenBox">
+    <summary>${esc(t("scenSummary"))}<span class="hint">${esc(t("scenHint"))}</span></summary>
+    <div class="calc-body">
+      <div class="scen-warn"><span class="mk">${esc(t("scenWarnT"))}</span>
+        <span class="tx">${t("scenWarnD")}</span></div>
+      <div class="calc-src">${t("scenSrcNote")}</div>`;
+
+  if (!hits.length) h += `<div class="empty">${t("scenNoMatch", { n:String(all.length), fam:t("famTitle") })}</div>`;
+
+  if (on.length){
+    h += `<div class="scen-sec">${esc(t("scenSecOn"))}</div>`;
+    /* 去重提示必须在「选档位之前」就出现 —— 放进试算结果里等于事后才说 */
+    h += `<div class="calcnote">${t("scenDedup")}</div>`;
+    h += on.map(m => measureRow(m, true)).join("");
+  }
+  if (off.length){
+    h += `<div class="scen-sec off">${esc(t("scenSecOff"))}</div>`;
+    h += off.map(m => measureRow(m, false)).join("");
+  }
+  if (hits.length && miss > 0) h += `<div class="empty">${t("scenMore", { n:String(miss) })}</div>`;
+
+  /* 命中但全部尚未生效：不出合计 —— 出了只会与上方参考测算重复，反而误导。
+     这一条是「只对已生效项计数」的必然结果，不是降级。 */
+  if (hits.length && !on.length)
+    h += `<div class="t2" style="margin-top:12px"><span class="tierlab">${esc(t("scenTagOff"))}</span>${t("scenNoActive")}</div>`;
+
+  if (on.length)
+    h += `<div class="calcrow"><div><button id="scenBtn">${esc(t("scenBtn"))}</button></div></div>
+      <div id="scenout"></div>`;
+
+  h += `<div class="calcnote">${t("scenDateMoved")}</div>`;
+
+  /* 说明性一节放在最末：能算的（已生效措施 + 试算）在前，查证材料在后。
+     它不参与求值，只是让「并非全量」可查证 —— 默认再折叠一层。 */
+  h += famBlock();
+
+  h += `</div></details>`;
+  return h;
+}
+
+/* 情景求值：基础税 + MPF + HMF +「已选且已生效」的 §232 档位。
+   若基础税形态不可换算（红线 02），只出 §232 部分合计并显式标注，绝不冒充合计。 */
+function runScen(on, pct){
+  const out = document.getElementById("scenout");
+  if (!out) return;
+  const { val, mode, mpf, hmf } = fees();      // 与参考测算同一组输入
+  const duty = dutyAt(val, pct);               // pct 由 render() 传入
+
+  let sum232 = 0, picked = 0, naMip = 0;
+  const lines = [];
+  on.forEach(m => {
+    const sel = document.getElementById("scen-" + m.id);
+    const o = sel && sel.value !== "" ? (m.options || [])[parseInt(sel.value, 10)] : null;
+    if (!o){
+      if (m.rate_kind === "mip") naMip++;
+      return;                                   // 未选定 → 不入数
+    }
+    if (m.rate_kind === "mip" && o.pct === 15){
+      naMip++;                                  // MIP 为非从价措施，不折成百分比
+      return;
+    }
+    if (!o.pct){ picked++; return; }             // 0% 档位：明确适用但不产生金额
+    const amt = val * o.pct / 100;
+    sum232 += amt; picked++;
+    lines.push(`<div class="cline"><span class="lab">${esc(t("scen232", { n:l10n(m.title) }))}` +
+      ` <i class="tag on">${esc(o.pct + "%")}</i></span><span>${usd(amt)}</span></div>`);
+  });
+  if (naMip)
+    lines.push(`<div class="cline na"><span class="lab">${esc(t("scen232Na", { n:"MIP" }))}</span><span>—</span></div>`);
+
+  let o = "";
+  if (duty == null){
+    o += `<div class="t2" style="margin-bottom:10px"><span class="tierlab">${esc(t("tierT2"))}</span>${t("calcNoPct")}</div>`;
+    o += `<div class="cline"><span class="lab">${esc(t("scenBaseNo"))}</span><span>—</span></div>`;
+  } else {
+    o += `<div class="cline"><span class="lab">${esc(t("scenBase", { r: (LAST && LAST.base && LAST.base.row.g) || "—" }))}</span><span>${usd(duty)}</span></div>`;
+  }
+  o += `<div class="cline"><span class="lab">${esc(t("calcMPF"))}</span><span>${usd(mpf)}</span></div>`;
+  o += `<div class="cline"><span class="lab">${esc(t("calcHMF"))}${mode === "air" ? " · n/a" : ""}</span><span>${usd(hmf)}</span></div>`;
+  if (!picked && !naMip)
+    o += `<div class="cline na"><span class="lab">${esc(t("scenTap"))}</span><span>—</span></div>`;
+  o += lines.join("");
+  o += `<div class="cline total"><span class="lab">${esc(duty == null ? t("scenTotalP") : t("scenTotal"))}</span>` +
+       `<span>${usd((duty || 0) + mpf + hmf + sum232)}</span></div>`;
+  o += `<div class="calcexcl">${t("scenNote")}</div>`;
+  out.innerHTML = o;
+}
+
 function render(res){
   const { base, ch99, fr, adcvd, frBundle } = res;
   const row = base.row, d = base.digits;
@@ -1128,6 +1586,9 @@ function render(res){
       <div id="calcout"></div>
       <div class="calcnote">${t("calcNote")}</div>
     </div></details>`;
+
+  /* ---- 情景估算（含 §232 附加措施）—— 与参考测算相邻但口径独立，默认折叠 ---- */
+  h += scenBlock(d);
 
   /* ---- L1 分组：快照层（基础税率 + Chapter 99），默认折叠，点标题展开 ---- */
   h += `<details class="lgroup l1g">
@@ -1282,17 +1743,10 @@ function render(res){
 
   /* 绑定测算（pct 可能为 null → 不出基础税，红线 02） */
   const box = document.getElementById("calcBox");
+  const cout = document.getElementById("calcout");
   const run = () => {
-    const v = parseFloat(document.getElementById("val").value) || 0;
-    const mode = document.getElementById("mode").value;
-    const mr = parseFloat(document.getElementById("mpf").value) || 0;
-    const mn = parseFloat(document.getElementById("mpfmin").value) || 0;
-    const mx = parseFloat(document.getElementById("mpfmax").value) || 0;
-    const hr = parseFloat(document.getElementById("hmf").value) || 0;
-    const mpf = Math.min(Math.max(v * mr / 100, mn), mx);
-    const hmf = mode === "ocean" ? v * hr / 100 : 0;
-    const duty = pct == null ? null : v * pct / 100;
-    const usd = n => "$" + n.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
+    const { val, mode, mpf, hmf } = fees();
+    const duty = dutyAt(val, pct);
     let o = "";
     if (duty == null){
       o += `<div class="t2" style="margin-bottom:10px"><span class="tierlab">${esc(t("tierT2"))}</span>${t("calcNoPct")}</div>`;
@@ -1303,18 +1757,30 @@ function render(res){
     o += `<div class="cline"><span class="lab">${esc(t("calcHMF"))}${mode === "air" ? " · n/a" : ""}</span><span>${usd(hmf)}</span></div>`;
     o += `<div class="cline total"><span class="lab">${esc(t("calcTotal"))}</span><span>${usd((duty || 0) + mpf + hmf)}</span></div>`;
     o += `<div class="calcexcl">${esc(t("calcExcl"))}</div>`;
-    document.getElementById("calcout").innerHTML = o;
+    cout.innerHTML = o;
   };
-  document.getElementById("calcBtn").addEventListener("click", run);
-  box.addEventListener("toggle", () => { if (box.open && !document.getElementById("calcout").innerHTML) run(); });
+  wireCalc(box, document.getElementById("calcBtn"), cout, run);
 
   /* 结论行里的跳转：直接展开参考测算并滚动过去 —— 它不再埋在页面底部 */
   const jmp = document.getElementById("calcJump");
   if (jmp) jmp.addEventListener("click", () => {
     box.open = true;
-    if (!document.getElementById("calcout").innerHTML) run();
+    if (!cout.innerHTML) run();
     box.scrollIntoView({ behavior:"smooth", block:"center" });
   });
+
+  /* 情景估算：默认折叠。展开或点「试算情景」时按当前输入求值 ——
+     on 列表只含「生效日 <= 今日」的措施，未生效的天然不会入数。 */
+  const sbox = document.getElementById("scenBox");
+  const sout = document.getElementById("scenout");   // 全部未生效时不存在
+  if (sbox && sout){
+    const sOn = s232Hits(d).filter(m => isEff(m.effective_date));
+    const scenRun = () => runScen(sOn, pct);
+    wireCalc(sbox, document.getElementById("scenBtn"), sout, scenRun);
+    /* 改档位即时重算 —— 仅在已经出过数之后，避免展开时抢跑 */
+    sbox.querySelectorAll("select[id^='scen-']").forEach(sel =>
+      sel.addEventListener("change", () => { if (sout.innerHTML) scenRun(); }));
+  }
 
   renderChain(["hts-" + TAG + "-ch" + base.chapter + ".json.gz",
                "hts-" + TAG + "-ch99.json.gz",
@@ -1561,6 +2027,9 @@ function renderIdle(){
   document.querySelectorAll("[data-i18n]").forEach(el => { el.dataset.zh = el.textContent; });
 
   try { MANIFEST = await loadPlain("manifest.json"); } catch (e) { /* 溯源表降级为空 */ }
+  /* §232 措施登记表 —— 情景估算的数据源。
+     取不到时整块自动隐藏：宁可没有，也不降级成「凭印象猜费率」。 */
+  try { S232 = await loadPlain("section232-measures.json"); } catch (e) { S232 = null; }
   const mh = document.getElementById("meta");
   const hts = MANIFEST && MANIFEST.hts;
   mh.innerHTML = [
